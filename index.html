@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kanopy Watchlist — Ranked by Genre</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22kg%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ff5522%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23e5a93c%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2215%22%20fill%3D%22url%28%23kg%29%22/%3E%0A%20%20%3Cpath%20d%3D%22M18%2015h8v15l13-15h10L34%2031l16%2018H39L26%2033v16h-8V15z%22%20fill%3D%22%23ffffff%22/%3E%0A%3C/svg%3E" />
+  <link rel="alternate icon" href="favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -1178,6 +1180,8 @@
           <option value="critic">🍅 Rotten Tomatoes Critic Score</option>
           <option value="audience">🍿 Rotten Tomatoes Audience Score</option>
           <option value="lb">🟢 Letterboxd Rating (★ / 5.0)</option>
+          <option value="runtime-asc">⏱️ Runtime (Shortest First)</option>
+          <option value="runtime-desc">⏳ Runtime (Longest First)</option>
           <option value="year-desc">📅 Release Year (Newest First)</option>
           <option value="year-asc">🎞️ Release Year (Classic First)</option>
           <option value="title">🔤 Title (A–Z)</option>
@@ -1286,7 +1290,9 @@
             ],
             "similarTo": "Odd Man Out (1947), Touch of Evil (1958), Casablanca (1942), Citizen Kane (1941)",
             "review": "Carol Reed and Graham Greene’s crowning noir masterpiece follows pulp novelist Holly Martins (Joseph Cotten) through the bombed-out, shadow-drenched sectors of postwar Vienna as he investigates the suspicious death of his old friend Harry Lime (Orson Welles).",
-            "lbConsensus": "Voted the greatest British film of all time and a 4.3★ Letterboxd titan: cinephiles obsess over Robert Krasker's Oscar-winning tilted Dutch angles, Anton Karas's iconic zither theme, Orson Welles's cat-in-the-doorway reveal, and the Ferris wheel 'cuckoo clock' speech."
+            "lbConsensus": "Voted the greatest British film of all time and a 4.3★ Letterboxd titan: cinephiles obsess over Robert Krasker's Oscar-winning tilted Dutch angles, Anton Karas's iconic zither theme, Orson Welles's cat-in-the-doorway reveal, and the Ferris wheel 'cuckoo clock' speech.",
+            "runtimeMins": 104,
+            "runtime": "1h 44m"
       },
       {
             "id": "odd-man-out",
@@ -1310,7 +1316,9 @@
             ],
             "similarTo": "The Third Man (1949), The Informer (1935), Night and the City (1950)",
             "review": "Directed by Carol Reed (The Third Man), this poetic British noir follows wounded Irish nationalist leader Johnny McQueen (James Mason) as he stumbles through a snowy, expressionistic Belfast night while hunted by police. Moody, compassionate, and visually breathtaking.",
-            "lbConsensus": "On Letterboxd, viewers highlight Robert Krasker's jaw-dropping black-and-white cinematography—turning rainy, snow-covered Belfast streets into a feverish purgatory—and note that Roman Polanski frequently cited this as his all-time favorite film."
+            "lbConsensus": "On Letterboxd, viewers highlight Robert Krasker's jaw-dropping black-and-white cinematography—turning rainy, snow-covered Belfast streets into a feverish purgatory—and note that Roman Polanski frequently cited this as his all-time favorite film.",
+            "runtimeMins": 116,
+            "runtime": "1h 56m"
       },
       {
             "id": "the-bitter-stems",
@@ -1334,7 +1342,9 @@
             ],
             "similarTo": "Double Indemnity (1944), Strangers on a Train (1951), Elevator to the Gallows (1958)",
             "review": "Newly restored Argentine film noir masterpiece directed by Fernando Ayala, with a lush, haunting score by tango revolutionary Ástor Piazzolla. A desperate Buenos Aires journalist enters a bogus correspondence-school business scheme with a Hungarian immigrant before paranoia drives him toward murder.",
-            "lbConsensus": "Letterboxd noir aficionados hail Los tallos amargos as one of the greatest Latin American films ever made, praising Ricardo Younis's deep-focus expressionist fog sequences and Ástor Piazzolla's mesmerizing score."
+            "lbConsensus": "Letterboxd noir aficionados hail Los tallos amargos as one of the greatest Latin American films ever made, praising Ricardo Younis's deep-focus expressionist fog sequences and Ástor Piazzolla's mesmerizing score.",
+            "runtimeMins": 90,
+            "runtime": "1h 30m"
       },
       {
             "id": "night-of-the-hunter",
@@ -1358,7 +1368,9 @@
             ],
             "similarTo": "Cape Fear (1962), Days of Heaven (1978), Shadow of a Doubt (1943), Pan's Labyrinth (2006)",
             "review": "Actor Charles Laughton’s sole directorial effort is a haunting Southern Gothic noir fairy tale starring Robert Mitchum as Reverend Harry Powell—a serial-killing false preacher with 'LOVE' and 'HATE' tattooed across his knuckles—stalking two young children down the Ohio River for hidden loot.",
-            "lbConsensus": "A 4.3★ all-time masterpiece on Letterboxd: reviewers marvel at Stanley Cortez's German Expressionist shadows, the underwater shot of Shelley Winters, and Lillian Gish standing guard with a shotgun."
+            "lbConsensus": "A 4.3★ all-time masterpiece on Letterboxd: reviewers marvel at Stanley Cortez's German Expressionist shadows, the underwater shot of Shelley Winters, and Lillian Gish standing guard with a shotgun.",
+            "runtimeMins": 92,
+            "runtime": "1h 32m"
       },
       {
             "id": "detour",
@@ -1382,7 +1394,9 @@
             ],
             "similarTo": "Double Indemnity (1944), Gun Crazy (1950), Blood Simple (1984)",
             "review": "Edgar G. Ulmer’s 68-minute Poverty Row classic is pure fatalistic noir distilled to the bone. Hitchhiking pianist Al Roberts (Tom Neal) picks up the wrong ride and falls into the clutches of the venomous Vera (Ann Savage), one of cinema's greatest femmes fatales.",
-            "lbConsensus": "Letterboxd users love how fast and mean this 68-minute B-movie moves, singling out Ann Savage’s ferocious, cigarette-snarling performance as Vera as one of the most terrifying characters in classic Hollywood history."
+            "lbConsensus": "Letterboxd users love how fast and mean this 68-minute B-movie moves, singling out Ann Savage’s ferocious, cigarette-snarling performance as Vera as one of the most terrifying characters in classic Hollywood history.",
+            "runtimeMins": 68,
+            "runtime": "1h 08m"
       },
       {
             "id": "woman-on-the-run",
@@ -1406,7 +1420,9 @@
             ],
             "similarTo": "Sudden Fear (1952), Dark Passage (1947), The Lady from Shanghai (1947), D.O.A. (1949)",
             "review": "Restored by UCLA and the Film Noir Foundation after decades in obscurity, Norman Foster’s terrific San Francisco noir stars Ann Sheridan as a sardonic wife racing police and a killer through Chinatown and an amusement park to find her husband after he witnesses a gangland execution.",
-            "lbConsensus": "Letterboxd noir fans celebrate how this film turns the 'supportive wife' trope inside out—followng an unsentimental, estranged marriage through steep San Francisco streets to a breathless roller-coaster finale at Ocean Beach."
+            "lbConsensus": "Letterboxd noir fans celebrate how this film turns the 'supportive wife' trope inside out—followng an unsentimental, estranged marriage through steep San Francisco streets to a breathless roller-coaster finale at Ocean Beach.",
+            "runtimeMins": 77,
+            "runtime": "1h 17m"
       },
       {
             "id": "sudden-fear",
@@ -1430,7 +1446,9 @@
             ],
             "similarTo": "Mildred Pierce (1945), Dial M for Murder (1954), Gaslight (1944)",
             "review": "Joan Crawford delivers an Oscar-nominated tour de force as a wealthy Broadway playwright who discovers via a dictaphone recording that her charming new husband (Jack Palance) and his lover (Gloria Grahame) are plotting to murder her. High-contrast San Francisco cinematography and nail-biting suspense.",
-            "lbConsensus": "Letterboxd reviews celebrate the mid-film pivot where Joan Crawford transforms from victim to meticulous avenger, as well as the famous dictaphone reveal scene and the wind-up toy dog suspense sequence."
+            "lbConsensus": "Letterboxd reviews celebrate the mid-film pivot where Joan Crawford transforms from victim to meticulous avenger, as well as the famous dictaphone reveal scene and the wind-up toy dog suspense sequence.",
+            "runtimeMins": 110,
+            "runtime": "1h 50m"
       },
       {
             "id": "klute",
@@ -1454,7 +1472,9 @@
             ],
             "similarTo": "The Conversation (1974), All the President's Men (1976), Taxi Driver (1976), Dressed to Kill (1980)",
             "review": "The first installment of Alan J. Pakula’s famed 'Paranoia Trilogy' stars Jane Fonda (in an Oscar-winning role) as high-class Manhattan call girl Bree Daniels and Donald Sutherland as small-town detective John Klute, investigating a missing executive while a stalker lurks in the shadows.",
-            "lbConsensus": "Cinephiles on Letterboxd rave about Jane Fonda's fearless, deeply vulnerable therapy monologues and 'Prince of Darkness' cinematographer Gordon Willis's claustrophobic widescreen framing."
+            "lbConsensus": "Cinephiles on Letterboxd rave about Jane Fonda's fearless, deeply vulnerable therapy monologues and 'Prince of Darkness' cinematographer Gordon Willis's claustrophobic widescreen framing.",
+            "runtimeMins": 114,
+            "runtime": "1h 54m"
       },
       {
             "id": "only-the-animals",
@@ -1477,7 +1497,9 @@
             ],
             "similarTo": "Fargo (1996), The Night of the 12th (2022), Babel (2006), Rashomon (1950)",
             "review": "Dominik Moll’s ingeniously structured French neo-noir begins with a woman’s disappearance during a blizzard in the rural French highlands and unspools across five chapters—revealing how five lonely strangers from snowy France to Abidjan are fatally linked.",
-            "lbConsensus": "Letterboxd viewers love the 'aha!' satisfaction as each character's chapter clicks missing puzzle pieces into place, connecting a snowy French sheep farm to an internet romance scam in Ivory Coast."
+            "lbConsensus": "Letterboxd viewers love the 'aha!' satisfaction as each character's chapter clicks missing puzzle pieces into place, connecting a snowy French sheep farm to an internet romance scam in Ivory Coast.",
+            "runtimeMins": 117,
+            "runtime": "1h 57m"
       },
       {
             "id": "the-blue-lamp",
@@ -1501,7 +1523,9 @@
             ],
             "similarTo": "Odd Man Out (1947), Brighton Rock (1948), Night and the City (1950), Rififi (1955)",
             "review": "BAFTA Best British Film winner from Ealing Studios starring Jack Warner as beloved veteran London Bobby PC George Dixon and a magnetic young Dirk Bogarde as a jittery, trigger-happy juvenile delinquent hunted by Scotland Yard and the Soho underworld.",
-            "lbConsensus": "Reviewers highlight the gritty on-location shooting around postwar Paddington and Edgware Road, the shocking mid-film turn, and the taut greyhound-stadium climax."
+            "lbConsensus": "Reviewers highlight the gritty on-location shooting around postwar Paddington and Edgware Road, the shocking mid-film turn, and the taut greyhound-stadium climax.",
+            "runtimeMins": 84,
+            "runtime": "1h 24m"
       },
       {
             "id": "doa-1949",
@@ -1525,7 +1549,9 @@
             ],
             "similarTo": "Crank (2006), The Big Clock (1948), Kiss Me Deadly (1955)",
             "review": "Opening with one of the most famous scenes in film history—a man walking into a police station to report his own murder—Rudolph Maté’s high-concept noir follows a poisoned accountant (Edmond O'Brien) racing the clock over his final 24 hours to find out who slipped him 'luminous toxin' and why.",
-            "lbConsensus": "Reviewers praise the irresistible hook ('I want to report a murder—my own!') and real on-location guerrilla shooting in 1949 San Francisco and Los Angeles."
+            "lbConsensus": "Reviewers praise the irresistible hook ('I want to report a murder—my own!') and real on-location guerrilla shooting in 1949 San Francisco and Los Angeles.",
+            "runtimeMins": 83,
+            "runtime": "1h 23m"
       },
       {
             "id": "strange-love-martha-ivers",
@@ -1549,7 +1575,9 @@
             ],
             "similarTo": "Double Indemnity (1944), Leave Her to Heaven (1945), Out of the Past (1947)",
             "review": "Barbara Stanwyck commands the screen as a ruthless industrialist bound to her weak, alcoholic DA husband (Kirk Douglas, in his screen debut) by a childhood murder—until a drifter from their past (Van Heflin) rolls back into town and sparks a deadly four-way game with Lizabeth Scott.",
-            "lbConsensus": "Letterboxd noir lovers praise the explosive chemistry between Stanwyck, Van Heflin, Lizabeth Scott, and debuting Kirk Douglas, plus Miklós Rózsa's lush, ominous score."
+            "lbConsensus": "Letterboxd noir lovers praise the explosive chemistry between Stanwyck, Van Heflin, Lizabeth Scott, and debuting Kirk Douglas, plus Miklós Rózsa's lush, ominous score.",
+            "runtimeMins": 116,
+            "runtime": "1h 56m"
       },
       {
             "id": "magpie-2024",
@@ -1573,7 +1601,9 @@
             ],
             "similarTo": "Gone Girl (2014), The Girl on the Train (2016), Eileen (2023)",
             "review": "Daisy Ridley stars in (and conceived the story for) this taut domestic neo-noir about a strained mother whose husband (Shazad Latif) becomes infatuated with the glamorous movie star (Matilda Lutz) playing opposite their daughter. A sharp, slow-burn psychological trap with a killer final act.",
-            "lbConsensus": "Letterboxd viewers consistently single out Daisy Ridley's coiled, simmering performance and a satisfyingly ruthless third-act payoff that flips the entire domestic drama on its head."
+            "lbConsensus": "Letterboxd viewers consistently single out Daisy Ridley's coiled, simmering performance and a satisfyingly ruthless third-act payoff that flips the entire domestic drama on its head.",
+            "runtimeMins": 90,
+            "runtime": "1h 30m"
       },
       {
             "id": "eileen",
@@ -1597,7 +1627,9 @@
             ],
             "similarTo": "Carol (2015), May December (2023), Heavenly Creatures (1994), Rebecca (1940)",
             "review": "Adapted by Ottessa Moshfegh from her novel, William Oldroyd’s icy 1964 psychological noir stars Thomasin McKenzie as a repressed juvenile-prison secretary who becomes intoxicated by the glamorous new prison psychologist Rebecca (Anne Hathaway)—until a shocking Christmas Eve turn.",
-            "lbConsensus": "Letterboxd reviewers love how the movie lulls you into thinking it's a moody, Carol-style 1960s romance before Marin Ireland shows up in the third act and derails the story into pitch-black Hitchcockian madness."
+            "lbConsensus": "Letterboxd reviewers love how the movie lulls you into thinking it's a moody, Carol-style 1960s romance before Marin Ireland shows up in the third act and derails the story into pitch-black Hitchcockian madness.",
+            "runtimeMins": 98,
+            "runtime": "1h 38m"
       },
       {
             "id": "the-killer-1989",
@@ -1621,7 +1653,9 @@
             ],
             "similarTo": "Hard Boiled (1992), A Better Tomorrow (1986), Le Samouraï (1967), John Wick (2014)",
             "review": "John Woo’s operatic Hong Kong heroic-bloodshed classic stars Chow Yun-fat as an assassin who accidentally blinds a nightclub singer during a hit and takes one last job to pay for her cornea transplant while bonding with the obsessive cop (Danny Lee) on his tail.",
-            "lbConsensus": "Action fans on Letterboxd call this the peak of choreographed gunplay blended with unashamedly earnest romantic melodrama—complete with white doves, dual Berettas, and candlelit church shootouts."
+            "lbConsensus": "Action fans on Letterboxd call this the peak of choreographed gunplay blended with unashamedly earnest romantic melodrama—complete with white doves, dual Berettas, and candlelit church shootouts.",
+            "runtimeMins": 111,
+            "runtime": "1h 51m"
       },
       {
             "id": "a-better-tomorrow",
@@ -1645,7 +1679,9 @@
             ],
             "similarTo": "The Killer (1989), Infernal Affairs (2002), City on Fire (1987)",
             "review": "The film that launched the heroic bloodshed genre and made Chow Yun-fat an international icon. John Woo directs this emotional crime saga of two brothers on opposite sides of the law—one a counterfeiter trying to go straight (Ti Lung), the other a rookie police cadet (Leslie Cheung).",
-            "lbConsensus": "Viewers highlight Chow Yun-fat lighting a cigarette with a burning counterfeit $100 bill and hiding pistols in flowerpots along a restaurant corridor as two of the coolest moments in action history."
+            "lbConsensus": "Viewers highlight Chow Yun-fat lighting a cigarette with a burning counterfeit $100 bill and hiding pistols in flowerpots along a restaurant corridor as two of the coolest moments in action history.",
+            "runtimeMins": 95,
+            "runtime": "1h 35m"
       },
       {
             "id": "eye-in-the-sky",
@@ -1669,7 +1705,9 @@
             ],
             "similarTo": "Zero Dark Thirty (2012), Fail Safe (1964), Crimson Tide (1995), Locke (2013)",
             "review": "Helen Mirren, Aaron Paul, Barkhad Abdi, and Alan Rickman (in his final live-action screen performance) star in Gavin Hood’s nail-biting real-time thriller about a multinational military drone strike in Nairobi thrown into agonizing moral gridlock when a nine-year-old girl enters the kill zone to sell bread.",
-            "lbConsensus": "Letterboxd reviewers praise how a movie set mostly in briefing rooms and drone-pilot trailers generates more sweat-inducing suspense than a $200M action movie, anchored by Alan Rickman's poignant final line."
+            "lbConsensus": "Letterboxd reviewers praise how a movie set mostly in briefing rooms and drone-pilot trailers generates more sweat-inducing suspense than a $200M action movie, anchored by Alan Rickman's poignant final line.",
+            "runtimeMins": 102,
+            "runtime": "1h 42m"
       },
       {
             "id": "how-to-blow-up-a-pipeline",
@@ -1693,7 +1731,9 @@
             ],
             "similarTo": "Sorcerer (1977), Night Moves (2013), Thief (1981), First Reformed (2017)",
             "review": "Structured like a white-knuckle heist thriller, Daniel Goldhaber’s adaptation of Andreas Malm’s book follows eight young environmental activists from different backgrounds who converge in West Texas to sabotage an oil pipeline. Propulsive editing and nail-biting suspense.",
-            "lbConsensus": "Letterboxd reviewers compare it to Ocean's Eleven meets Sorcerer—praising its 16mm grain, Gavin Brivik's pulsing electronic score, and how it uses flashback character introductions to keep tension ratcheted to 11."
+            "lbConsensus": "Letterboxd reviewers compare it to Ocean's Eleven meets Sorcerer—praising its 16mm grain, Gavin Brivik's pulsing electronic score, and how it uses flashback character introductions to keep tension ratcheted to 11.",
+            "runtimeMins": 104,
+            "runtime": "1h 44m"
       },
       {
             "id": "face-off",
@@ -1717,7 +1757,9 @@
             ],
             "similarTo": "Con Air (1997), The Rock (1996), Hard Boiled (1992), Point Break (1991)",
             "review": "John Woo’s gloriously operatic Hollywood masterpiece pits FBI agent Sean Archer (John Travolta) against terrorist Castor Troy (Nicolas Cage) after an experimental surgery swaps their literal faces—allowing both actors to deliciously impersonate each other at maximum intensity.",
-            "lbConsensus": "A beloved 90s action monument on Letterboxd: fans adore watching Nicolas Cage and John Travolta try to out-unhinge each other, culminating in a shootout set to 'Somewhere Over the Rainbow.'"
+            "lbConsensus": "A beloved 90s action monument on Letterboxd: fans adore watching Nicolas Cage and John Travolta try to out-unhinge each other, culminating in a shootout set to 'Somewhere Over the Rainbow.'",
+            "runtimeMins": 138,
+            "runtime": "2h 18m"
       },
       {
             "id": "first-blood",
@@ -1741,7 +1783,9 @@
             ],
             "similarTo": "Deliverance (1972), Southern Comfort (1981), Rebel Ridge (2024), The Deer Hunter (1978)",
             "review": "Far removed from its later gung-ho sequels, Ted Kotcheff’s original First Blood is a somber, taut survival thriller starring Sylvester Stallone as traumatized Vietnam vet John Rambo, pushed over the edge by an abusive small-town sheriff (Brian Dennehy) in the Pacific Northwest rainforest.",
-            "lbConsensus": "Letterboxd users constantly remind first-time viewers that only one person dies in the entire film and that Stallone's tearful final breakdown monologue about coming home from Vietnam is genuinely heartbreaking."
+            "lbConsensus": "Letterboxd users constantly remind first-time viewers that only one person dies in the entire film and that Stallone's tearful final breakdown monologue about coming home from Vietnam is genuinely heartbreaking.",
+            "runtimeMins": 93,
+            "runtime": "1h 33m"
       },
       {
             "id": "margin-call",
@@ -1765,7 +1809,9 @@
             ],
             "similarTo": "The Big Short (2015), Michael Clayton (2007), Glengarry Glen Ross (1992), Industry (2020)",
             "review": "J.C. Chandor’s Oscar-nominated script unfolds over one sleepless 24-hour stretch at a Wall Street investment bank on the eve of the 2008 financial collapse, as a junior analyst (Zachary Quinto) discovers a fatal mathematical flaw that brings CEO John Tuld (Jeremy Irons) in by helicopter at 4 AM.",
-            "lbConsensus": "On Letterboxd, the 4 AM boardroom scene with Jeremy Irons ('Speak to me as you might to a young child, or a golden retriever') is revered as one of the sharpest dialogue scenes of the 21st century."
+            "lbConsensus": "On Letterboxd, the 4 AM boardroom scene with Jeremy Irons ('Speak to me as you might to a young child, or a golden retriever') is revered as one of the sharpest dialogue scenes of the 21st century.",
+            "runtimeMins": 107,
+            "runtime": "1h 47m"
       },
       {
             "id": "the-getaway",
@@ -1789,7 +1835,9 @@
             ],
             "similarTo": "Thief (1981), Charley Varrick (1973), Bullitt (1968), Point Blank (1967)",
             "review": "Sam Peckinpah directs and Walter Hill adapts Jim Thompson’s hardboiled crime novel starring Steve McQueen and Ali MacGraw as bank-robbing spouses Doc and Carol McCoy fleeing across Texas toward the Mexican border while pursued by double-crossing cohorts and police.",
-            "lbConsensus": "Letterboxd action fans love the rhythmic prison-montage opening, Quincy Jones's harmonica-driven score, and how Peckinpah makes every pump-action shotgun blast feel like a cannon."
+            "lbConsensus": "Letterboxd action fans love the rhythmic prison-montage opening, Quincy Jones's harmonica-driven score, and how Peckinpah makes every pump-action shotgun blast feel like a cannon.",
+            "runtimeMins": 123,
+            "runtime": "2h 03m"
       },
       {
             "id": "wolf-of-wall-street",
@@ -1813,7 +1861,9 @@
             ],
             "similarTo": "Goodfellas (1990), Casino (1995), Boogie Nights (1997), Uncut Gems (2019)",
             "review": "Martin Scorsese and Leonardo DiCaprio’s three-hour comedic crime epic chronicles the meteoric rise and FBI-investigated collapse of penny-stock fraudster Jordan Belfort and his cohorts (Jonah Hill, Margot Robbie). Editing by Thelma Schoonmaker at peak velocity.",
-            "lbConsensus": "With over 3 million logs on Letterboxd (4.0★), reviewers point to the Quaalude-paralyzed Lamborghini crawl to the country club as one of the funniest physical-comedy sequences ever put on film."
+            "lbConsensus": "With over 3 million logs on Letterboxd (4.0★), reviewers point to the Quaalude-paralyzed Lamborghini crawl to the country club as one of the funniest physical-comedy sequences ever put on film.",
+            "runtimeMins": 180,
+            "runtime": "3h 00m"
       },
       {
             "id": "suburra",
@@ -1837,7 +1887,9 @@
             ],
             "similarTo": "Gomorrah (2008), Sicario (2015), Heat (1995), Romanzo Criminale (2005)",
             "review": "Stefano Sollima directs this sleek, rain-soaked Italian crime thriller set over seven days in November 2011 as corrupt politicians, the Vatican, and rival mafia families collide over a massive waterfront casino development outside Rome.",
-            "lbConsensus": "Letterboxd users love the apocalyptic rain-soaked cinematography of Rome and Ostia, combined with a booming M83 electronic score that makes every escalating retaliation feel operatic."
+            "lbConsensus": "Letterboxd users love the apocalyptic rain-soaked cinematography of Rome and Ostia, combined with a booming M83 electronic score that makes every escalating retaliation feel operatic.",
+            "runtimeMins": 135,
+            "runtime": "2h 15m"
       },
       {
             "id": "cloud-2024",
@@ -1861,7 +1913,9 @@
             ],
             "similarTo": "Cure (1997), Pulse (2001), Parasite (2019), Blue Ruin (2013)",
             "review": "J-horror master Kiyoshi Kurosawa (Cure, Pulse) pivots from ghosts to the alienation of late-stage digital capitalism as a ruthless online reseller (Masaki Suda) moves to the countryside, only to become the target of an anonymous mob of scammed buyers hunting him down in the real world.",
-            "lbConsensus": "Letterboxd cinephiles love how Kurosawa shoots the first half with his signature eerie, ghostly stillness before unexpectedly erupting into a gritty, clumsy, high-stakes warehouse siege in the second half."
+            "lbConsensus": "Letterboxd cinephiles love how Kurosawa shoots the first half with his signature eerie, ghostly stillness before unexpectedly erupting into a gritty, clumsy, high-stakes warehouse siege in the second half.",
+            "runtimeMins": 124,
+            "runtime": "2h 04m"
       },
       {
             "id": "name-of-the-rose",
@@ -1885,7 +1939,9 @@
             ],
             "similarTo": "Se7en (1995), Conclave (2024), Cadfael (1994), Sleepy Hollow (1999)",
             "review": "Sean Connery won a BAFTA as Franciscan friar William of Baskerville alongside teenage novice Adso (Christian Slater) in Jean-Jacques Annaud’s atmospheric medieval murder mystery adapted from Umberto Eco’s bestseller, investigating inked-finger deaths inside a Benedictine abbey.",
-            "lbConsensus": "Letterboxd fans love the grimy, candlelit 14th-century monastery atmosphere, Ron Perlman's heartbreaking supporting turn as Salvatore, and F. Murray Abraham as inquisitor Bernardo Gui."
+            "lbConsensus": "Letterboxd fans love the grimy, candlelit 14th-century monastery atmosphere, Ron Perlman's heartbreaking supporting turn as Salvatore, and F. Murray Abraham as inquisitor Bernardo Gui.",
+            "runtimeMins": 130,
+            "runtime": "2h 10m"
       },
       {
             "id": "hunt-2022",
@@ -1909,7 +1965,9 @@
             ],
             "similarTo": "The Spy Gone North (2018), Infernal Affairs (2002), The Berlin File (2013), Face/Off (1997)",
             "review": "Squid Game star Lee Jung-jae writes, directs, and co-stars opposite Jung Woo-sung in this high-octane 1983 South Korean espionage action thriller about two rival KCIA unit chiefs ordered to uncover a North Korean mole inside their agency—leading them to suspect each other.",
-            "lbConsensus": "Action lovers on Letterboxd praise the relentless pacing, labyrinthine double-crosses, and thunderous 1980s Tokyo and Bangkok gunfights."
+            "lbConsensus": "Action lovers on Letterboxd praise the relentless pacing, labyrinthine double-crosses, and thunderous 1980s Tokyo and Bangkok gunfights.",
+            "runtimeMins": 125,
+            "runtime": "2h 05m"
       },
       {
             "id": "la-syndicaliste",
@@ -1933,7 +1991,9 @@
             ],
             "similarTo": "Michael Clayton (2007), Elle (2016), Erin Brockovich (2000), Dark Waters (2019)",
             "review": "Isabelle Huppert stars in this gripping true-story French political thriller as Maureen Kearney, a trade-union leader at nuclear giant Areva who blows the whistle on a secret state deal with China, only to be violently assaulted in her home—and then accused by police of staging the attack herself.",
-            "lbConsensus": "Reviewers praise Isabelle Huppert's steely, defiant performance as the investigation pivots from corporate espionage into an infuriating indictment of institutional misogyny."
+            "lbConsensus": "Reviewers praise Isabelle Huppert's steely, defiant performance as the investigation pivots from corporate espionage into an infuriating indictment of institutional misogyny.",
+            "runtimeMins": 121,
+            "runtime": "2h 01m"
       },
       {
             "id": "point-break",
@@ -1957,7 +2017,9 @@
             ],
             "similarTo": "Heat (1995), Speed (1994), Hot Fuzz (2007), The Fast and the Furious (2001)",
             "review": "Kathryn Bigelow’s sun-drenched action classic stars Keanu Reeves as rookie FBI agent Johnny Utah, who goes undercover among Southern California surfers led by philosophical adrenaline junkie Bodhi (Patrick Swayze) to catch the 'Ex-Presidents' bank-robbing crew.",
-            "lbConsensus": "A 3.9★ cult deity on Letterboxd: cinephiles revere Bigelow's kinetic foot chase through backyards (shooting gun into the air yelling 'Aaaah!'), real skydiving photography, and the electric bond between Johnny and Bodhi."
+            "lbConsensus": "A 3.9★ cult deity on Letterboxd: cinephiles revere Bigelow's kinetic foot chase through backyards (shooting gun into the air yelling 'Aaaah!'), real skydiving photography, and the electric bond between Johnny and Bodhi.",
+            "runtimeMins": 122,
+            "runtime": "2h 02m"
       },
       {
             "id": "king-of-new-york",
@@ -1981,7 +2043,9 @@
             ],
             "similarTo": "Bad Lieutenant (1992), Scarface (1983), Carlito's Way (1993), Deep Cover (1992)",
             "review": "Abel Ferrara’s rain-slicked, operatic New York crime noir stars an unforgettable Christopher Walken as Frank White, a ruthless crime lord fresh out of Sing Sing who wipes out rival triads and Colombians to fund a hospital in the South Bronx while renegade cops (David Caruso, Wesley Snipes) hunt him.",
-            "lbConsensus": "Letterboxd fans worship Christopher Walken's hypnotic dance moves at the Plaza Hotel, a young Laurence Fishburne stealing scenes as Jimmy Jump, and Bojan Bazelli's blue-and-gold night cinematography."
+            "lbConsensus": "Letterboxd fans worship Christopher Walken's hypnotic dance moves at the Plaza Hotel, a young Laurence Fishburne stealing scenes as Jimmy Jump, and Bojan Bazelli's blue-and-gold night cinematography.",
+            "runtimeMins": 103,
+            "runtime": "1h 43m"
       },
       {
             "id": "rogue-agent",
@@ -2005,7 +2069,9 @@
             ],
             "similarTo": "Catch Me If You Can (2002), The Talented Mr. Ripley (1999), Saltburn (2023)",
             "review": "Based on the extraordinary true story of Robert Freegard, James Norton stars as a charismatic conman who masqueraded as an undercover MI5 officer for years, kidnapping and defrauding victims across Britain until he met his match in lawyer Alice Archer (Gemma Arterton).",
-            "lbConsensus": "Viewers praise Gemma Arterton turning the tables on the con artist in the second half and James Norton's chillingly plausible charm."
+            "lbConsensus": "Viewers praise Gemma Arterton turning the tables on the con artist in the second half and James Norton's chillingly plausible charm.",
+            "runtimeMins": 115,
+            "runtime": "1h 55m"
       },
       {
             "id": "le-gang",
@@ -2029,7 +2095,9 @@
             ],
             "similarTo": "Borsalino (1970), Bonnie and Clyde (1967), Public Enemies (2009)",
             "review": "Alain Delon stars with curly hair and flamboyant charm in Jacques Deray’s nostalgic post-WWII French heist caper, playing real-life gang leader Robert 'Le Dingue' ('The Crazy One'), whose tight-knit crew pulls off audacious robberies across 1945 Paris.",
-            "lbConsensus": "Viewers enjoy seeing Alain Delon trade his usual stone-faced stoicism for a wild-haired, theatrical, Robin Hood-style gangster charmer backed by a bouncy Carlo Rustichelli score."
+            "lbConsensus": "Viewers enjoy seeing Alain Delon trade his usual stone-faced stoicism for a wild-haired, theatrical, Robin Hood-style gangster charmer backed by a bouncy Carlo Rustichelli score.",
+            "runtimeMins": 100,
+            "runtime": "1h 40m"
       },
       {
             "id": "pearl-2022",
@@ -2053,7 +2121,9 @@
             ],
             "similarTo": "X (2022), Whatever Happened to Baby Jane? (1962), Carrie (1976), May (2002)",
             "review": "Ti West and Mia Goth transform the origin story of X’s villain into a Technicolor 1918 Douglas Sirk-meets-Wizard of Oz psychodrama. Mia Goth’s ferocious, unhinged performance—culminating in a legendary multi-minute monologue and end-credits smile—is modern horror royalty.",
-            "lbConsensus": "A massive Letterboxd phenomenon: viewers consider Mia Goth's unbroken 6-minute kitchen table confession and her agonizing, tear-stained end-credits smile to be one of the greatest horror performances of the century."
+            "lbConsensus": "A massive Letterboxd phenomenon: viewers consider Mia Goth's unbroken 6-minute kitchen table confession and her agonizing, tear-stained end-credits smile to be one of the greatest horror performances of the century.",
+            "runtimeMins": 102,
+            "runtime": "1h 42m"
       },
       {
             "id": "the-innocents-2021",
@@ -2077,7 +2147,9 @@
             ],
             "similarTo": "Let the Right One In (2008), Chronicle (2012), Akira (1988), Weapons (2026)",
             "review": "Written and directed by Eskil Vogt (Oscar-nominated co-writer of The Worst Person in the World), this bone-chilling Norwegian thriller follows four young children in a sunlit Nordic apartment complex who discover dormant telekinetic powers while the adults aren't looking.",
-            "lbConsensus": "Letterboxd horror fans praise the extraordinary child performances and how Vogt stages psychic playground duels in broad daylight without flashy CGI, making them ten times more terrifying."
+            "lbConsensus": "Letterboxd horror fans praise the extraordinary child performances and how Vogt stages psychic playground duels in broad daylight without flashy CGI, making them ten times more terrifying.",
+            "runtimeMins": 117,
+            "runtime": "1h 57m"
       },
       {
             "id": "possession-1981",
@@ -2101,7 +2173,9 @@
             ],
             "similarTo": "Antichrist (2009), Eraserhead (1977), Rosemary's Baby (1968), The Brood (1979)",
             "review": "Andrzej Żuławski’s hallucinatory Cold War breakup nightmare stars Sam Neill and Isabelle Adjani (who won Best Actress at Cannes) as a couple in divided West Berlin whose collapsing marriage manifests in doppelgängers, manic hysteria, and a tentacled creature.",
-            "lbConsensus": "One of the highest-rated cult horror films on Letterboxd (4.1★): users describe watching Isabelle Adjani's famous subway-tunnel breakdown as a transcendent, once-in-a-lifetime visceral shock."
+            "lbConsensus": "One of the highest-rated cult horror films on Letterboxd (4.1★): users describe watching Isabelle Adjani's famous subway-tunnel breakdown as a transcendent, once-in-a-lifetime visceral shock.",
+            "runtimeMins": 124,
+            "runtime": "2h 04m"
       },
       {
             "id": "x-2022",
@@ -2125,7 +2199,9 @@
             ],
             "similarTo": "The Texas Chain Saw Massacre (1974), Pearl (2022), Boogie Nights (1997), Psycho (1960)",
             "review": "Set in 1979 rural Texas, Ti West’s stylish, blood-soaked tribute to The Texas Chain Saw Massacre follows an ambitious crew filming an adult movie in a rented farmhouse before running afoul of their elderly, repressed hosts. Smart, funny, and unexpectedly poignant about aging and desire.",
-            "lbConsensus": "Letterboxd reviewers praise the sun-bleached 1970s editing transitions, a charismatic cast (Mia Goth, Jenna Ortega, Brittany Snow, Kid Cudi), and the acoustic 'Landslide' sequence."
+            "lbConsensus": "Letterboxd reviewers praise the sun-bleached 1970s editing transitions, a charismatic cast (Mia Goth, Jenna Ortega, Brittany Snow, Kid Cudi), and the acoustic 'Landslide' sequence.",
+            "runtimeMins": 106,
+            "runtime": "1h 46m"
       },
       {
             "id": "piggy",
@@ -2149,7 +2225,9 @@
             ],
             "similarTo": "Carrie (1976), Raw (2016), The Texas Chain Saw Massacre (1974), Revenge (2017)",
             "review": "Expanded from Carlota Pereda’s Goya-winning short film, this sun-baked Spanish horror-thriller follows Sara (Laura Galán), a mercilessly bullied butcher’s daughter who witnesses her tormentors being kidnapped by a bloody stranger—forcing her to decide whether to stay silent or save them.",
-            "lbConsensus": "Reviewers highlight Laura Galán's fearless, deeply sympathetic lead performance and how the film subverts standard revenge-horror tropes into a messy moral dilemma."
+            "lbConsensus": "Reviewers highlight Laura Galán's fearless, deeply sympathetic lead performance and how the film subverts standard revenge-horror tropes into a messy moral dilemma.",
+            "runtimeMins": 99,
+            "runtime": "1h 39m"
       },
       {
             "id": "dead-ringers",
@@ -2173,7 +2251,9 @@
             ],
             "similarTo": "The Fly (1986), Possession (1981), Black Swan (2010), Persona (1966)",
             "review": "David Cronenberg’s icy, tragic psychological horror masterpiece stars Jeremy Irons in a miraculous dual performance as identical twin gynecologists Beverly and Elliot Mantle, whose symbiotic existence unravels when both fall for actress Claire Niveau (Geneviève Bujold).",
-            "lbConsensus": "Cinephiles on Letterboxd (3.9★) marvel that you completely forget both brothers are played by one actor within five minutes, calling it Jeremy Irons's greatest performance and Cronenberg's most devastating ending."
+            "lbConsensus": "Cinephiles on Letterboxd (3.9★) marvel that you completely forget both brothers are played by one actor within five minutes, calling it Jeremy Irons's greatest performance and Cronenberg's most devastating ending.",
+            "runtimeMins": 116,
+            "runtime": "1h 56m"
       },
       {
             "id": "exit-8",
@@ -2197,7 +2277,9 @@
             ],
             "similarTo": "Cube (1997), Cure (1997), Skinamarink (2022), Vivarium (2019)",
             "review": "Directed by Genki Kawamura and starring Kazunari Ninomiya (Letters from Iwo Jima), this Cannes Midnight Selection adapts the viral Japanese liminal-space puzzle game into a taut psychological thriller about a man trapped in an endless sterile subway corridor who must spot subtle anomalies to reach Exit 8.",
-            "lbConsensus": "Letterboxd viewers praise how Kawamura turns a simple 'spot-the-difference' hallway loop into an interactive, nail-biting theater experience where the audience scans every poster and tile alongside the protagonist."
+            "lbConsensus": "Letterboxd viewers praise how Kawamura turns a simple 'spot-the-difference' hallway loop into an interactive, nail-biting theater experience where the audience scans every poster and tile alongside the protagonist.",
+            "runtimeMins": 95,
+            "runtime": "1h 35m"
       },
       {
             "id": "maxxxine",
@@ -2221,7 +2303,9 @@
             ],
             "similarTo": "X (2022), Pearl (2022), Body Double (1984), Tenebre (1982), Mulholland Drive (2001)",
             "review": "Ti West concludes his acclaimed X trilogy in sleazy, neon-drenched 1985 Hollywood as sole survivor Maxine Minx (Mia Goth) lands her big break in a mainstream horror sequel while the Night Stalker terrorizes Los Angeles and a shadowy private eye (Kevin Bacon) closes in on her past.",
-            "lbConsensus": "Reviewers love the Brian De Palma / Dario Argento 1980s aesthetic, the Universal Studios backlot Bates Motel chase, and Kevin Bacon chewing scenery as a sleazy L.A. gumshoe."
+            "lbConsensus": "Reviewers love the Brian De Palma / Dario Argento 1980s aesthetic, the Universal Studios backlot Bates Motel chase, and Kevin Bacon chewing scenery as a sleazy L.A. gumshoe.",
+            "runtimeMins": 104,
+            "runtime": "1h 44m"
       },
       {
             "id": "longlegs",
@@ -2245,7 +2329,9 @@
             ],
             "similarTo": "The Silence of the Lambs (1991), Cure (1997), Se7en (1995), The Blackcoat's Daughter (2015)",
             "review": "Osgood Perkins crafts a dread-soaked 1990s occult procedural starring Maika Monroe as a clairvoyant FBI agent tracking an elusive satanic serial killer (an unrecognizable, nightmarish Nicolas Cage) who leaves coded letters at family murder-suicides without ever setting foot inside.",
-            "lbConsensus": "Letterboxd consensus praises the suffocating negative-space framing (where you're constantly scanning the dark background corners for the devil) and Nicolas Cage's glam-rock nightmare transformation."
+            "lbConsensus": "Letterboxd consensus praises the suffocating negative-space framing (where you're constantly scanning the dark background corners for the devil) and Nicolas Cage's glam-rock nightmare transformation.",
+            "runtimeMins": 101,
+            "runtime": "1h 41m"
       },
       {
             "id": "shirley",
@@ -2268,7 +2354,9 @@
             ],
             "similarTo": "Who's Afraid of Virginia Woolf? (1966), Spencer (2021), May December (2023)",
             "review": "Elisabeth Moss and Michael Stuhlbarg devour the screen as horror author Shirley Jackson (The Haunting of Hill House, 'The Lottery') and her manipulative academic husband Stanley Edgar Hyman, who play cruel psychological mind games with a young newlywed couple (Odessa Young, Logan Lerman) boarding in their Vermont home.",
-            "lbConsensus": "Viewers praise Josephine Decker's feverish, anti-biopic approach—treating Shirley Jackson's life like one of her own unsettling gothic stories."
+            "lbConsensus": "Viewers praise Josephine Decker's feverish, anti-biopic approach—treating Shirley Jackson's life like one of her own unsettling gothic stories.",
+            "runtimeMins": 107,
+            "runtime": "1h 47m"
       },
       {
             "id": "personal-shopper",
@@ -2292,7 +2380,9 @@
             ],
             "similarTo": "Clouds of Sils Maria (2014), Caché (2005), Pulse (2001), Kimi (2022)",
             "review": "Olivier Assayas won Best Director at Cannes for this hypnotic, genre-bending ghost story starring Kristen Stewart as Maureen, a grieving American working as a haute-couture personal shopper in Paris while waiting for a spiritual sign from her dead twin brother—until an anonymous stranger begins texting her.",
-            "lbConsensus": "Letterboxd cinephiles frequently cite the 20-minute iMessage text-message sequence on the Eurostar train to London as the single most suspenseful depiction of texting in movie history."
+            "lbConsensus": "Letterboxd cinephiles frequently cite the 20-minute iMessage text-message sequence on the Eurostar train to London as the single most suspenseful depiction of texting in movie history.",
+            "runtimeMins": 105,
+            "runtime": "1h 45m"
       },
       {
             "id": "diabolique",
@@ -2316,7 +2406,9 @@
             ],
             "similarTo": "Basic Instinct (1992), Bound (1996), Les Diaboliques (1955), Malice (1993)",
             "review": "Jeremiah S. Chechik’s glossy 1996 American remake of the French suspense classic stars Isabelle Adjani as the fragile wife and Sharon Stone as the sharp-tongued mistress of a cruel boarding-school headmaster (Chazz Palminteri) who conspire to drown him—only for his body to vanish and a dogged investigator (Kathy Bates) to start asking questions.",
-            "lbConsensus": "While critics in 1996 unfavorably compared it to Clouzot's 1955 original, modern Letterboxd viewers enjoy it as a trashy, stylish 90s neo-noir showcase for Sharon Stone chewing scenery in fabulous coats alongside Kathy Bates."
+            "lbConsensus": "While critics in 1996 unfavorably compared it to Clouzot's 1955 original, modern Letterboxd viewers enjoy it as a trashy, stylish 90s neo-noir showcase for Sharon Stone chewing scenery in fabulous coats alongside Kathy Bates.",
+            "runtimeMins": 107,
+            "runtime": "1h 47m"
       },
       {
             "id": "seed-of-the-sacred-fig",
@@ -2340,7 +2432,9 @@
             ],
             "similarTo": "A Separation (2011), No Bears (2022), Caché (2005), The Shining (1980)",
             "review": "Filmed in secret before director Mohammad Rasoulof fled Iran on foot, this electrifying Oscar-nominated political family thriller follows a newly promoted Tehran Revolutionary Court investigating judge whose service handgun vanishes from his apartment amid the 'Woman, Life, Freedom' protests—turning him against his wife and two daughters.",
-            "lbConsensus": "A 4.1★ powerhouse on Letterboxd: viewers marvel at how a domestic family drama gradually mutates into a full-blown, heart-pounding thriller over its 167-minute runtime."
+            "lbConsensus": "A 4.1★ powerhouse on Letterboxd: viewers marvel at how a domestic family drama gradually mutates into a full-blown, heart-pounding thriller over its 167-minute runtime.",
+            "runtimeMins": 167,
+            "runtime": "2h 47m"
       },
       {
             "id": "the-station-agent",
@@ -2364,7 +2458,9 @@
             ],
             "similarTo": "The Holdovers (2023), Paterson (2016), Sideways (2004), Local Hero (1983)",
             "review": "Tom McCarthy’s Sundance-winning debut launched Peter Dinklage to stardom as Finbar McBride, a train-obsessed loner who inherits an abandoned railway depot in rural Newfoundland, New Jersey, only to have his solitude gently invaded by a chatty Cuban hot-dog vendor (Bobby Cannavale) and a grieving artist (Patricia Clarkson).",
-            "lbConsensus": "Letterboxd viewers adore this film as the ultimate 'three lonely people accidentally becoming best friends' comfort movie, anchored by Dinklage, Cannavale, and Clarkson."
+            "lbConsensus": "Letterboxd viewers adore this film as the ultimate 'three lonely people accidentally becoming best friends' comfort movie, anchored by Dinklage, Cannavale, and Clarkson.",
+            "runtimeMins": 89,
+            "runtime": "1h 29m"
       },
       {
             "id": "close-2022",
@@ -2388,7 +2484,9 @@
             ],
             "similarTo": "Aftersun (2022), Monster (2023), The Quiet Girl (2022), Stand by Me (1986)",
             "review": "Lukas Dhont’s Cannes Grand Prix winner and Oscar nominee follows 13-year-old best friends Léo (Eden Dambrine) and Rémi (Gustav De Waele), whose inseparable, tender bond is fractured by schoolyard peer pressure as they start a new grade, with devastating consequences.",
-            "lbConsensus": "One of the highest-tear-count films on Letterboxd (4.1★): reviewers praise 13-year-old newcomer Eden Dambrine's extraordinary, wordless performance of grief and guilt."
+            "lbConsensus": "One of the highest-tear-count films on Letterboxd (4.1★): reviewers praise 13-year-old newcomer Eden Dambrine's extraordinary, wordless performance of grief and guilt.",
+            "runtimeMins": 104,
+            "runtime": "1h 44m"
       },
       {
             "id": "all-we-imagine-as-light",
@@ -2412,7 +2510,9 @@
             ],
             "similarTo": "Chungking Express (1994), The Big City (1963), Roma (2018), Past Lives (2023)",
             "review": "The first Indian film in 30 years to compete at Cannes (winning the Grand Prix), Payal Kapadia’s luminous, rain-drenched drama follows two Malayali nurses sharing an apartment in bustling Mumbai whose lives open up during a transformative trip to a coastal village.",
-            "lbConsensus": "Cinephiles on Letterboxd (4.0★) compare its nocturnal neon-blue Mumbai symphony and soulful warmth to Wong Kar-wai and Satyajit Ray."
+            "lbConsensus": "Cinephiles on Letterboxd (4.0★) compare its nocturnal neon-blue Mumbai symphony and soulful warmth to Wong Kar-wai and Satyajit Ray.",
+            "runtimeMins": 118,
+            "runtime": "1h 58m"
       },
       {
             "id": "koln-75",
@@ -2436,7 +2536,9 @@
             ],
             "similarTo": "Whiplash (2014), 24 Hour Party People (2002), Almost Famous (2000), Stop Making Sense (1984)",
             "review": "The exhilarating true story behind the best-selling solo jazz album in history—Keith Jarrett’s 1975 Cologne Concert—told through the eyes of 18-year-old German teenager Vera Brandes (Mala Emde), who defied her parents and overcame a broken baby-grand rehearsal piano to make the legendary performance happen.",
-            "lbConsensus": "Berlinale and Letterboxd audiences love Mala Emde's unstoppable fourth-wall-breaking energy and John Magaro's prickly, brilliant portrayal of Keith Jarrett."
+            "lbConsensus": "Berlinale and Letterboxd audiences love Mala Emde's unstoppable fourth-wall-breaking energy and John Magaro's prickly, brilliant portrayal of Keith Jarrett.",
+            "runtimeMins": 112,
+            "runtime": "1h 52m"
       },
       {
             "id": "anomalisa",
@@ -2460,7 +2562,9 @@
             ],
             "similarTo": "Eternal Sunshine of the Spotless Mind (2004), Synecdoche, New York (2008), Lost in Translation (2003)",
             "review": "Charlie Kaufman and Duke Johnson’s Oscar-nominated stop-motion drama follows lonely customer-service author Michael Stone (voiced by David Thewlis) during a night at Cincinnati’s Fregoli Hotel, where every human face and voice is identical (Tom Noonan)—until he hears Lisa (Jennifer Jason Leigh).",
-            "lbConsensus": "Letterboxd users marvel at how a movie made with 3D-printed stop-motion puppets achieves more raw human intimacy and existential dread than almost any live-action drama."
+            "lbConsensus": "Letterboxd users marvel at how a movie made with 3D-printed stop-motion puppets achieves more raw human intimacy and existential dread than almost any live-action drama.",
+            "runtimeMins": 90,
+            "runtime": "1h 30m"
       },
       {
             "id": "the-life-of-chuck",
@@ -2484,7 +2588,9 @@
             ],
             "similarTo": "It's a Wonderful Life (1946), Stand by Me (1986), Big Fish (2003), Everything Everywhere All at Once (2022)",
             "review": "Winner of the Toronto International Film Festival People’s Choice Award, Mike Flanagan’s life-affirming adaptation of Stephen King’s novella tells the biography of ordinary accountant Charles Krantz (Tom Hiddleston) in three reverse-chronological chapters—beginning at the end of the universe.",
-            "lbConsensus": "Letterboxd viewers single out Tom Hiddleston and Annalise Basso's spontaneous 6-minute street-drummer dance sequence in Act II as pure cinematic euphoria."
+            "lbConsensus": "Letterboxd viewers single out Tom Hiddleston and Annalise Basso's spontaneous 6-minute street-drummer dance sequence in Act II as pure cinematic euphoria.",
+            "runtimeMins": 110,
+            "runtime": "1h 50m"
       },
       {
             "id": "smoke-signals",
@@ -2508,7 +2614,9 @@
             ],
             "similarTo": "Reservation Dogs (2021), Frybread Face and Me (2023), Sideways (2004), Paper Moon (1973)",
             "review": "Directed by Chris Eyre and written by Sherman Alexie, this landmark Native American road dramedy follows stoic basketball star Victor Joseph (Adam Beach) and eccentric storyteller Thomas Builds-the-Fire (Evan Adams) as they travel from the Coeur d'Alene Reservation to Phoenix to collect Victor’s late father’s ashes.",
-            "lbConsensus": "Cherished on Letterboxd (3.9★) as the spiritual forerunner to Reservation Dogs: hilarious, deeply moving, and packed with unforgettable quotes ('Hey Victor!')."
+            "lbConsensus": "Cherished on Letterboxd (3.9★) as the spiritual forerunner to Reservation Dogs: hilarious, deeply moving, and packed with unforgettable quotes ('Hey Victor!').",
+            "runtimeMins": 89,
+            "runtime": "1h 29m"
       },
       {
             "id": "long-days-journey-into-night",
@@ -2532,7 +2640,9 @@
             ],
             "similarTo": "Stalker (1979), In the Mood for Love (2000), Mulholland Drive (2001), Kaili Blues (2015)",
             "review": "Chinese visionary Bi Gan crafts a mesmerizing, Wong Kar-wai-meets-Tarkovsky neo-noir daydream about a man returning to Kaili in search of a lost love (Tang Wei)—culminating in a legendary, unbroken 59-minute single-take second half floating through mines, zip-lines, and karaoke bars.",
-            "lbConsensus": "Letterboxd cinephiles (4.0★) consider the moment the protagonist puts on 3D glasses in a dilapidated movie theater—triggering the 59-minute continuous dream shot—one of the greatest flexes in modern cinema."
+            "lbConsensus": "Letterboxd cinephiles (4.0★) consider the moment the protagonist puts on 3D glasses in a dilapidated movie theater—triggering the 59-minute continuous dream shot—one of the greatest flexes in modern cinema.",
+            "runtimeMins": 138,
+            "runtime": "2h 18m"
       },
       {
             "id": "no-bears",
@@ -2556,7 +2666,9 @@
             ],
             "similarTo": "This Is Not a Film (2011), Taxi (2015), Close-Up (1990), Certified Copy (2010)",
             "review": "Shot clandestinely in Iran shortly before director Jafar Panahi was imprisoned, this autofictional tour de force stars Panahi as himself, directing a docudrama remotely across the Turkish border via shaky Wi-Fi from a small border village steeped in superstition.",
-            "lbConsensus": "Letterboxd cinephiles revere Panahi's bravery and self-critique—interrogating the ethics of his own camera while defying state censorship right up to the film's devastating final shot."
+            "lbConsensus": "Letterboxd cinephiles revere Panahi's bravery and self-critique—interrogating the ethics of his own camera while defying state censorship right up to the film's devastating final shot.",
+            "runtimeMins": 106,
+            "runtime": "1h 46m"
       },
       {
             "id": "chile-76",
@@ -2580,7 +2692,9 @@
             ],
             "similarTo": "I'm Still Here (2024), Roma (2018), The Official Story (1985), Missing (1982)",
             "review": "Manuela Martelli’s tense, Hitchcock-inflected political drama follows Carmen (Aline Küppenheim), an affluent Chilean woman during the early years of Pinochet’s dictatorship whose priest asks her to secretly nurse a wounded young dissident at her beach house.",
-            "lbConsensus": "Reviewers praise how Martelli turns an elegant, privileged woman's quiet errands—buying paint, taking pills, driving to the coast—into a suffocating spy thriller as the reality of the dictatorship creeps through her walls."
+            "lbConsensus": "Reviewers praise how Martelli turns an elegant, privileged woman's quiet errands—buying paint, taking pills, driving to the coast—into a suffocating spy thriller as the reality of the dictatorship creeps through her walls.",
+            "runtimeMins": 95,
+            "runtime": "1h 35m"
       },
       {
             "id": "moffie",
@@ -2604,7 +2718,9 @@
             ],
             "similarTo": "Beau Travail (1999), Moonlight (2016), Full Metal Jacket (1987), God's Own Country (2017)",
             "review": "Directed by Oliver Hermanus (Living), this searing South African drama follows 18-year-old Nicholas (Kai Luke Brümmer) as he is conscripted into the brutal 1981 apartheid border war in Angola while hiding his attraction to a fellow recruit.",
-            "lbConsensus": "Letterboxd reviewers praise the haunting train-platform sequence, Braeden Pratley's orchestral-electronic score, and how the film links homophobia directly to the machinery of apartheid militarism."
+            "lbConsensus": "Letterboxd reviewers praise the haunting train-platform sequence, Braeden Pratley's orchestral-electronic score, and how the film links homophobia directly to the machinery of apartheid militarism.",
+            "runtimeMins": 104,
+            "runtime": "1h 44m"
       },
       {
             "id": "eo-2022",
@@ -2628,7 +2744,9 @@
             ],
             "similarTo": "Au Hasard Balthazar (1966), Cow (2021), Flow (2024), Enter the Void (2009)",
             "review": "84-year-old Polish master Jerzy Skolimowski directs this audacious, Oscar-nominated reimagining of Robert Bresson’s Au Hasard Balthazar, following a melancholic circus donkey named EO across modern Poland and Italy through neon-red forests, soccer riots, and an Italian villa with Isabelle Huppert.",
-            "lbConsensus": "Reviewers marvel that an 84-year-old filmmaker made the most visually experimental movie of the year, using drone flips, deep-crimson lenses, and Paweł Mykietyn's booming score."
+            "lbConsensus": "Reviewers marvel that an 84-year-old filmmaker made the most visually experimental movie of the year, using drone flips, deep-crimson lenses, and Paweł Mykietyn's booming score.",
+            "runtimeMins": 88,
+            "runtime": "1h 28m"
       },
       {
             "id": "the-old-oak",
@@ -2652,7 +2770,9 @@
             ],
             "similarTo": "I, Daniel Blake (2016), Pride (2014), Sorry We Missed You (2019), Local Hero (1983)",
             "review": "Two-time Palme d'Or winner Ken Loach’s final film is a warm, fiercely compassionate drama set in a struggling former coal-mining village in Northeast England, where pub landlord TJ Ballantyne (Dave Turner) forms a bond with Syrian refugee photographer Yara (Ebla Mari).",
-            "lbConsensus": "Letterboxd users celebrate The Old Oak as a deeply earned, hopeful swan song for 87-year-old Ken Loach and screenwriter Paul Laverty: 'When you eat together, you stick together.'"
+            "lbConsensus": "Letterboxd users celebrate The Old Oak as a deeply earned, hopeful swan song for 87-year-old Ken Loach and screenwriter Paul Laverty: 'When you eat together, you stick together.'",
+            "runtimeMins": 113,
+            "runtime": "1h 53m"
       },
       {
             "id": "the-glorias",
@@ -2676,7 +2796,9 @@
             ],
             "similarTo": "Mrs. America (2020), On the Basis of Sex (2018), She Said (2022), Across the Universe (2007)",
             "review": "Julie Taymor directs this kaleidoscopic biographical road movie based on Gloria Steinem’s memoir My Life on the Road, with four actresses—Julianne Moore, Alicia Vikander, Lulu Wilson, and Ryan Kiera Armstrong—portraying Steinem at different stages of her life and conversing aboard a Greyhound bus.",
-            "lbConsensus": "Viewers praise Julianne Moore and Alicia Vikander's warm chemistry and Janelle Monáe, Lorraine Toussaint, and Bette Midler as Dorothy Pitman Hughes, Flo Kennedy, and Bella Abzug."
+            "lbConsensus": "Viewers praise Julianne Moore and Alicia Vikander's warm chemistry and Janelle Monáe, Lorraine Toussaint, and Bette Midler as Dorothy Pitman Hughes, Flo Kennedy, and Bella Abzug.",
+            "runtimeMins": 147,
+            "runtime": "2h 27m"
       },
       {
             "id": "bonjour-tristesse-2024",
@@ -2700,7 +2822,9 @@
             ],
             "similarTo": "La Piscine (1969), A Bigger Splash (2015), Call Me by Your Name (2017), Bonjour Tristesse (1958)",
             "review": "Durga Chew-Bose’s sun-drenched contemporary adaptation of Françoise Sagan’s classic French novel stars Lily McInerny as 18-year-old Cécile, whose idyllic seaside summer on the Côte d'Azur with her playboy father (Claes Bang) is disrupted by the arrival of her late mother’s poised friend Anne (Chloë Sevigny).",
-            "lbConsensus": "Letterboxd viewers praise the gorgeous Mediterranean coastal photography, Chloë Sevigny's effortless elegance, and the languid summer-villa atmosphere."
+            "lbConsensus": "Letterboxd viewers praise the gorgeous Mediterranean coastal photography, Chloë Sevigny's effortless elegance, and the languid summer-villa atmosphere.",
+            "runtimeMins": 110,
+            "runtime": "1h 50m"
       },
       {
             "id": "ma-mere",
@@ -2724,7 +2848,9 @@
             ],
             "similarTo": "The Piano Teacher (2001), The Dreamers (2003), Crash (1996)",
             "review": "Christophe Honoré adapts philosopher Georges Bataille’s posthumous transgressive novel starring Isabelle Huppert and Louis Garrel in the Canary Islands, following a sheltered 17-year-old pulled into his hedonistic mother’s decadent world after his father’s death.",
-            "lbConsensus": "Known on Letterboxd as one of the most audacious entries in 2000s French provocative art cinema, anchored by Isabelle Huppert's fearless commitment."
+            "lbConsensus": "Known on Letterboxd as one of the most audacious entries in 2000s French provocative art cinema, anchored by Isabelle Huppert's fearless commitment.",
+            "runtimeMins": 110,
+            "runtime": "1h 50m"
       },
       {
             "id": "paper-moon",
@@ -2748,7 +2874,9 @@
             ],
             "similarTo": "The Sting (1973), The Kid (1921), Hunt for the Wilderpeople (2016), The Holdovers (2023)",
             "review": "Peter Bogdanovich’s crisp black-and-white Depression-era road comedy pairs real-life father and daughter Ryan and Tatum O'Neal (who won an Oscar at age 10) as a Bible-selling con man and a sharp-tongued orphan grifting their way across 1930s Kansas.",
-            "lbConsensus": "A huge comfort-watch favorite on Letterboxd (4.2★): reviewers rave about 10-year-old Tatum O'Neal's cigar-smoking, deadpan delivery ('I want my $200!') and László Kovács's gorgeous deep-focus photography."
+            "lbConsensus": "A huge comfort-watch favorite on Letterboxd (4.2★): reviewers rave about 10-year-old Tatum O'Neal's cigar-smoking, deadpan delivery ('I want my $200!') and László Kovács's gorgeous deep-focus photography.",
+            "runtimeMins": 102,
+            "runtime": "1h 42m"
       },
       {
             "id": "the-truman-show",
@@ -2772,7 +2900,9 @@
             ],
             "similarTo": "Eternal Sunshine of the Spotless Mind (2004), Adaptation (2002), Pleasantville (1998), Severance (2022)",
             "review": "Peter Weir and Andrew Niccol’s visionary satire stars Jim Carrey as Truman Burbank, an insurance salesman who slowly discovers his entire picturesque island hometown of Seahaven is a giant television studio broadcast 24/7 to the world by godlike creator Christof (Ed Harris).",
-            "lbConsensus": "Logged by over 4 million users on Letterboxd (4.2★): universally hailed as one of the most prophetic films ever made, with a final bow at the horizon staircase that brings cheers every single time."
+            "lbConsensus": "Logged by over 4 million users on Letterboxd (4.2★): universally hailed as one of the most prophetic films ever made, with a final bow at the horizon staircase that brings cheers every single time.",
+            "runtimeMins": 103,
+            "runtime": "1h 43m"
       },
       {
             "id": "planes-trains-automobiles",
@@ -2796,7 +2926,9 @@
             ],
             "similarTo": "Midnight Run (1988), Uncle Buck (1989), The Holdovers (2023), Little Miss Sunshine (2006)",
             "review": "John Hughes’s beloved road-trip comedy pairs uptight marketing executive Neal Page (Steve Martin) with big-hearted, chatterbox shower-curtain-ring salesman Del Griffith (John Candy) across three chaotic days of blizzards, burned-out rental cars, and motel rooms on the way home to Chicago for Thanksgiving.",
-            "lbConsensus": "Letterboxd users agree that John Candy's performance as Del Griffith ('I like me. My wife likes me.') is one of the most big-hearted, unexpectedly moving comedic performances in American cinema."
+            "lbConsensus": "Letterboxd users agree that John Candy's performance as Del Griffith ('I like me. My wife likes me.') is one of the most big-hearted, unexpectedly moving comedic performances in American cinema.",
+            "runtimeMins": 93,
+            "runtime": "1h 33m"
       },
       {
             "id": "boyfriends-and-girlfriends",
@@ -2820,7 +2952,9 @@
             ],
             "similarTo": "The Green Ray (1986), Frances Ha (2012), Metropolitan (1990), Before Sunrise (1995)",
             "review": "The sparkling final entry in Éric Rohmer’s 'Comedies and Proverbs' cycle follows two young women in the pastel-colored Parisian suburb of Cergy-Pontoise whose romantic crushes and best-friend loyalties tangle during sunny weekend windsurfing trips and café chats.",
-            "lbConsensus": "A huge favorite among Letterboxd's Rohmerians (3.9★): viewers obsess over the color-coded green-and-blue sweaters at the end and how effortlessly funny and relatable the romantic indecisiveness is."
+            "lbConsensus": "A huge favorite among Letterboxd's Rohmerians (3.9★): viewers obsess over the color-coded green-and-blue sweaters at the end and how effortlessly funny and relatable the romantic indecisiveness is.",
+            "runtimeMins": 103,
+            "runtime": "1h 43m"
       },
       {
             "id": "the-graduate",
@@ -2844,7 +2978,9 @@
             ],
             "similarTo": "Harold and Maude (1971), Rushmore (1998), The Worst Person in the World (2021), Licorice Pizza (2021)",
             "review": "Mike Nichols’s counterculture classic stars Dustin Hoffman as aimless college graduate Benjamin Braddock, who is seduced by the older Mrs. Robinson (Anne Bancroft) before falling deeply in love with her daughter Elaine (Katharine Ross), set to Simon & Garfunkel.",
-            "lbConsensus": "Letterboxd reviewers highlight the final shot on the back of the Santa Barbara bus—as the smiles slowly fade while 'The Sound of Silence' kicks in—as one of the most honest endings in film history."
+            "lbConsensus": "Letterboxd reviewers highlight the final shot on the back of the Santa Barbara bus—as the smiles slowly fade while 'The Sound of Silence' kicks in—as one of the most honest endings in film history.",
+            "runtimeMins": 106,
+            "runtime": "1h 46m"
       },
       {
             "id": "pretty-in-pink",
@@ -2868,7 +3004,9 @@
             ],
             "similarTo": "The Breakfast Club (1985), Sixteen Candles (1984), Say Anything... (1989), Lady Bird (2017)",
             "review": "Written by John Hughes and directed by Howard Deutch, this 1980s teen romance classic stars Molly Ringwald as working-class record-store girl Andie Walsh, torn between her loyal, eccentric best friend Duckie (Jon Cryer) and wealthy preppie Blaine (Andrew McCarthy), backed by an all-timer New Wave soundtrack.",
-            "lbConsensus": "Letterboxd fans rave about Jon Cryer's legendary Otis Redding 'Try a Little Tenderness' record-store lip-sync, Harry Dean Stanton as Andie's dad, and the Psychedelic Furs / New Order / Smiths soundtrack."
+            "lbConsensus": "Letterboxd fans rave about Jon Cryer's legendary Otis Redding 'Try a Little Tenderness' record-store lip-sync, Harry Dean Stanton as Andie's dad, and the Psychedelic Furs / New Order / Smiths soundtrack.",
+            "runtimeMins": 96,
+            "runtime": "1h 36m"
       },
       {
             "id": "oh-god",
@@ -2892,7 +3030,9 @@
             ],
             "similarTo": "Bruce Almighty (2003), Defending Your Life (1991), Heaven Can Wait (1978), The Good Place (2016)",
             "review": "Directed by Carl Reiner from an Oscar-nominated script by Larry Gelbart (M*A*S*H), 81-year-old comedy legend George Burns stars as the Almighty—wearing a windbreaker and fisherman’s cap—who taps a mild-mannered California supermarket assistant manager (John Denver) to spread a simple message of hope.",
-            "lbConsensus": "Viewers love George Burns's effortless deadpan timing ('So I made an avocado pit too big—nobody's perfect') and the courtroom showdown with a televangelist."
+            "lbConsensus": "Viewers love George Burns's effortless deadpan timing ('So I made an avocado pit too big—nobody's perfect') and the courtroom showdown with a televangelist.",
+            "runtimeMins": 98,
+            "runtime": "1h 38m"
       },
       {
             "id": "kicking-and-screaming",
@@ -2916,7 +3056,9 @@
             ],
             "similarTo": "Frances Ha (2012), Metropolitan (1990), The Graduate (1967), Reality Bites (1994)",
             "review": "Written and directed by a 25-year-old Noah Baumbach (Frances Ha, Marriage Story), this witty Criterion-inducted comedy follows four neurotic liberal-arts graduates (Josh Hamilton, Chris Eigeman, Parker Posey, Carlos Jacott) who refuse to move away from campus after graduation.",
-            "lbConsensus": "Letterboxd indie-film fans love Chris Eigeman's rapid-fire comedic delivery, Parker Posey's charm, and how accurately it captures the existential paralysis of the year after college."
+            "lbConsensus": "Letterboxd indie-film fans love Chris Eigeman's rapid-fire comedic delivery, Parker Posey's charm, and how accurately it captures the existential paralysis of the year after college.",
+            "runtimeMins": 96,
+            "runtime": "1h 36m"
       },
       {
             "id": "gods-own-country",
@@ -2940,7 +3082,9 @@
             ],
             "similarTo": "Brokeback Mountain (2005), Call Me by Your Name (2017), Portrait of a Lady on Fire (2019), All of Us Strangers (2023)",
             "review": "Francis Lee’s deeply moving debut stars a breakout Josh O'Connor as Johnny Saxby, a emotionally closed-off young sheep farmer on the windswept Yorkshire moors whose life is transformed when a compassionate Romanian migrant worker, Gheorghe (Alec Secăreanu), arrives for lambing season.",
-            "lbConsensus": "Beloved on Letterboxd (4.0★) not just for Josh O'Connor and Alec Secăreanu's tactile chemistry in the mud and mist of Yorkshire, but for actually giving a queer rural romance a hard-won, hopeful ending."
+            "lbConsensus": "Beloved on Letterboxd (4.0★) not just for Josh O'Connor and Alec Secăreanu's tactile chemistry in the mud and mist of Yorkshire, but for actually giving a queer rural romance a hard-won, hopeful ending.",
+            "runtimeMins": 104,
+            "runtime": "1h 44m"
       },
       {
             "id": "contempt",
@@ -2964,7 +3108,9 @@
             ],
             "similarTo": "Marriage Story (2019), Journey to Italy (1954), La Notte (1961), 8½ (1963)",
             "review": "Jean-Luc Godard’s widescreen Technicolor masterpiece traces the disintegration of a marriage between a French screenwriter (Michel Piccoli) and his wife Camille (Brigitte Bardot) over a single 30-minute apartment conversation and on the sun-drenched cliffs of Capri while Fritz Lang (playing himself) directs The Odyssey.",
-            "lbConsensus": "A 4.1★ monument on Letterboxd: cinephiles revere Raoul Coutard's primary-color CinemaScope photography at Casa Malaparte and Georges Delerue's aching, unforgettable 'Thème de Camille.'"
+            "lbConsensus": "A 4.1★ monument on Letterboxd: cinephiles revere Raoul Coutard's primary-color CinemaScope photography at Casa Malaparte and Georges Delerue's aching, unforgettable 'Thème de Camille.'",
+            "runtimeMins": 103,
+            "runtime": "1h 43m"
       },
       {
             "id": "summer-of-85",
@@ -2988,7 +3134,9 @@
             ],
             "similarTo": "Call Me by Your Name (2017), Close (2022), Stand by Me (1986), My Own Private Idaho (1991)",
             "review": "Shot on sun-kissed Super 16mm film along the Normandy coast, François Ozon’s adaptation of Aidan Chambers’s novel Dance on My Grave follows 16-year-old Alexis (Félix Lefebvre), who is rescued from a capsized sailboat by charismatic 18-year-old David (Benjamin Voisin), sparking a whirlwind six-week summer romance.",
-            "lbConsensus": "Letterboxd viewers love the warm 1980s seaside atmosphere and the headphone dance scene in the dark nightclub to Rod Stewart's 'Sailing.'"
+            "lbConsensus": "Letterboxd viewers love the warm 1980s seaside atmosphere and the headphone dance scene in the dark nightclub to Rod Stewart's 'Sailing.'",
+            "runtimeMins": 101,
+            "runtime": "1h 41m"
       },
       {
             "id": "indiscreet",
@@ -3011,7 +3159,9 @@
             ],
             "similarTo": "Charade (1963), Notorious (1946), The Philadelphia Story (1940), Pillow Talk (1959)",
             "review": "Stanley Donen reunites Notorious co-stars Cary Grant and Ingrid Bergman in this sophisticated Technicolor London romantic comedy about a wealthy diplomat who pretends to be married to avoid commitment—until his actress girlfriend plots delicious payback.",
-            "lbConsensus": "Viewers on Letterboxd delight in the effortless movie-star chemistry between Grant and Bergman, the split-screen phone call censorship trick, and Cary Grant's hilariously unhinged Scottish ceilidh dance."
+            "lbConsensus": "Viewers on Letterboxd delight in the effortless movie-star chemistry between Grant and Bergman, the split-screen phone call censorship trick, and Cary Grant's hilariously unhinged Scottish ceilidh dance.",
+            "runtimeMins": 100,
+            "runtime": "1h 40m"
       },
       {
             "id": "ammonite",
@@ -3035,7 +3185,9 @@
             ],
             "similarTo": "Portrait of a Lady on Fire (2019), The Piano (1993), God's Own Country (2017), Carol (2015)",
             "review": "Directed by Francis Lee (God’s Own Country), Kate Winslet stars as pioneering 1840s paleontologist Mary Anning, who scours the windswept cliffs of Lyme Regis in solitude until a wealthy London geologist leaves his melancholic young wife Charlotte (Saoirse Ronan) in her care.",
-            "lbConsensus": "Viewers highlight Kate Winslet's weathered, physical performance—chipping away at coastal rock with chapped hands—and her intense, wordless chemistry with Saoirse Ronan."
+            "lbConsensus": "Viewers highlight Kate Winslet's weathered, physical performance—chipping away at coastal rock with chapped hands—and her intense, wordless chemistry with Saoirse Ronan.",
+            "runtimeMins": 120,
+            "runtime": "2h 00m"
       },
       {
             "id": "cruel-intentions",
@@ -3059,7 +3211,9 @@
             ],
             "similarTo": "Dangerous Liaisons (1988), Wild Things (1998), Heathers (1988), Saltburn (2023)",
             "review": "Roger Kumble transplants Les Liaisons dangereuses to elite Manhattan prep-school society, starring Sarah Michelle Gellar and Ryan Phillippe as scheming wealthy step-siblings Kathryn and Sebastian who wager a vintage Jaguar roadster over corrupting the headmaster’s virtuous daughter Annette (Reese Witherspoon).",
-            "lbConsensus": "An undisputed 90s cult icon on Letterboxd (3.6★): fans worship Sarah Michelle Gellar playing pure evil in tailored suits and the immortal finale set to The Verve's 'Bitter Sweet Symphony' and Placebo's 'Every You Every Me.'"
+            "lbConsensus": "An undisputed 90s cult icon on Letterboxd (3.6★): fans worship Sarah Michelle Gellar playing pure evil in tailored suits and the immortal finale set to The Verve's 'Bitter Sweet Symphony' and Placebo's 'Every You Every Me.'",
+            "runtimeMins": 97,
+            "runtime": "1h 37m"
       },
       {
             "id": "count-of-monte-cristo-2024",
@@ -3083,7 +3237,9 @@
             ],
             "similarTo": "The Three Musketeers: D'Artagnan (2023), Gladiator (2000), The Mask of Zorro (1998), Oldboy (2003)",
             "review": "From the writers of The Three Musketeers, this lavish, exhilarating three-hour French adaptation of Alexandre Dumas’s classic stars César winner Pierre Niney as Edmond Dantès—wrongly imprisoned in the grim island fortress of Château d'If on his wedding day, who escapes to orchestrate the greatest revenge plot in literature.",
-            "lbConsensus": "One of the highest-rated blockbusters of 2024 on Letterboxd (4.2★): viewers rave that its 178-minute runtime flies by like a breeze thanks to gorgeous Mediterranean locations, prosthetic disguises, and operatic revenge."
+            "lbConsensus": "One of the highest-rated blockbusters of 2024 on Letterboxd (4.2★): viewers rave that its 178-minute runtime flies by like a breeze thanks to gorgeous Mediterranean locations, prosthetic disguises, and operatic revenge.",
+            "runtimeMins": 178,
+            "runtime": "2h 58m"
       },
       {
             "id": "the-promised-land",
@@ -3107,7 +3263,9 @@
             ],
             "similarTo": "There Will Be Blood (2007), Unforgiven (1992), A Royal Affair (2012), The Revenant (2015)",
             "review": "Mads Mikkelsen delivers a towering performance in Nikolaj Arcel’s sweeping 1755 Danish historical epic (and Nordic Western) as Captain Ludvig Kahlen, a proud, impoverished war veteran who sets out to cultivate the barren Jutland heath for the King—igniting a brutal feud with a sadistic local nobleman (Simon Bennebjerg).",
-            "lbConsensus": "A 4.0★ triumph on Letterboxd: reviewers praise Mads Mikkelsen's granite-faced resolve slowly melting into tenderness for his makeshift household, alongside a villain you will despise more than Joffrey Baratheon."
+            "lbConsensus": "A 4.0★ triumph on Letterboxd: reviewers praise Mads Mikkelsen's granite-faced resolve slowly melting into tenderness for his makeshift household, alongside a villain you will despise more than Joffrey Baratheon.",
+            "runtimeMins": 127,
+            "runtime": "2h 07m"
       },
       {
             "id": "i-am-cuba",
@@ -3131,7 +3289,9 @@
             ],
             "similarTo": "The Cranes Are Flying (1957), The Battle of Algiers (1966), Roma (2018), Boogie Nights (1997)",
             "review": "Rediscovered in the 1990s by Martin Scorsese and Francis Ford Coppola, Mikhail Kalatozov and cinematographer Sergei Urusevsky’s Soviet-Cuban landmark features some of the most jaw-dropping, gravity-defying continuous camera movements in cinema history—gliding off rooftops, into swimming pools, and across funeral processions.",
-            "lbConsensus": "Sitting at 4.3★ on Letterboxd, every review asks the same question: 'How on earth did they physically move the camera like that in 1964 without drones or Steadicams?!'"
+            "lbConsensus": "Sitting at 4.3★ on Letterboxd, every review asks the same question: 'How on earth did they physically move the camera like that in 1964 without drones or Steadicams?!'",
+            "runtimeMins": 141,
+            "runtime": "2h 21m"
       },
       {
             "id": "three-musketeers-dartagnan",
@@ -3155,7 +3315,9 @@
             ],
             "similarTo": "The Count of Monte Cristo (2024), The Three Musketeers: Milady (2023), The Mask of Zorro (1998), Brotherhood of the Wolf (2001)",
             "review": "Martin Bourboulon’s thrilling, muddy, big-budget French adaptation of Alexandre Dumas’s classic stars François Civil as young Gascon hothead D'Artagnan, joining Athos (Vincent Cassel), Porthos (Pio Marmaï), and Aramis (Romain Duris) against Cardinal Richelieu and the lethal Milady de Winter (Eva Green).",
-            "lbConsensus": "Letterboxd viewers love that France brought back old-school, real-location swashbuckling cinema with zero green-screen, single-take musket-and-rapier brawls, and Eva Green born to play Milady."
+            "lbConsensus": "Letterboxd viewers love that France brought back old-school, real-location swashbuckling cinema with zero green-screen, single-take musket-and-rapier brawls, and Eva Green born to play Milady.",
+            "runtimeMins": 121,
+            "runtime": "2h 01m"
       },
       {
             "id": "three-musketeers-milady",
@@ -3179,7 +3341,9 @@
             ],
             "similarTo": "The Three Musketeers: D'Artagnan (2023), The Count of Monte Cristo (2024), The Four Musketeers (1974)",
             "review": "Picking up immediately after Part I, D'Artagnan (François Civil) is forced into an uneasy alliance with the seductive, enigmatic Milady de Winter (Eva Green) to rescue Constance amid the fiery Siege of La Rochelle, while Athos (Vincent Cassel) confronts the ghosts of his past.",
-            "lbConsensus": "Reviewers praise Eva Green stealing the entire second installment with tragic,femme-fatale ferocity and the breathless torchlit swordfights."
+            "lbConsensus": "Reviewers praise Eva Green stealing the entire second installment with tragic,femme-fatale ferocity and the breathless torchlit swordfights.",
+            "runtimeMins": 115,
+            "runtime": "1h 55m"
       },
       {
             "id": "reds-1981",
@@ -3203,7 +3367,9 @@
             ],
             "similarTo": "Doctor Zhivago (1965), Oppenheimer (2023), Lawrence of Arabia (1962), Malcolm X (1992)",
             "review": "Warren Beatty won Best Director for this sweeping three-hour historical epic starring Beatty as American journalist John Reed (Ten Days That Shook the World) and Diane Keaton as feminist writer Louise Bryant during the 1917 Russian Revolution.",
-            "lbConsensus": "Letterboxd cinephiles point out how Christopher Nolan cited Reds as a major structural inspiration for Oppenheimer—blending intimate political debate, real-life 'Witnesses' interviews, and grand historical sweep."
+            "lbConsensus": "Letterboxd cinephiles point out how Christopher Nolan cited Reds as a major structural inspiration for Oppenheimer—blending intimate political debate, real-life 'Witnesses' interviews, and grand historical sweep.",
+            "runtimeMins": 195,
+            "runtime": "3h 15m"
       },
       {
             "id": "gladiator",
@@ -3227,7 +3393,9 @@
             ],
             "similarTo": "Braveheart (1995), Spartacus (1960), Troy (2004), The Northman (2022)",
             "review": "Ridley Scott’s five-time Oscar-winning Roman epic stars Russell Crowe in an iconic Best Actor turn as General Maximus Decimus Meridius—betrayed by the corrupt new Emperor Commodus (Joaquin Phoenix), sold into slavery, and rising through the blood-soaked sands of the Colosseum to avenge his family.",
-            "lbConsensus": "A 4.0★ crowd-pleasing titan on Letterboxd: 'Are you not entertained?!', Maximus's 'My name is Maximus Decimus Meridius' reveal, and Hans Zimmer & Lisa Gerrard's 'Now We Are Free' remain pure cinema goosebumps."
+            "lbConsensus": "A 4.0★ crowd-pleasing titan on Letterboxd: 'Are you not entertained?!', Maximus's 'My name is Maximus Decimus Meridius' reveal, and Hans Zimmer & Lisa Gerrard's 'Now We Are Free' remain pure cinema goosebumps.",
+            "runtimeMins": 155,
+            "runtime": "2h 35m"
       },
       {
             "id": "the-assassin-2015",
@@ -3251,7 +3419,9 @@
             ],
             "similarTo": "Crouching Tiger, Hidden Dragon (2000), Hero (2002), Ashes of Time (1994), Days of Heaven (1978)",
             "review": "Taiwanese master Hou Hsiao-hsien won Best Director at Cannes for this ravishing 9th-century Tang Dynasty wuxia poem starring Shu Qi as Nie Yinniang, a lethal female assassin ordered by her nun master to return home and kill the military governor (Chang Chen) to whom she was once betrothed.",
-            "lbConsensus": "Letterboxd cinephiles call Mark Lee Ping-bin's 35mm celluloid cinematography—filmed through silk curtains, mountain mist, and flickering candlelight—some of the most breathtaking images ever captured on film."
+            "lbConsensus": "Letterboxd cinephiles call Mark Lee Ping-bin's 35mm celluloid cinematography—filmed through silk curtains, mountain mist, and flickering candlelight—some of the most breathtaking images ever captured on film.",
+            "runtimeMins": 105,
+            "runtime": "1h 45m"
       },
       {
             "id": "golda-2023",
@@ -3274,7 +3444,9 @@
             ],
             "similarTo": "Darkest Hour (2017), Thirteen Days (2000), The Iron Lady (2011)",
             "review": "Helen Mirren transforms into Israeli Prime Minister Golda Meir in Guy Nattiv’s tense historical chamber drama, focusing on the high-stakes Cabinet decisions and personal toll during the 1973 Yom Kippur War.",
-            "lbConsensus": "Even viewers who find the war-room staging conventional praise Helen Mirren's commanding, chain-smoking performance and Liev Schreiber's supporting turn as Henry Kissinger."
+            "lbConsensus": "Even viewers who find the war-room staging conventional praise Helen Mirren's commanding, chain-smoking performance and Liev Schreiber's supporting turn as Henry Kissinger.",
+            "runtimeMins": 100,
+            "runtime": "1h 40m"
       },
       {
             "id": "arrival",
@@ -3298,7 +3470,9 @@
             ],
             "similarTo": "Interstellar (2014), Contact (1997), Blade Runner 2049 (2017), Solaris (1972)",
             "review": "Denis Villeneuve’s deeply emotional sci-fi masterpiece (adapted from Ted Chiang’s 'Story of Your Life') stars Amy Adams as linguist Dr. Louise Banks, recruited by the U.S. military alongside physicist Ian Donnelly (Jeremy Renner) to decipher the circular written language of twelve mysterious alien shells hovering over Earth.",
-            "lbConsensus": "One of the most beloved sci-fi films of all time on Letterboxd (4.1★): reviewers praise how a cerebral movie about linguistics builds to a mind-bending temporal reveal that leaves audiences in tears."
+            "lbConsensus": "One of the most beloved sci-fi films of all time on Letterboxd (4.1★): reviewers praise how a cerebral movie about linguistics builds to a mind-bending temporal reveal that leaves audiences in tears.",
+            "runtimeMins": 116,
+            "runtime": "1h 56m"
       },
       {
             "id": "wandering-earth-2",
@@ -3322,7 +3496,9 @@
             ],
             "similarTo": "Interstellar (2014), The Martian (2015), 2001: A Space Odyssey (1968), Sunshine (2007)",
             "review": "Adapted from Three-Body Problem author Liu Cixin, Frant Gwo’s colossal nearly three-hour sci-fi prequel chronicles humanity’s desperate decades-long construction of 10,000 planetary fusion engines to propel Earth out of the solar system—featuring a jaw-dropping space-elevator battle and a rogue quantum AI.",
-            "lbConsensus": "Sci-fi fans on Letterboxd rave about the sheer scale of the 90,000km Space Elevator sequence and Andy Lau's emotional subplot about digital consciousness."
+            "lbConsensus": "Sci-fi fans on Letterboxd rave about the sheer scale of the 90,000km Space Elevator sequence and Andy Lau's emotional subplot about digital consciousness.",
+            "runtimeMins": 173,
+            "runtime": "2h 53m"
       },
       {
             "id": "vesper-2022",
@@ -3345,7 +3521,9 @@
             ],
             "similarTo": "Annihilation (2018), Nausicaä of the Valley of the Wind (1984), Children of Men (2006), Prospect (2018)",
             "review": "Lush bio-punk sci-fi fairy tale following a resourceful 13-year-old girl (Raffiella Chapman) using bio-hacking skills to survive in the collapsed ecosystem of a dark future Earth while caring for her paralyzed father (Eddie Marsan).",
-            "lbConsensus": "Letterboxd sci-fi fans praise how Vesper achieves Cronenberg-meets-Miyazaki organic worldbuilding on a modest indie budget ($5M), even when the plot moves at a meditative pace."
+            "lbConsensus": "Letterboxd sci-fi fans praise how Vesper achieves Cronenberg-meets-Miyazaki organic worldbuilding on a modest indie budget ($5M), even when the plot moves at a meditative pace.",
+            "runtimeMins": 114,
+            "runtime": "1h 54m"
       },
       {
             "id": "2073-film",
@@ -3368,7 +3546,9 @@
             ],
             "similarTo": "La Jetée (1962), Children of Men (2006), HyperNormalisation (2016), Years and Years (2019)",
             "review": "Oscar-winning documentarian Asif Kapadia (Senna, Amy) blends real-world archival footage of rising authoritarianism, tech surveillance, and climate breakdown with a La Jetée-inspired dystopian sci-fi frame starring Samantha Morton.",
-            "lbConsensus": "Reviewers find the archival montage and journalists' warnings (Maria Ressa, Carole Cadwalladr) urgent and chilling, while noting the futuristic fictional framing device is more atmospheric than narrative."
+            "lbConsensus": "Reviewers find the archival montage and journalists' warnings (Maria Ressa, Carole Cadwalladr) urgent and chilling, while noting the futuristic fictional framing device is more atmospheric than narrative.",
+            "runtimeMins": 85,
+            "runtime": "1h 25m"
       },
       {
             "id": "soundtrack-to-a-coup-detat",
@@ -3392,7 +3572,9 @@
             ],
             "similarTo": "I Am Not Your Negro (2016), The Battle of Algiers (1966), Summer of Soul (2021), F for Fake (1973)",
             "review": "Johan Grimonprez’s electrifying Oscar-nominated documentary weaves together 1960 Cold War geopolitics, the CIA-backed assassination of Congolese Prime Minister Patrice Lumumba, and the U.S. State Department’s use of jazz legends Louis Armstrong, Nina Simone, and Dizzy Gillespie as unwitting 'jazz ambassadors'—culminating in Abbey Lincoln and Max Roach storming the UN Security Council.",
-            "lbConsensus": "A 4.3★ sensation on Letterboxd: reviewers marvel at how its syncopated jazz editing makes a 150-minute archival history lesson move with the rhythm and propulsion of a political thriller."
+            "lbConsensus": "A 4.3★ sensation on Letterboxd: reviewers marvel at how its syncopated jazz editing makes a 150-minute archival history lesson move with the rhythm and propulsion of a political thriller.",
+            "runtimeMins": 150,
+            "runtime": "2h 30m"
       },
       {
             "id": "indigo-girls",
@@ -3416,7 +3598,9 @@
             ],
             "similarTo": "Joan Baez: I Am a Noise (2023), Lilith Fair: Building a Mystery (2025), Echo in the Canyon (2018)",
             "review": "Blending 40 years of intimate personal home movies with candid present-day reflections, Alexandria Bombach’s deeply moving documentary traces Amy Ray and Emily Saliers’s journey as the Indigo Girls—overcoming music-industry misogyny and homophobia while building a fiercely devoted community.",
-            "lbConsensus": "Letterboxd viewers—both lifelong fans and newcomers—call it one of the warmest, most honest music documentaries in years, culminating in joy-filled sing-alongs to 'Closer to Fine.'"
+            "lbConsensus": "Letterboxd viewers—both lifelong fans and newcomers—call it one of the warmest, most honest music documentaries in years, culminating in joy-filled sing-alongs to 'Closer to Fine.'",
+            "runtimeMins": 126,
+            "runtime": "2h 06m"
       },
       {
             "id": "mr-nobody-against-putin",
@@ -3440,7 +3624,9 @@
             ],
             "similarTo": "Navalny (2022), Collective (2019), 20 Days in Mariupol (2023), The Act of Killing (2012)",
             "review": "Winner of the World Cinema Documentary Special Jury Award at Sundance 2025, this extraordinary documentary follows Pasha Talankin, a beloved primary-school videographer in a small Ural Mountains mining town ordered by the Kremlin to film patriotic wartime propaganda—who instead secretly smuggled out seven hard drives documenting the militarization of his school.",
-            "lbConsensus": "Letterboxd reviewers praise Pasha's wry, self-deprecating humor and deep love for his students, which makes watching his small-town school transform into a state propaganda machine both darkly absurd and heartbreaking."
+            "lbConsensus": "Letterboxd reviewers praise Pasha's wry, self-deprecating humor and deep love for his students, which makes watching his small-town school transform into a state propaganda machine both darkly absurd and heartbreaking.",
+            "runtimeMins": 90,
+            "runtime": "1h 30m"
       },
       {
             "id": "kedi-2016",
@@ -3464,7 +3650,9 @@
             ],
             "similarTo": "Flow (2024), Marcel the Shell with Shoes On (2021), My Octopus Teacher (2020)",
             "review": "Ceyda Torun’s enchanting documentary follows seven street cats across Istanbul using custom street-level camera rigs, capturing their distinct personalities and the deep, philosophical bonds they form with the residents who care for them.",
-            "lbConsensus": "One of the most universally adored documentaries on Letterboxd (4.0★): viewers call it 79 minutes of pure warmth, gorgeous Istanbul sunlight, and top-tier feline charisma."
+            "lbConsensus": "One of the most universally adored documentaries on Letterboxd (4.0★): viewers call it 79 minutes of pure warmth, gorgeous Istanbul sunlight, and top-tier feline charisma.",
+            "runtimeMins": 79,
+            "runtime": "1h 19m"
       },
       {
             "id": "joan-baez-i-am-a-noise",
@@ -3488,7 +3676,9 @@
             ],
             "similarTo": "Dont Look Back (1967), Rolling Thunder Revue (2019), Amy (2015), Linda Ronstadt: The Sound of My Voice (2019)",
             "review": "Far from a conventional hagiography, this deeply intimate portrait follows folk and civil-rights icon Joan Baez on her farewell tour as she opens up her lifelong archive of therapy tapes, diaries, drawings, and memories of Bob Dylan, Martin Luther King Jr., and childhood trauma.",
-            "lbConsensus": "Reviewers are stunned by how raw and self-critical Joan Baez is at 82—refusing to mythologize herself while sharing newly uncovered family audio tapes."
+            "lbConsensus": "Reviewers are stunned by how raw and self-critical Joan Baez is at 82—refusing to mythologize herself while sharing newly uncovered family audio tapes.",
+            "runtimeMins": 113,
+            "runtime": "1h 53m"
       },
       {
             "id": "new-york-doll",
@@ -3512,7 +3702,9 @@
             ],
             "similarTo": "Anvil! The Story of Anvil (2008), Searching for Sugar Man (2012), The Wrecking Crew (2008)",
             "review": "One of the most unexpectedly moving rock documentaries ever made, following Arthur 'Killer' Kane—founding bassist of 1970s proto-punk legends the New York Dolls—who is working as a mild-mannered clerk at a Mormon Family History Library in Los Angeles when Morrissey invites the surviving band members to reunite in London after 30 years.",
-            "lbConsensus": "Letterboxd users warn that even if you've never listened to the New York Dolls, Arthur Kane's humble sweetness and the third act of this documentary will reduce you to a puddle of tears."
+            "lbConsensus": "Letterboxd users warn that even if you've never listened to the New York Dolls, Arthur Kane's humble sweetness and the third act of this documentary will reduce you to a puddle of tears.",
+            "runtimeMins": 75,
+            "runtime": "1h 15m"
       },
       {
             "id": "four-daughters",
@@ -3536,7 +3728,9 @@
             ],
             "similarTo": "The Act of Killing (2012), Close-Up (1990), Stories We Tell (2012),The Arbor (2010)",
             "review": "Cannes L'Œil d'or winner and Oscar nominee directed by Kaouther Ben Hania. To understand how a Tunisian mother’s (Olfa Hamrouni) two eldest daughters vanished to join ISIS as teenagers, the director hires professional actresses to stand in alongside Olfa and her two younger daughters, creating a groundbreaking hybrid of therapy and cinema.",
-            "lbConsensus": "Letterboxd cinephiles (4.0★) marvel at how the two surviving younger sisters and the actresses playing them bond to confront their mother's inherited generational trauma on camera."
+            "lbConsensus": "Letterboxd cinephiles (4.0★) marvel at how the two surviving younger sisters and the actresses playing them bond to confront their mother's inherited generational trauma on camera.",
+            "runtimeMins": 107,
+            "runtime": "1h 47m"
       },
       {
             "id": "squaring-the-circle",
@@ -3560,7 +3754,9 @@
             ],
             "similarTo": "Joy Division (2007), Artifact (2012), 20 Feet from Stardom (2013), Exit Through the Gift Shop (2010)",
             "review": "Legendary photographer and director Anton Corbijn (Control) tells the story of Storm Thorgerson and Aubrey 'Po' Powell, the wildly inventive London design duo Hipgnosis who created the most iconic vinyl album sleeves of the 1970s (Dark Side of the Moon, Wish You Were Here, Houses of the Holy) entirely with practical stunts before Photoshop existed.",
-            "lbConsensus": "Music and design lovers on Letterboxd adore hearing Paul McCartney, David Gilmour, Roger Waters, Jimmy Page, and Noel Gallagher reminisce about setting a stuntman on fire and flying giant inflatable pigs over Battersea Power Station."
+            "lbConsensus": "Music and design lovers on Letterboxd adore hearing Paul McCartney, David Gilmour, Roger Waters, Jimmy Page, and Noel Gallagher reminisce about setting a stuntman on fire and flying giant inflatable pigs over Battersea Power Station.",
+            "runtimeMins": 101,
+            "runtime": "1h 41m"
       },
       {
             "id": "epic-elvis",
@@ -3584,7 +3780,9 @@
             ],
             "similarTo": "Elvis: That's the Way It Is (1970), Moonage Daydream (2022), Get Back (2021), Elvis (2022)",
             "review": "Constructed from 68 boxes of long-lost 35mm and 8mm negatives discovered inside a Kansas salt mine vault during the making of Baz Luhrmann’s Elvis, this electrifying concert documentary restores unseen rehearsal and Las Vegas stage performances from 1969–1972 narrated entirely by Elvis himself.",
-            "lbConsensus": "Viewers rave about seeing Elvis at his absolute vocal and charismatic peak in crystal-clear restored 35mm, joking with his band during rehearsals before tearing the roof off the International Hotel."
+            "lbConsensus": "Viewers rave about seeing Elvis at his absolute vocal and charismatic peak in crystal-clear restored 35mm, joking with his band during rehearsals before tearing the roof off the International Hotel.",
+            "runtimeMins": 100,
+            "runtime": "1h 40m"
       },
       {
             "id": "all-the-beauty-and-the-bloodshed",
@@ -3608,7 +3806,9 @@
             ],
             "similarTo": "Paris Is Burning (1990), Citizenfour (2014), Fire of Love (2022), How to Survive a Plague (2012)",
             "review": "Only the second documentary in history to win the Golden Lion at Venice, Laura Poitras’s masterwork intertwines legendary photographer Nan Goldin’s intimate slideshow work from the 1970s–80s Bowery queer underground with her activist group P.A.I.N.’s guerrilla protests forcing major art museums to drop the opioid-profiteering Sackler family name.",
-            "lbConsensus": "A 4.1★ landmark on Letterboxd: reviewers highlight how connecting Nan Goldin's older sister Barbara's tragedy and the AIDS crisis of the 1980s to her modern Sackler museum die-ins creates an unforgettable portrait of art as survival."
+            "lbConsensus": "A 4.1★ landmark on Letterboxd: reviewers highlight how connecting Nan Goldin's older sister Barbara's tragedy and the AIDS crisis of the 1980s to her modern Sackler museum die-ins creates an unforgettable portrait of art as survival.",
+            "runtimeMins": 122,
+            "runtime": "2h 02m"
       },
       {
             "id": "lost-in-la-mancha",
@@ -3632,7 +3832,9 @@
             ],
             "similarTo": "Hearts of Darkness (1991), Burden of Dreams (1982), Jodorowsky's Dune (2013), American Movie (1999)",
             "review": "Originally hired to shoot a routine DVD 'making-of' featurette, directors Keith Fulton and Louis Pepe ended up capturing one of the most infamous production disasters in cinema history as Terry Gilliam’s dream project The Man Who Killed Don Quixote (with Jean Rochefort and Johnny Depp) was decimated in six days by NATO fighter jets, flash floods, and herniated discs.",
-            "lbConsensus": "Ranked on Letterboxd alongside Hearts of Darkness and Burden of Dreams as the holy trinity of filmmaking-inferno documentaries."
+            "lbConsensus": "Ranked on Letterboxd alongside Hearts of Darkness and Burden of Dreams as the holy trinity of filmmaking-inferno documentaries.",
+            "runtimeMins": 93,
+            "runtime": "1h 33m"
       },
       {
             "id": "meeting-the-man",
@@ -3656,7 +3858,9 @@
             ],
             "similarTo": "I Am Not Your Negro (2016), Marlene (1984), Symbiopsychotaxiplasm (1968), Portrait of Jason (1967)",
             "review": "Shot on 16mm in Paris in 1970, this electrifying 27-minute documentary becomes a battle of wills as James Baldwin—smarting from the assassinations of Martin Luther King Jr. and Malcolm X—pushes back against the British film crew’s attempts to turn him into a tidy literary tourist attraction.",
-            "lbConsensus": "Letterboxd viewers love watching James Baldwin completely dismantle the white British director's naive questions at the Place de la Bastille while radiating unmatched intellect and charisma."
+            "lbConsensus": "Letterboxd viewers love watching James Baldwin completely dismantle the white British director's naive questions at the Place de la Bastille while radiating unmatched intellect and charisma.",
+            "runtimeMins": 27,
+            "runtime": "27m"
       },
       {
             "id": "hung-up-on-a-dream",
@@ -3680,7 +3884,9 @@
             ],
             "similarTo": "The Wrecking Crew (2008), Echo in the Canyon (2018), Love & Mercy (2014)",
             "review": "Directed by Robert Schwartzman, this joyful music documentary traces the 60-year friendship of Colin Blunstone, Rod Argent, Chris White, and Hugh Grundy—from 1960s British Invasion hits ('She’s Not There') and breaking up right before their psychedelic masterpiece Odessey and Oracle ('Time of the Season') became a #1 smash, to fake touring impostor bands and their triumphant Rock & Roll Hall of Fame induction.",
-            "lbConsensus": "Viewers adore how genuinely kind and lifelong friends Colin Blunstone and Rod Argent still are in their 70s, and the wild story of fake 'Zombies' bands touring Texas in 1969."
+            "lbConsensus": "Viewers adore how genuinely kind and lifelong friends Colin Blunstone and Rod Argent still are in their 70s, and the wild story of fake 'Zombies' bands touring Texas in 1969.",
+            "runtimeMins": 116,
+            "runtime": "1h 56m"
       },
       {
             "id": "mary-oliver-doc",
@@ -3704,7 +3910,9 @@
             ],
             "similarTo": "Paterson (2016), Rivers and Tides (2001), The Gleaners and I (2000)",
             "review": "An intimate portrait of Pulitzer Prize-winning poet Mary Oliver, exploring her secluded life in Provincetown, Massachusetts, her devotion to the natural world, and rare interviews and readings of her beloved poetry.",
-            "lbConsensus": "Viewers appreciate the rare archival recordings of the famously private poet reading her own work and reflecting on how walking in the woods saved her from a painful childhood."
+            "lbConsensus": "Viewers appreciate the rare archival recordings of the famously private poet reading her own work and reflecting on how walking in the woods saved her from a painful childhood.",
+            "runtimeMins": 68,
+            "runtime": "1h 08m"
       },
       {
             "id": "freakscene",
@@ -3728,7 +3936,9 @@
             ],
             "similarTo": "1991: The Year Punk Broke (1992), Dig! (2004), Pavements (2024), Joy Division (2007)",
             "review": "Directed by Lou Barlow’s brother-in-law Philipp Virus with unprecedented archival access, this loud, affectionate rock documentary chronicles how three painfully non-verbal guys from Amherst, Massachusetts—J Mascis, Lou Barlow, and Murph—invented ear-splitting slacker indie-rock, imploded in toxic silence, and unexpectedly reunited 16 years later.",
-            "lbConsensus": "Indie-rock fans on Letterboxd love watching Kim Gordon, Thurston Moore, Henry Rollins, and Bob Mould try to explain how three guys who barely speak a sentence to each other make such transcendent guitar music."
+            "lbConsensus": "Indie-rock fans on Letterboxd love watching Kim Gordon, Thurston Moore, Henry Rollins, and Bob Mould try to explain how three guys who barely speak a sentence to each other make such transcendent guitar music.",
+            "runtimeMins": 82,
+            "runtime": "1h 22m"
       },
       {
             "id": "neil-young-heart-of-gold",
@@ -3752,7 +3962,9 @@
             ],
             "similarTo": "Stop Making Sense (1984), The Last Waltz (1978), Rust Never Sleeps (1979)",
             "review": "Oscar-winning director Jonathan Demme (Stop Making Sense, The Silence of the Lambs) captures Neil Young over two magical acoustic nights at Nashville’s historic Ryman Auditorium shortly after Young survived a life-threatening brain aneurysm, joined by Emmylou Harris and Ben Keith.",
-            "lbConsensus": "Letterboxd music lovers highlight the golden, intimate stage lighting and the devastatingly beautiful solo encore of 'Old Laughing Lady' in an empty Ryman Auditorium as the credits roll."
+            "lbConsensus": "Letterboxd music lovers highlight the golden, intimate stage lighting and the devastatingly beautiful solo encore of 'Old Laughing Lady' in an empty Ryman Auditorium as the credits roll.",
+            "runtimeMins": 103,
+            "runtime": "1h 43m"
       },
       {
             "id": "joy-division-doc",
@@ -3776,7 +3988,9 @@
             ],
             "similarTo": "Control (2007), 24 Hour Party People (2002), The Velvet Underground (2021), Stop Making Sense (1984)",
             "review": "Directed by Grant Gee and written by Jon Savage, this definitive documentary chronicles the meteoric rise and tragedy of post-punk legends Joy Division and frontman Ian Curtis, set against the industrial transformation of late-1970s Manchester.",
-            "lbConsensus": "Letterboxd music fans recommend pairing this with Anton Corbijn's Control (2007), praising the candid interviews with Bernard Sumner, Peter Hook, Stephen Morris, and Annik Honoré."
+            "lbConsensus": "Letterboxd music fans recommend pairing this with Anton Corbijn's Control (2007), praising the candid interviews with Bernard Sumner, Peter Hook, Stephen Morris, and Annik Honoré.",
+            "runtimeMins": 96,
+            "runtime": "1h 36m"
       },
       {
             "id": "cow-2021",
@@ -3800,7 +4014,9 @@
             ],
             "similarTo": "EO (2022), Gunda (2020), Au Hasard Balthazar (1966), Okja (2017)",
             "review": "Andrea Arnold (Fish Tank, American Honey) turns her empathetic, observational camera onto Luma, a British dairy cow, with zero narration or talking heads—crafting a deeply moving, unsentimental portrait of an animal’s daily life and consciousness.",
-            "lbConsensus": "Letterboxd reviews note that without a single word of preaching or voiceover, simply staying at eye level with Luma makes the ending hit harder than almost any human drama."
+            "lbConsensus": "Letterboxd reviews note that without a single word of preaching or voiceover, simply staying at eye level with Luma makes the ending hit harder than almost any human drama.",
+            "runtimeMins": 94,
+            "runtime": "1h 34m"
       },
       {
             "id": "angelheaded-hipster",
@@ -3824,7 +4040,9 @@
             ],
             "similarTo": "Moonage Daydream (2022), Velvet Goldmine (1998), Born to Boogie (1972)",
             "review": "Blending rare 1970s archival footage of glam-rock pioneer Marc Bolan and David Bowie with studio sessions conceptualized by the late producer Hal Willner, featuring Nick Cave ('Cosmic Dancer'), Elton John, Joan Jett, U2, Father John Misty, and Ringo Starr reinterpreting T. Rex classics.",
-            "lbConsensus": "Viewers highlight Nick Cave's soaring orchestral rendition of 'Cosmic Dancer' and David Bowie & Ringo Starr's warm archival memories of Marc Bolan."
+            "lbConsensus": "Viewers highlight Nick Cave's soaring orchestral rendition of 'Cosmic Dancer' and David Bowie & Ringo Starr's warm archival memories of Marc Bolan.",
+            "runtimeMins": 99,
+            "runtime": "1h 39m"
       },
       {
             "id": "e1027-eileen-gray",
@@ -3848,7 +4066,9 @@
             ],
             "similarTo": "Columbus (2017), The Brutalist (2024),Bauhaus Spirit (2018)",
             "review": "Docudrama exploring how pioneering Irish modernist architect and designer Eileen Gray built her radical white cliffside masterpiece villa E.1027 on the Côte d'Azur in 1929—only for jealous rival architect Le Corbusier to move in and deface her pristine minimalist walls with giant, garish murals against her wishes.",
-            "lbConsensus": "Architecture and design lovers on Letterboxd relish the petty architectural drama of Le Corbusier painting murals in the nude just to assert dominance over Eileen Gray's modernist masterpiece."
+            "lbConsensus": "Architecture and design lovers on Letterboxd relish the petty architectural drama of Le Corbusier painting murals in the nude just to assert dominance over Eileen Gray's modernist masterpiece.",
+            "runtimeMins": 89,
+            "runtime": "1h 29m"
       },
       {
             "id": "jerry-lee-lewis-trouble-in-mind",
@@ -3872,7 +4092,9 @@
             ],
             "similarTo": "Walk the Line (2005), Elvis (2022), Get Back (2021)",
             "review": "Directed by Ethan Coen and edited by Tricia Cooke for A24, this brisk 73-minute archival portrait of rock-and-roll wildman 'The Killer' Jerry Lee Lewis eschews modern talking heads in favor of wall-to-wall vintage television performances and candid old interviews.",
-            "lbConsensus": "Reviewers note that while it skips over narration in favor of a pure archival clip show, watching Jerry Lee Lewis attack the piano keys in 1950s and 60s TV clips is undeniable electricity."
+            "lbConsensus": "Reviewers note that while it skips over narration in favor of a pure archival clip show, watching Jerry Lee Lewis attack the piano keys in 1950s and 60s TV clips is undeniable electricity.",
+            "runtimeMins": 73,
+            "runtime": "1h 13m"
       },
       {
             "id": "babylon-berlin",
@@ -3896,7 +4118,9 @@
             ],
             "similarTo": "Cabaret (1972), M (1931), Boardwalk Empire (2010), Peaky Blinders (2013), Berlin Alexanderplatz (1980)",
             "review": "The most ambitious German television series ever produced (appearing twice on your watchlist across Seasons 1 and 4). Set in late-1920s Weimar Berlin on the precipice of fascism, shell-shocked Cologne detective Gereon Rath (Volker Bruch) and aspiring flapper detective Charlotte Ritter (Liv Lisa Fries) navigate cabaret underworld syndicates, Soviet gold trains, and political conspiracies.",
-            "lbConsensus": "A 4.2★ obsession on Letterboxd and MHz Choice: viewers rave about Liv Lisa Fries as Charlotte Ritter, the hypnotic 'Zu Asche, Zu Staub' cabaret musical sequence, and dazzling 1929 Berlin production design."
+            "lbConsensus": "A 4.2★ obsession on Letterboxd and MHz Choice: viewers rave about Liv Lisa Fries as Charlotte Ritter, the hypnotic 'Zu Asche, Zu Staub' cabaret musical sequence, and dazzling 1929 Berlin production design.",
+            "runtimeMins": 45,
+            "runtime": "4 Seasons • ~45m/ep"
       },
       {
             "id": "berlin-station",
@@ -3920,7 +4144,9 @@
             ],
             "similarTo": "Slow Horses (2022), The Bureau (Le Bureau des Légendes) (2015), Homeland (2011), Counterpart (2017)",
             "review": "Created by spy novelist Olen Steinhauer, this smart, atmospheric contemporary espionage series stars Richard Armitage as CIA analyst Daniel Miller, sent undercover to the agency’s Berlin field office alongside veteran operatives Rhys Ifans, Richard Jenkins, and Michelle Forbes to unmask an Edward Snowden-style whistleblower.",
-            "lbConsensus": "Espionage fans praise the authentic Berlin location work, David Bowie's 'I'm Afraid of Americans' opening credits, and an incredible supporting cast led by Rhys Ifans and Richard Jenkins."
+            "lbConsensus": "Espionage fans praise the authentic Berlin location work, David Bowie's 'I'm Afraid of Americans' opening credits, and an incredible supporting cast led by Rhys Ifans and Richard Jenkins.",
+            "runtimeMins": 52,
+            "runtime": "3 Seasons • ~52m/ep"
       },
       {
             "id": "spy-city-tv",
@@ -3944,7 +4170,9 @@
             ],
             "similarTo": "The Spy Who Came in from the Cold (1965), Bridge of Spies (2015), The Ipcress File (2022)",
             "review": "Written by novelist William Boyd, this stylish six-part Cold War spy series stars Dominic Cooper as an English MI6 agent sent to 1961 Berlin—just before the construction of the Berlin Wall—to extract a scientist and root out a traitor.",
-            "lbConsensus": "Espionage fans appreciate novelist William Boyd's intricate double-agent plotting and period-accurate 1961 Berlin atmosphere."
+            "lbConsensus": "Espionage fans appreciate novelist William Boyd's intricate double-agent plotting and period-accurate 1961 Berlin atmosphere.",
+            "runtimeMins": 45,
+            "runtime": "6 Episodes • ~45m/ep"
       },
       {
             "id": "pagan-peak",
@@ -3968,7 +4196,9 @@
             ],
             "similarTo": "True Detective Season 1 (2014), The Bridge (Bron/Broen) (2011), Se7en (1995), Dark (2017)",
             "review": "When a frozen corpse is discovered posed with horsehair directly on the snow-covered mountain border between Germany and Austria, optimistic young German detective Ellie Stocker (Julia Jentsch) and cynical, hard-drinking Austrian inspector Gedeon Winter (Nicholas Ofczarek) team up to hunt a ritualistic killer styling himself after the pagan Alpine demon Krampus.",
-            "lbConsensus": "Widely hailed on Letterboxd (4.0★) as the German/Austrian answer to True Detective Season 1: Nicholas Ofczarek's grizzled Gedeon Winter and the snowbound Berchtesgaden Alps atmosphere are top-tier noir."
+            "lbConsensus": "Widely hailed on Letterboxd (4.0★) as the German/Austrian answer to True Detective Season 1: Nicholas Ofczarek's grizzled Gedeon Winter and the snowbound Berchtesgaden Alps atmosphere are top-tier noir.",
+            "runtimeMins": 48,
+            "runtime": "3 Seasons • ~48m/ep"
       },
       {
             "id": "trom",
@@ -3992,7 +4222,9 @@
             ],
             "similarTo": "Shetland (2013), Trapped (2015), Broadchurch (2013), Banshee (2013)",
             "review": "The first television drama ever filmed in the Faroe Islands, starring Danish icon Ulrich Thomsen (Festen, Banshee) as investigative journalist Hannis Martinsson, who returns home after receiving a desperate video message from a young anti-whaling activist—only for her body to wash ashore days later.",
-            "lbConsensus": "Nordic Noir fans love the dramatic, fog-shrouded Faroe Islands cliffs and Ulrich Thomsen's magnetic lead performance across a tight 6-episode mystery."
+            "lbConsensus": "Nordic Noir fans love the dramatic, fog-shrouded Faroe Islands cliffs and Ulrich Thomsen's magnetic lead performance across a tight 6-episode mystery.",
+            "runtimeMins": 45,
+            "runtime": "6 Episodes • ~45m/ep"
       },
       {
             "id": "the-kettering-incident",
@@ -4016,7 +4248,9 @@
             ],
             "similarTo": "Twin Peaks (1990), Dark (2017), Top of the Lake (2013), Picnic at Hanging Rock (1975)",
             "review": "Elizabeth Debicki (The Crown, Tenet) stars in this eerie Australian Southern Gothic mystery series as Dr. Anna Macy, who suffers inexplicable blackouts and returns to her misty logging hometown of Kettering, Tasmania—15 years after her childhood best friend vanished beneath strange lights in the ancient forest.",
-            "lbConsensus": "Viewers praise Elizabeth Debicki's haunting presence and the brooding, moss-draped Tasmanian wilderness that gives the series a distinct Twin Peaks-Down-Under atmosphere."
+            "lbConsensus": "Viewers praise Elizabeth Debicki's haunting presence and the brooding, moss-draped Tasmanian wilderness that gives the series a distinct Twin Peaks-Down-Under atmosphere.",
+            "runtimeMins": 54,
+            "runtime": "8 Episodes • ~54m/ep"
       },
       {
             "id": "alef",
@@ -4040,7 +4274,9 @@
             ],
             "similarTo": "Se7en (1995), The Name of the Rose (1986), True Detective (2014), Burning Days (2022)",
             "review": "Directed by acclaimed Turkish auteur Emin Alper (Burning Days), this brooding 8-part Istanbul neo-noir pairs a rebellious young Western-educated detective (Kenan İmirzalıoğlu) with a seasoned veteran (Ahmet Mümtaz Taylan) and a university religion scholar (Melisa Sözen) to track a serial killer leaving centuries-old Ottoman Sufi mystical clues along the Bosphorus.",
-            "lbConsensus": "Praised by crime fans as 'Se7en meets The Name of the Rose in Istanbul,' with rain-soaked cinematography and deep dives into Islamic mysticism and secret brotherhoods."
+            "lbConsensus": "Praised by crime fans as 'Se7en meets The Name of the Rose in Istanbul,' with rain-soaked cinematography and deep dives into Islamic mysticism and secret brotherhoods.",
+            "runtimeMins": 46,
+            "runtime": "8 Episodes • ~46m/ep"
       },
       {
             "id": "fenris",
@@ -4063,7 +4299,9 @@
             ],
             "similarTo": "Trapped (2015), The Chestnut Man (2021), Borderliner (2017), Jordskott (2015)",
             "review": "Set in a small Norwegian border town along the Swedish forest where tensions between wolf conservationists and locals run high, biologist Emma Salomonsen (Ida Elise Broch) investigates when a teenage boy disappears and her wolf-researcher father’s bloodstained jacket is found in the woods.",
-            "lbConsensus": "Viewers enjoy the snowy Scandinavian forest setting and how the wolf-attack panic masks much darker human secrets in the village."
+            "lbConsensus": "Viewers enjoy the snowy Scandinavian forest setting and how the wolf-attack panic masks much darker human secrets in the village.",
+            "runtimeMins": 45,
+            "runtime": "6 Episodes • ~45m/ep"
       },
       {
             "id": "the-jetty-tv",
@@ -4086,7 +4324,9 @@
             ],
             "similarTo": "Happy Valley (2014), Broadchurch (2013), Sharp Objects (2018), Mare of Easttown (2021)",
             "review": "Jenna Coleman stars in this atmospheric four-part BBC mystery thriller as rookie Lancashire detective Ember Manning, who discovers that a boathouse fire is connected to a cold-case missing-person investigation and an illicit relationship from her teenage past.",
-            "lbConsensus": "Reviewers enjoy Jenna Coleman's sharp lead performance and the moody Lancashire lake setting as a 4-episode weekend binge."
+            "lbConsensus": "Reviewers enjoy Jenna Coleman's sharp lead performance and the moody Lancashire lake setting as a 4-episode weekend binge.",
+            "runtimeMins": 58,
+            "runtime": "4 Episodes • ~58m/ep"
       },
       {
             "id": "blackshore",
@@ -4110,7 +4350,9 @@
             ],
             "similarTo": "Broadchurch (2013), Dublin Murders (2019), Smother (2021), The Jetty (2024)",
             "review": "Irish crime thriller starring Lisa Dwan as DI Fia Lucey, a fierce Dublin detective reassigned after a disciplinary scandal to her rural lakeside hometown of Blackwater—where a hotelier’s murder unearths the 20-year-old mystery of a family disappearance she survived as a teenager.",
-            "lbConsensus": "Fans of British and Irish mysteries praise Lisa Dwan's intense, prickly lead performance and the picturesque County Clare scenery."
+            "lbConsensus": "Fans of British and Irish mysteries praise Lisa Dwan's intense, prickly lead performance and the picturesque County Clare scenery.",
+            "runtimeMins": 52,
+            "runtime": "6 Episodes • ~52m/ep"
       }
 ];
 
@@ -4201,6 +4443,8 @@
         if (sortMode === "critic") return b.critic - a.critic || b.audience - a.audience;
         if (sortMode === "audience") return b.audience - a.audience || b.critic - a.critic;
         if (sortMode === "lb") return (b.lbScore || 0) - (a.lbScore || 0) || b.combined - a.combined;
+        if (sortMode === "runtime-asc") return (a.runtimeMins || 999) - (b.runtimeMins || 999) || b.combined - a.combined;
+        if (sortMode === "runtime-desc") return (b.runtimeMins || 0) - (a.runtimeMins || 0) || b.combined - a.combined;
         if (sortMode === "year-desc") return b.year - a.year;
         if (sortMode === "year-asc") return a.year - b.year;
         if (sortMode === "title") return a.title.localeCompare(b.title);
@@ -4257,7 +4501,7 @@
         if (activeGenre !== "ALL" && item.genre !== activeGenre) return false;
         if (item.combined < minScore) return false;
         if (query) {
-          const hay = `${item.title} ${item.director} ${item.genre} ${item.year} ${item.review} ${item.lbConsensus || ""} ${(item.vibes || []).join(" ")}`.toLowerCase();
+          const hay = `${item.title} ${item.director} ${item.genre} ${item.year} ${item.runtime || ""} ${item.review} ${item.lbConsensus || ""} ${(item.vibes || []).join(" ")}`.toLowerCase();
           if (!hay.includes(query)) return false;
         }
         return true;
@@ -4329,7 +4573,7 @@
                     <div class="title-row">
                       <h3 class="card-title" onclick="openInfoModal('${item.id}')">${item.title}</h3>
                     </div>
-                    <div class="card-meta">${item.year} • ${item.director}</div>
+                    <div class="card-meta">${item.year} • ⏱️ ${item.runtime} • ${item.director}</div>
                   </div>
 
                   <div class="rt-scores">
@@ -4431,7 +4675,7 @@
       currentInfoItem = item;
       const modal = document.getElementById("info-modal");
       document.getElementById("info-modal-title").textContent = `${item.title} (${item.year})`;
-      document.getElementById("info-modal-subtitle").textContent = `${item.genreIcon} ${item.genre} • Directed by ${item.director}`;
+      document.getElementById("info-modal-subtitle").textContent = `${item.genreIcon} ${item.genre} • ⏱️ ${item.runtime} • Directed by ${item.director}`;
 
       const posterSrc = posterCache[item.id] || "";
       const rtStatus = item.critic >= 75 ? "Certified Fresh" : item.critic >= 60 ? "Fresh" : "Rotten";
@@ -4637,7 +4881,7 @@
       currentModalItem = item;
       const modal = document.getElementById("trailer-modal");
       document.getElementById("modal-title").textContent = `${item.title} (${item.year})`;
-      document.getElementById("modal-subtitle").textContent = `${item.genre} • Directed by ${item.director} • 🍅 ${item.critic}% | 🍿 ${item.audience}% | 🟢 ${item.lbScore.toFixed(1)}★`;
+      document.getElementById("modal-subtitle").textContent = `${item.genre} • ⏱️ ${item.runtime} • Directed by ${item.director} • 🍅 ${item.critic}% | 🍿 ${item.audience}% | 🟢 ${item.lbScore.toFixed(1)}★`;
 
       const directWatchUrl = `https://www.youtube.com/watch?v=${item.ytId}`;
       document.getElementById("modal-yt-fallback").href = directWatchUrl;
