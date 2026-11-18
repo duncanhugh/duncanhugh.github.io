@@ -1615,18 +1615,25 @@
           </div>
 
           <div class="sync-quick-box" style="border-color: rgba(229, 169, 60, 0.35);">
-            <h4>3. Persist & Publish to GitHub Pages (<code>duncanhugh.github.io</code>)</h4>
+            <h4>3. Portable Local Database (<code>watchlists-db.js</code>) & GitHub Pages Sync</h4>
             <p style="font-size: 0.82rem; color: var(--text-secondary);">
-              By default, browser syncs are saved in this browser’s <code>localStorage</code>. To make your synced watchlists (Prime Video, Netflix, Apple TV+, Hoopla) appear permanently on <strong>https://duncanhugh.github.io/</strong> across all devices and browsers, bake them into <code>index.html</code> or push directly to your GitHub repo:
+              Your watchlists, watched checkmarks, shortlist, and admin password hash are stored in the portable database file <strong><code>watchlists-db.js</code></strong> right inside your app folder. Whenever you sync new items, click <strong>💾 Save Local DB (<code>watchlists-db.js</code>)</strong> to update the file on disk—then you can copy <code>watchlists-db.js</code> to any other instance of the site (or push it to <strong>https://duncanhugh.github.io/</strong>):
             </p>
-            <div style="display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center;">
-              <button type="button" class="btn btn-trailer" onclick="downloadBakedHtml()">
-                💾 Download Updated index.html (With All Synced Data Baked In)
+            <div style="display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center;">
+              <button type="button" class="btn btn-trailer" onclick="saveLocalDbFile()">
+                💾 Save / Update Local DB (watchlists-db.js)
+              </button>
+              <label class="btn btn-info" style="cursor: pointer; margin: 0;">
+                📂 Load DB File (watchlists-db.js)
+                <input type="file" accept=".js,.json" style="display:none;" onchange="loadLocalDbFromFile(event)" />
+              </label>
+              <button type="button" class="btn btn-info" onclick="downloadBakedHtml()">
+                📄 Download Baked index.html
               </button>
             </div>
             <div style="margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.55rem;">
               <label style="font-size: 0.78rem; color: var(--text-secondary);">
-                Optional: 1-Click Direct Push to GitHub Repo (<code>duncanhugh/duncanhugh.github.io</code>)
+                Optional: 1-Click Direct Push of <code>watchlists-db.js</code> & <code>index.html</code> to GitHub Repo (<code>duncanhugh/duncanhugh.github.io</code>)
               </label>
               <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
                 <input
@@ -1645,7 +1652,7 @@
                   placeholder="GitHub Personal Access Token (repo contents write permission)"
                 />
                 <button type="button" class="btn btn-kanopy" id="btn-gh-push" onclick="publishBakedHtmlToGitHub()">
-                  🚀 Push Live to GitHub Pages
+                  🚀 Push DB Live to GitHub Pages
                 </button>
               </div>
               <span id="gh-push-status" style="font-size: 0.8rem; color: var(--accent);"></span>
@@ -1681,6 +1688,7 @@
     </div>
   </div>
 
+  <script src="watchlists-db.js"></script>
   <script>
     const ITEMS = [
       {
@@ -4795,12 +4803,37 @@
     const BAKED_ADMIN_PWD_HASH = "";
     /*__BAKED_DATA_END__*/
 
-    // Load synced multi-service watchlists from Baked Data + localStorage / Extension bridge
+    // Load synced multi-service watchlists from Portable Local DB (watchlists-db.js) + Baked Data + localStorage
+    const portableDb = (typeof window.STREAMING_WATCHLISTS_DB === "object" && window.STREAMING_WATCHLISTS_DB) || null;
+    const portableServices = (portableDb && portableDb.services) || {};
     const localStoredLists = JSON.parse(localStorage.getItem("kanopy_multi_service_items_v1") || "{}");
-    let syncedWatchlists = Object.assign({}, BAKED_SYNCED_WATCHLISTS, localStoredLists);
-    if (BAKED_ADMIN_PWD_HASH && !localStorage.getItem("sw_admin_pwd_hash_v1")) {
-      localStorage.setItem("sw_admin_pwd_hash_v1", BAKED_ADMIN_PWD_HASH);
+
+    let syncedWatchlists = {};
+    Object.keys(SERVICES).forEach(svcId => {
+      if (svcId === "ALL" || svcId === "kanopy") return;
+      const fromDb = Array.isArray(portableServices[svcId]) ? portableServices[svcId] : [];
+      const fromBaked = Array.isArray(BAKED_SYNCED_WATCHLISTS[svcId]) ? BAKED_SYNCED_WATCHLISTS[svcId] : [];
+      const fromLocal = Array.isArray(localStoredLists[svcId]) ? localStoredLists[svcId] : [];
+      // Pick whichever source has the fullest/latest list, merging unique items so nothing is lost
+      const bestBase = fromLocal.length >= fromDb.length && fromLocal.length >= fromBaked.length
+        ? fromLocal
+        : fromDb.length >= fromBaked.length
+        ? fromDb
+        : fromBaked;
+      if (bestBase.length > 0) {
+        syncedWatchlists[svcId] = bestBase;
+      }
+    });
+
+    const initialPwdHash =
+      localStorage.getItem("sw_admin_pwd_hash_v1") ||
+      (portableDb && portableDb.adminPasswordHash) ||
+      BAKED_ADMIN_PWD_HASH ||
+      "";
+    if (initialPwdHash && !localStorage.getItem("sw_admin_pwd_hash_v1")) {
+      localStorage.setItem("sw_admin_pwd_hash_v1", initialPwdHash);
     }
+
     if (!localStorage.getItem("streaming_watchlists_v3_netflix_reset")) {
       delete syncedWatchlists.netflix;
       localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
@@ -4808,22 +4841,31 @@
       window.postMessage({ source: "KANOPY_HUB_PAGE", type: "CLEAR_SERVICE_ITEMS", serviceId: "netflix" }, "*");
     }
     let extensionConnected = document.documentElement.getAttribute("data-watchlist-extension") === "connected";
+    let dbFileHandle = null;
 
     function getAllItems() {
-      const merged = [...ITEMS];
+      const baseKanopy =
+        portableServices.kanopy && Array.isArray(portableServices.kanopy) && portableServices.kanopy.length >= ITEMS.length
+          ? portableServices.kanopy
+          : ITEMS;
+      const merged = [...baseKanopy];
       const existingIds = new Set(merged.map(i => i.id));
+
       Object.entries(syncedWatchlists).forEach(([svcId, list]) => {
-        if (!Array.isArray(list)) return;
-        list.forEach(item => {
+        if (!Array.isArray(list) || svcId === "kanopy") return;
+        list.forEach((item, idx) => {
           item.service = item.service || svcId;
           item.combined = Number((((item.critic || 80) + (item.audience || 80)) / 2).toFixed(1));
-          if (item.posterUrl && !posterCache[item.id]) {
-            posterCache[item.id] = item.posterUrl;
+          let uniqueId = item.id || `${svcId}-item-${idx + 1}`;
+          if (existingIds.has(uniqueId)) {
+            uniqueId = `${uniqueId}-${idx + 1}`;
+            item.id = uniqueId;
           }
-          if (!existingIds.has(item.id)) {
-            existingIds.add(item.id);
-            merged.push(item);
+          existingIds.add(uniqueId);
+          if (item.posterUrl && !posterCache[uniqueId]) {
+            posterCache[uniqueId] = item.posterUrl;
           }
+          merged.push(item);
         });
       });
       return merged;
@@ -4836,11 +4878,19 @@
     }
 
     // State
-    let activeService = "kanopy"; // 'ALL' | 'kanopy' | 'netflix' | 'prime' | 'apple' | 'max' | 'criterion' | 'hulu'
+    let activeService = "kanopy"; // 'ALL' | 'kanopy' | 'netflix' | 'prime' | 'apple' | 'hoopla' | 'max' | 'criterion' | 'hulu'
     let activeMediaType = "movie"; // 'movie' | 'tv' | 'shortlist'
     let activeGenre = "ALL";
-    let favorites = new Set(JSON.parse(localStorage.getItem("kanopy_favs") || "[]"));
-    let watched = new Set(JSON.parse(localStorage.getItem("kanopy_watched") || "[]"));
+    const initialFavs = [
+      ...((portableDb && Array.isArray(portableDb.favorites)) ? portableDb.favorites : []),
+      ...JSON.parse(localStorage.getItem("kanopy_favs") || "[]")
+    ];
+    const initialWatched = [
+      ...((portableDb && Array.isArray(portableDb.watched)) ? portableDb.watched : []),
+      ...JSON.parse(localStorage.getItem("kanopy_watched") || "[]")
+    ];
+    let favorites = new Set(initialFavs);
+    let watched = new Set(initialWatched);
     const posterCache = JSON.parse(localStorage.getItem("kanopy_posters_v1") || "{}");
     const wikiExtractCache = JSON.parse(localStorage.getItem("kanopy_wiki_extracts_v1") || "{}");
     const trailerStreamCache = {};
@@ -5073,8 +5123,16 @@
         : 0;
       const watchedCount = filtered.filter(i => watched.has(i.id)).length;
 
+      const otherTabType = activeMediaType === "movie" ? "tv" : "movie";
+      const otherTabCount = svcItems.filter(i => i.type === otherTabType).length;
+      const otherTabPill =
+        activeMediaType !== "shortlist" && otherTabCount > 0
+          ? `<button type="button" class="inline-stat-pill" style="cursor:pointer; color:var(--accent); border-color:rgba(229,169,60,0.35);" onclick="setMediaType('${otherTabType}')" title="Switch to ${otherTabType === 'tv' ? 'TV Series' : 'Movies'} tab">+<strong>${otherTabCount}</strong> in ${otherTabType === "tv" ? "📺 TV" : "🎬 Movies"}</button>`
+          : "";
+
       document.getElementById("stats-bar").innerHTML = `
         <span class="inline-stat-pill"><strong>${filtered.length}</strong> ${activeMediaType === "tv" ? "Series" : activeMediaType === "movie" ? "Movies" : "Saved"}</span>
+        ${otherTabPill}
         <span class="inline-stat-pill" title="Average Rotten Tomatoes Critic & Audience Score">🍅 <strong>${avgCritic}%</strong> • 🍿 <strong>${avgAudience}%</strong></span>
         <span class="inline-stat-pill">☑️ <strong>${watchedCount}/${filtered.length}</strong></span>
       `;
@@ -6111,6 +6169,119 @@
       render();
     }
 
+    function buildLocalDbObject() {
+      return {
+        version: 2,
+        updatedAt: new Date().toISOString(),
+        adminPasswordHash: localStorage.getItem(ADMIN_PWD_STORAGE_KEY) || "",
+        watched: [...watched],
+        favorites: [...favorites],
+        services: {
+          kanopy: ITEMS,
+          ...syncedWatchlists
+        }
+      };
+    }
+
+    function buildLocalDbJsContent() {
+      const dbObj = buildLocalDbObject();
+      return (
+        "// Portable Local Database for Streaming Watchlists\n" +
+        "// Copy this file (watchlists-db.js) to any instance of the site (local folder or GitHub Pages) to sync all watchlists, watched status, shortlist, and password.\n" +
+        "window.STREAMING_WATCHLISTS_DB = " +
+        JSON.stringify(dbObj, null, 2) +
+        ";\n"
+      );
+    }
+
+    async function saveLocalDbFile() {
+      if (!syncUnlocked) return;
+      const content = buildLocalDbJsContent();
+      const st = document.getElementById("gh-push-status");
+
+      // Use native File System Access API if available (Chrome/Edge/Brave) so it overwrites watchlists-db.js directly in place
+      if (window.showSaveFilePicker) {
+        try {
+          if (!dbFileHandle) {
+            dbFileHandle = await window.showSaveFilePicker({
+              suggestedName: "watchlists-db.js",
+              types: [
+                {
+                  description: "Streaming Watchlists Portable DB",
+                  accept: { "text/javascript": [".js"] }
+                }
+              ]
+            });
+          }
+          const writable = await dbFileHandle.createWritable();
+          await writable.write(content);
+          await writable.close();
+          if (st) st.textContent = "✅ Saved directly to watchlists-db.js on disk! Copy watchlists-db.js to any other site instance to update it.";
+          return;
+        } catch (err) {
+          if (err && err.name === "AbortError") return;
+          dbFileHandle = null;
+        }
+      }
+
+      // Fallback download
+      const blob = new Blob([content], { type: "text/javascript;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "watchlists-db.js";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      if (st) st.textContent = "✅ Downloaded watchlists-db.js! Move it into any instance folder of the site to update its data.";
+    }
+
+    function loadLocalDbFromFile(event) {
+      if (!syncUnlocked) return;
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const st = document.getElementById("gh-push-status");
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          let raw = String(reader.result || "").trim();
+          // Strip window.STREAMING_WATCHLISTS_DB = ...; wrapper if loading .js file
+          const eqIdx = raw.indexOf("=");
+          if (raw.includes("STREAMING_WATCHLISTS_DB") && eqIdx !== -1) {
+            raw = raw.slice(eqIdx + 1).trim().replace(/;\s*$/, "");
+          }
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.services) {
+            Object.entries(parsed.services).forEach(([k, v]) => {
+              if (k !== "kanopy" && Array.isArray(v)) {
+                syncedWatchlists[k] = v;
+              }
+            });
+            if (Array.isArray(parsed.watched)) {
+              parsed.watched.forEach(id => watched.add(id));
+            }
+            if (Array.isArray(parsed.favorites)) {
+              parsed.favorites.forEach(id => favorites.add(id));
+            }
+            if (parsed.adminPasswordHash && !localStorage.getItem(ADMIN_PWD_STORAGE_KEY)) {
+              localStorage.setItem(ADMIN_PWD_STORAGE_KEY, parsed.adminPasswordHash);
+            }
+            localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
+            saveState();
+            renderSyncModalServices();
+            render();
+            if (st) st.textContent = `✅ Loaded database from ${file.name}!`;
+          } else {
+            throw new Error("Invalid watchlists-db format");
+          }
+        } catch (err) {
+          if (st) st.textContent = `❌ Could not parse DB file: ${err.message}`;
+        }
+      };
+      reader.readAsText(file);
+    }
+
     async function buildBakedHtmlSource() {
       let rawHtml = "";
       try {
@@ -6191,9 +6362,31 @@
         }
 
         const updatedHtml = await buildBakedHtmlSource();
-        const base64Content = btoa(unescape(encodeURIComponent(updatedHtml)));
+        const base64Html = btoa(unescape(encodeURIComponent(updatedHtml)));
 
-        statusEl.textContent = "Pushing updated index.html to GitHub Pages...";
+        statusEl.textContent = "Pushing watchlists-db.js & index.html to GitHub Pages...";
+
+        // 1. Push watchlists-db.js
+        const dbApiUrl = `https://api.github.com/repos/${repo}/contents/watchlists-db.js`;
+        let dbSha = undefined;
+        const getDbRes = await fetch(dbApiUrl, { headers });
+        if (getDbRes.ok) {
+          const getDbData = await getDbRes.json();
+          dbSha = getDbData.sha;
+        }
+        const dbContent = buildLocalDbJsContent();
+        const base64Db = btoa(unescape(encodeURIComponent(dbContent)));
+        await fetch(dbApiUrl, {
+          method: "PUT",
+          headers: { ...headers, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: "Update watchlists-db.js local database",
+            content: base64Db,
+            sha: dbSha
+          })
+        });
+
+        // 2. Push index.html
         const putRes = await fetch(apiUrl, {
           method: "PUT",
           headers: {
@@ -6202,7 +6395,7 @@
           },
           body: JSON.stringify({
             message: "Sync streaming watchlists data",
-            content: base64Content,
+            content: base64Html,
             sha: currentSha
           })
         });
