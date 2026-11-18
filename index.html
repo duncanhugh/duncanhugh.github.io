@@ -1403,7 +1403,10 @@
       <div class="service-tabs" id="service-tabs"></div>
 
       <div class="type-tabs" role="tablist">
-        <button class="type-tab active" data-type="movie" onclick="setMediaType('movie')">
+        <button class="type-tab active" data-type="all" onclick="setMediaType('all')">
+          📽️ All <span class="badge" id="count-all">0</span>
+        </button>
+        <button class="type-tab" data-type="movie" onclick="setMediaType('movie')">
           🎬 Movies <span class="badge" id="count-movies">0</span>
         </button>
         <button class="type-tab" data-type="tv" onclick="setMediaType('tv')">
@@ -4879,7 +4882,7 @@
 
     // State
     let activeService = "kanopy"; // 'ALL' | 'kanopy' | 'netflix' | 'prime' | 'apple' | 'hoopla' | 'max' | 'criterion' | 'hulu'
-    let activeMediaType = "movie"; // 'movie' | 'tv' | 'shortlist'
+    let activeMediaType = "all"; // 'all' | 'movie' | 'tv' | 'shortlist'
     let activeGenre = "ALL";
     const initialFavs = [
       ...((portableDb && Array.isArray(portableDb.favorites)) ? portableDb.favorites : []),
@@ -5038,6 +5041,8 @@
     function updateHeaderCounts() {
       renderServiceTabs();
       const svcItems = getServiceFilteredItems();
+      const elAll = document.getElementById("count-all");
+      if (elAll) elAll.textContent = svcItems.length;
       document.getElementById("count-movies").textContent = svcItems.filter(i => i.type === "movie").length;
       document.getElementById("count-tv").textContent = svcItems.filter(i => i.type === "tv").length;
       document.getElementById("count-shortlist").textContent = svcItems.filter(i => favorites.has(i.id)).length;
@@ -5094,10 +5099,11 @@
       const sortMode = document.getElementById("sort-select").value;
       const minScore = Number(document.getElementById("min-score").value);
 
-      // Filter by selected service and tab (movie, tv, shortlist)
+      // Filter by selected service and tab (all, movie, tv, shortlist)
       const svcItems = getServiceFilteredItems();
       const tabItems = svcItems.filter(item => {
         if (activeMediaType === "shortlist") return favorites.has(item.id);
+        if (activeMediaType === "all") return true;
         return item.type === activeMediaType;
       });
 
@@ -5168,9 +5174,13 @@
         return;
       }
 
-      // Group by Genre
+      // Group by Genre (Movies sections first, then TV Series sections so Movies & TV remain separated)
       const genreGroups = new Map();
-      filtered.forEach(item => {
+      const orderedForGrouping = [
+        ...filtered.filter(i => i.type !== "tv"),
+        ...filtered.filter(i => i.type === "tv")
+      ];
+      orderedForGrouping.forEach(item => {
         if (!genreGroups.has(item.genre)) {
           genreGroups.set(item.genre, { icon: item.genreIcon, items: [] });
         }
@@ -5653,7 +5663,11 @@
 
     function applyExtensionPayload(payload) {
       if (!payload || typeof payload !== "object") return;
-      syncedWatchlists = payload;
+      Object.entries(payload).forEach(([svcId, list]) => {
+        if (Array.isArray(list) && list.length > 0) {
+          syncedWatchlists[svcId] = list;
+        }
+      });
       localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
       pendingExtensionPayload = null;
       render();
@@ -5664,18 +5678,8 @@
       if (!event.data || event.data.source !== "KANOPY_HUB_EXTENSION") return;
       extensionConnected = true;
       if (event.data.type === "SYNCED_DATA_UPDATE" && event.data.payload) {
-        if (syncUnlocked) {
-          applyExtensionPayload(event.data.payload);
-        } else {
-          // Only stage as pending if the incoming payload differs from current saved watchlists
-          const currentJson = JSON.stringify(syncedWatchlists);
-          const incomingJson = JSON.stringify(event.data.payload);
-          if (incomingJson !== currentJson && incomingJson !== "{}") {
-            pendingExtensionPayload = event.data.payload;
-            renderServiceTabs();
-            updateSyncAuthUI();
-          }
-        }
+        // Always accept updates from the user's installed browser extension bridge immediately
+        applyExtensionPayload(event.data.payload);
       }
     });
 
@@ -5882,7 +5886,10 @@
       const cards = Object.values(SERVICES)
         .filter(s => s.id !== "ALL")
         .map(svc => {
-          const count = all.filter(i => (i.service || "kanopy") === svc.id).length;
+          const svcList = all.filter(i => (i.service || "kanopy") === svc.id);
+          const count = svcList.length;
+          const mCount = svcList.filter(i => i.type === "movie").length;
+          const tCount = svcList.filter(i => i.type === "tv").length;
           const hasCustom = Array.isArray(syncedWatchlists[svc.id]) && syncedWatchlists[svc.id].length > 0;
           return `
             <div class="sync-service-card">
@@ -5891,7 +5898,7 @@
                   <span>${svc.icon}</span>
                   <span>${svc.name}</span>
                 </div>
-                <span class="sync-service-count">${count} ${count === 1 ? "title" : "titles"}</span>
+                <span class="sync-service-count" title="${mCount} Movies, ${tCount} TV Series">${count} (${mCount}M / ${tCount}TV)</span>
               </div>
               <div style="font-size: 0.78rem; color: var(--text-secondary);">
                 Log in on ${svc.name}, open your Watchlist, and click <strong>🔄 Sync Watchlist</strong> in the bottom-right corner.
