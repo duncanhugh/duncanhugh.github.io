@@ -1504,71 +1504,158 @@
     </div>
   </div>
 
-  <!-- Streaming Service Login & Watchlist Sync Modal (Option A) -->
+  <!-- Streaming Service Login & Watchlist Sync Modal (Password Protected) -->
   <div class="modal-backdrop" id="sync-modal" onclick="handleBackdropClick(event, 'sync')">
     <div class="modal-dialog sync-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="sync-modal-title">
       <div class="modal-header">
         <div class="modal-title-group">
-          <h3 id="sync-modal-title">🔄 Connect & Sync Streaming Watchlists</h3>
-          <p>Pull your logged-in watchlists from Netflix, Amazon Prime Video, Apple TV+, Max, Criterion, Hulu & Kanopy</p>
+          <h3 id="sync-modal-title">🔒 Connect & Sync Streaming Watchlists</h3>
+          <p>Password-protected watchlist management for Netflix, Prime Video, Apple TV+, Hoopla, Max, Criterion, Hulu & Kanopy</p>
         </div>
-        <button class="modal-close" onclick="closeSyncModal()" title="Close (Esc)">✕</button>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <button type="button" id="btn-lock-sync" class="modal-popup-btn" style="display:none;" onclick="lockSyncSession()">
+            🔒 Lock Sync
+          </button>
+          <button type="button" id="btn-change-pwd" class="modal-popup-btn" style="display:none;" onclick="showChangePasswordForm()">
+            🔑 Change Password
+          </button>
+          <button class="modal-close" onclick="closeSyncModal()" title="Close (Esc)">✕</button>
+        </div>
       </div>
 
       <div class="sync-modal-body">
-        <div class="sync-banner not-connected" id="sync-ext-banner">
-          <h4 id="sync-ext-title">⚡ Companion Browser Extension (1-Click Watchlist Sync)</h4>
-          <p id="sync-ext-desc">
-            Because Netflix, Prime Video, and Apple TV+ block third-party websites from reading your account directly, use our included <strong>Universal Watchlist Sync</strong> Chrome/Brave/Edge extension in <code>kanopy-watchlist/extension</code>:
+        <!-- Password Auth Gate (Shown when locked or setting up password) -->
+        <div id="sync-auth-gate" class="sync-quick-box" style="max-width: 480px; margin: 1.2rem auto; text-align: center; padding: 1.6rem;">
+          <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">🔒</div>
+          <h4 id="sync-auth-heading" style="font-size: 1.1rem;">Admin Password Required</h4>
+          <p id="sync-auth-subtext" style="font-size: 0.84rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+            Enter your password to sync, add, or remove streaming service watchlists on this page.
           </p>
-          <ol id="sync-ext-steps">
-            <li>Open <code>chrome://extensions</code> in Chrome, Brave, or Edge and toggle on <strong>Developer mode</strong> (top-right).</li>
-            <li>Click <strong>Load unpacked</strong> and select the folder <code>/Users/duncanmitchell/Downloads/kanopy-watchlist/extension</code> (also enable <em>"Allow access to file URLs"</em> on the extension details page).</li>
-            <li>Click any service below to log in & open your Watchlist, then click the floating <strong>🔄 Sync Watchlist to Genre Hub</strong> button on that page!</li>
-          </ol>
-        </div>
-
-        <div>
-          <h4 style="font-family: var(--font-heading); font-size: 0.95rem; margin-bottom: 0.7rem; color: #fff;">
-            1. Open Your Streaming Service Watchlist & Sync
-          </h4>
-          <div class="sync-services-grid" id="sync-services-grid"></div>
-        </div>
-
-        <div class="sync-quick-box">
-          <h4>2. Instant Add / Auto-Enrich Titles (Or Paste Extension Sync Bundle)</h4>
-          <p style="font-size: 0.82rem; color: var(--text-secondary);">
-            Want to add titles to a service tab right now without leaving this page? Pick a streaming service and type or paste movie/TV titles (one per line)—or paste a JSON bundle from the extension’s <strong>📋 Copy Sync Bundle</strong> button. We will automatically fetch each title’s <strong>Rotten Tomatoes scores, Letterboxd rating, runtime, genre, synopsis, poster, and YouTube trailer</strong>:
-          </p>
-          <div style="display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center;">
-            <label style="font-size: 0.82rem; color: var(--text-secondary);">Target Service Tab:</label>
-            <select id="quick-add-service" class="select-input">
-              <option value="netflix">🟥 Netflix</option>
-              <option value="prime">🟦 Amazon Prime Video</option>
-              <option value="apple">⬛ Apple TV+</option>
-              <option value="hoopla">🔵 Hoopla</option>
-              <option value="max">🟪 Max (HBO)</option>
-              <option value="criterion">🎞️ Criterion Channel</option>
-              <option value="hulu">🟩 Hulu</option>
-              <option value="kanopy">🟧 Kanopy</option>
-            </select>
+          <div id="sync-pending-notice" style="display:none; background: rgba(0, 224, 84, 0.1); border: 1px solid rgba(0, 224, 84, 0.3); color: #00e054; font-size: 0.8rem; padding: 0.55rem 0.8rem; border-radius: 8px; margin-bottom: 0.5rem;">
+            ⚡ New watchlist data from the browser extension is ready and will be applied once you unlock.
           </div>
-          <textarea
-            id="quick-add-input"
-            class="sync-textarea"
-            placeholder="Enter movie or TV titles (one per line), e.g.:&#10;Severance&#10;Heat&#10;Past Lives&#10;The Zone of Interest&#10;&#10;...or paste a JSON Sync Bundle from the browser extension."
-          ></textarea>
-          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
-            <span id="quick-add-status" style="font-size: 0.82rem; color: var(--accent);"></span>
-            <button type="button" class="btn btn-trailer" id="btn-quick-enrich" onclick="handleQuickEnrich()">
-              ✨ Auto-Enrich & Add to Service Tab
-            </button>
+
+          <form onsubmit="handleSyncAuthSubmit(event)" style="display:flex; flex-direction:column; gap:0.65rem; text-align:left;">
+            <div id="sync-curr-pwd-wrap" style="display:none;">
+              <label style="font-size:0.78rem; color:var(--text-secondary); display:block; margin-bottom:0.25rem;">Current Password</label>
+              <input type="password" id="sync-curr-pwd" class="search-input" style="padding-left:0.85rem;" placeholder="Enter current password..." autocomplete="current-password" />
+            </div>
+
+            <div>
+              <label id="sync-pwd-label" style="font-size:0.78rem; color:var(--text-secondary); display:block; margin-bottom:0.25rem;">Password</label>
+              <input type="password" id="sync-pwd-input" class="search-input" style="padding-left:0.85rem;" placeholder="Enter password..." autocomplete="current-password" />
+            </div>
+
+            <div id="sync-confirm-pwd-wrap" style="display:none;">
+              <label style="font-size:0.78rem; color:var(--text-secondary); display:block; margin-bottom:0.25rem;">Confirm New Password</label>
+              <input type="password" id="sync-confirm-pwd" class="search-input" style="padding-left:0.85rem;" placeholder="Re-enter password..." autocomplete="new-password" />
+            </div>
+
+            <div id="sync-auth-error" style="font-size:0.8rem; color:#ff6b6b; min-height:1.1rem;"></div>
+
+            <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
+              <button type="button" id="btn-cancel-change-pwd" class="btn btn-info" style="display:none;" onclick="cancelChangePassword()">Cancel</button>
+              <button type="submit" id="btn-auth-submit" class="btn btn-trailer" style="width:100%; justify-content:center; padding:0.6rem 1rem;">
+                🔓 Unlock Streaming Sync
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Unlocked Sync Content -->
+        <div id="sync-unlocked-content" style="display:none; flex-direction:column; gap:1.35rem;">
+          <div class="sync-banner not-connected" id="sync-ext-banner">
+            <h4 id="sync-ext-title">⚡ Companion Browser Extension (1-Click Watchlist Sync)</h4>
+            <p id="sync-ext-desc">
+              Because Netflix, Prime Video, and Apple TV+ block third-party websites from reading your account directly, use our included <strong>Streaming Watchlists Sync</strong> Chrome/Brave/Edge extension in <code>streaming-watchlists/extension</code>:
+            </p>
+            <ol id="sync-ext-steps">
+              <li>Open <code>chrome://extensions</code> in Chrome, Brave, or Edge and toggle on <strong>Developer mode</strong> (top-right).</li>
+              <li>Click <strong>Load unpacked</strong> and select the folder <code>/Users/duncanmitchell/Downloads/streaming-watchlists/extension</code> (also enable <em>"Allow access to file URLs"</em> on the extension details page).</li>
+              <li>Click any service below to log in & open your Watchlist, then click the floating <strong>🔄 Sync Watchlist</strong> button on that page!</li>
+            </ol>
+          </div>
+
+          <div>
+            <h4 style="font-family: var(--font-heading); font-size: 0.95rem; margin-bottom: 0.7rem; color: #fff;">
+              1. Open Your Streaming Service Watchlist & Sync
+            </h4>
+            <div class="sync-services-grid" id="sync-services-grid"></div>
+          </div>
+
+          <div class="sync-quick-box">
+            <h4>2. Instant Add / Auto-Enrich Titles (Or Paste Extension Sync Bundle)</h4>
+            <p style="font-size: 0.82rem; color: var(--text-secondary);">
+              Want to add titles to a service tab right now without leaving this page? Pick a streaming service and type or paste movie/TV titles (one per line)—or paste a JSON bundle from the extension’s <strong>📋 Copy Sync Bundle</strong> button. We will automatically fetch each title’s <strong>Rotten Tomatoes scores, Letterboxd rating, runtime, genre, synopsis, poster, and YouTube trailer</strong>:
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center;">
+              <label style="font-size: 0.82rem; color: var(--text-secondary);">Target Service Tab:</label>
+              <select id="quick-add-service" class="select-input">
+                <option value="netflix">🟥 Netflix</option>
+                <option value="prime">🟦 Amazon Prime Video</option>
+                <option value="apple">⬛ Apple TV+</option>
+                <option value="hoopla">🔵 Hoopla</option>
+                <option value="max">🟪 Max (HBO)</option>
+                <option value="criterion">🎞️ Criterion Channel</option>
+                <option value="hulu">🟩 Hulu</option>
+                <option value="kanopy">🟧 Kanopy</option>
+              </select>
+            </div>
+            <textarea
+              id="quick-add-input"
+              class="sync-textarea"
+              placeholder="Enter movie or TV titles (one per line), e.g.:&#10;Severance&#10;Heat&#10;Past Lives&#10;The Zone of Interest&#10;&#10;...or paste a JSON Sync Bundle from the browser extension."
+            ></textarea>
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+              <span id="quick-add-status" style="font-size: 0.82rem; color: var(--accent);"></span>
+              <button type="button" class="btn btn-trailer" id="btn-quick-enrich" onclick="handleQuickEnrich()">
+                ✨ Auto-Enrich & Add to Service Tab
+              </button>
+            </div>
+          </div>
+
+          <div class="sync-quick-box" style="border-color: rgba(229, 169, 60, 0.35);">
+            <h4>3. Persist & Publish to GitHub Pages (<code>duncanhugh.github.io</code>)</h4>
+            <p style="font-size: 0.82rem; color: var(--text-secondary);">
+              By default, browser syncs are saved in this browser’s <code>localStorage</code>. To make your synced watchlists (Prime Video, Netflix, Apple TV+, Hoopla) appear permanently on <strong>https://duncanhugh.github.io/</strong> across all devices and browsers, bake them into <code>index.html</code> or push directly to your GitHub repo:
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center;">
+              <button type="button" class="btn btn-trailer" onclick="downloadBakedHtml()">
+                💾 Download Updated index.html (With All Synced Data Baked In)
+              </button>
+            </div>
+            <div style="margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.55rem;">
+              <label style="font-size: 0.78rem; color: var(--text-secondary);">
+                Optional: 1-Click Direct Push to GitHub Repo (<code>duncanhugh/duncanhugh.github.io</code>)
+              </label>
+              <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                <input
+                  type="text"
+                  id="gh-repo-input"
+                  class="search-input"
+                  style="flex: 1 1 200px; padding-left: 0.75rem;"
+                  value="duncanhugh/duncanhugh.github.io"
+                  placeholder="owner/repo (e.g. duncanhugh/duncanhugh.github.io)"
+                />
+                <input
+                  type="password"
+                  id="gh-token-input"
+                  class="search-input"
+                  style="flex: 2 1 240px; padding-left: 0.75rem;"
+                  placeholder="GitHub Personal Access Token (repo contents write permission)"
+                />
+                <button type="button" class="btn btn-kanopy" id="btn-gh-push" onclick="publishBakedHtmlToGitHub()">
+                  🚀 Push Live to GitHub Pages
+                </button>
+              </div>
+              <span id="gh-push-status" style="font-size: 0.8rem; color: var(--accent);"></span>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="modal-footer">
-        <span>All synced watchlists are stored locally in your browser and ranked by Rotten Tomatoes & Letterboxd consensus</span>
+        <span>All synced watchlists are password-protected and stored locally in your browser</span>
         <button type="button" class="modal-popup-btn" onclick="closeSyncModal()">Done</button>
       </div>
     </div>
@@ -4702,8 +4789,18 @@
       item.combined = Number(((item.critic + item.audience) / 2).toFixed(1));
     });
 
-    // Load synced multi-service watchlists from localStorage / Extension bridge
-    let syncedWatchlists = JSON.parse(localStorage.getItem("kanopy_multi_service_items_v1") || "{}");
+    // Baked multi-service data (persists across all devices when deployed to GitHub Pages)
+    /*__BAKED_DATA_START__*/
+    const BAKED_SYNCED_WATCHLISTS = {};
+    const BAKED_ADMIN_PWD_HASH = "";
+    /*__BAKED_DATA_END__*/
+
+    // Load synced multi-service watchlists from Baked Data + localStorage / Extension bridge
+    const localStoredLists = JSON.parse(localStorage.getItem("kanopy_multi_service_items_v1") || "{}");
+    let syncedWatchlists = Object.assign({}, BAKED_SYNCED_WATCHLISTS, localStoredLists);
+    if (BAKED_ADMIN_PWD_HASH && !localStorage.getItem("sw_admin_pwd_hash_v1")) {
+      localStorage.setItem("sw_admin_pwd_hash_v1", BAKED_ADMIN_PWD_HASH);
+    }
     if (!localStorage.getItem("streaming_watchlists_v3_netflix_reset")) {
       delete syncedWatchlists.netflix;
       localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
@@ -4876,10 +4973,12 @@
         })
         .join("");
 
+      const lockIcon = (typeof syncUnlocked !== "undefined" && syncUnlocked) ? "🔓" : "🔒";
+      const hasPending = (typeof pendingExtensionPayload !== "undefined" && pendingExtensionPayload !== null);
       const addBtnHtml = `
-        <button type="button" class="btn-sync-services" onclick="openSyncModal()" title="Add or Sync Streaming Watchlists (Netflix, Prime, Apple TV+, Hoopla...)">
+        <button type="button" class="btn-sync-services" onclick="openSyncModal()" title="Password-Protected Streaming Watchlist Sync">
           <span class="ext-status-dot ${extensionConnected ? "connected" : ""}" id="ext-status-dot"></span>
-          <span>+ Sync Service</span>
+          <span>${lockIcon} + Sync Service${hasPending ? " (1)" : ""}</span>
         </button>
       `;
 
@@ -5476,15 +5575,49 @@
       }
     });
 
-    // ==================== MULTI-SERVICE SYNC & EXTENSION BRIDGE (OPTION A) ====================
+    // ==================== PASSWORD-PROTECTED MULTI-SERVICE SYNC & EXTENSION BRIDGE ====================
+    const ADMIN_PWD_STORAGE_KEY = "sw_admin_pwd_hash_v1";
+    let syncUnlocked = false;
+    let authMode = "unlock"; // 'setup' | 'unlock' | 'change'
+    let pendingExtensionPayload = null;
+
+    async function hashPassword(plainText) {
+      const data = new TextEncoder().encode("streaming_watchlists_salt_v1::" + plainText);
+      const buf = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(buf))
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
+    }
+
+    function hasAdminPasswordSet() {
+      return Boolean(localStorage.getItem(ADMIN_PWD_STORAGE_KEY));
+    }
+
+    function applyExtensionPayload(payload) {
+      if (!payload || typeof payload !== "object") return;
+      syncedWatchlists = payload;
+      localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
+      pendingExtensionPayload = null;
+      render();
+      renderSyncModalServices();
+    }
+
     window.addEventListener("message", event => {
       if (!event.data || event.data.source !== "KANOPY_HUB_EXTENSION") return;
       extensionConnected = true;
       if (event.data.type === "SYNCED_DATA_UPDATE" && event.data.payload) {
-        syncedWatchlists = event.data.payload;
-        localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
-        render();
-        renderSyncModalServices();
+        if (syncUnlocked) {
+          applyExtensionPayload(event.data.payload);
+        } else {
+          // Only stage as pending if the incoming payload differs from current saved watchlists
+          const currentJson = JSON.stringify(syncedWatchlists);
+          const incomingJson = JSON.stringify(event.data.payload);
+          if (incomingJson !== currentJson && incomingJson !== "{}") {
+            pendingExtensionPayload = event.data.payload;
+            renderServiceTabs();
+            updateSyncAuthUI();
+          }
+        }
       }
     });
 
@@ -5495,16 +5628,172 @@
       window.postMessage({ source: "KANOPY_HUB_PAGE", type: "PING_EXTENSION" }, "*");
     }
 
+    function updateSyncAuthUI() {
+      const gateEl = document.getElementById("sync-auth-gate");
+      const unlockedEl = document.getElementById("sync-unlocked-content");
+      const lockBtn = document.getElementById("btn-lock-sync");
+      const changePwdBtn = document.getElementById("btn-change-pwd");
+      const modalTitle = document.getElementById("sync-modal-title");
+      const pendingNotice = document.getElementById("sync-pending-notice");
+
+      if (!gateEl || !unlockedEl) return;
+
+      if (pendingNotice) {
+        pendingNotice.style.display = pendingExtensionPayload ? "block" : "none";
+      }
+
+      if (syncUnlocked && authMode !== "change") {
+        gateEl.style.display = "none";
+        unlockedEl.style.display = "flex";
+        if (lockBtn) lockBtn.style.display = "inline-flex";
+        if (changePwdBtn) changePwdBtn.style.display = "inline-flex";
+        if (modalTitle) modalTitle.textContent = "🔓 Connect & Sync Streaming Watchlists";
+        renderSyncModalServices();
+        return;
+      }
+
+      // Show password gate (either setup, unlock, or change)
+      gateEl.style.display = "flex";
+      unlockedEl.style.display = "none";
+      if (lockBtn) lockBtn.style.display = "none";
+      if (changePwdBtn) changePwdBtn.style.display = "none";
+      if (modalTitle) modalTitle.textContent = "🔒 Connect & Sync Streaming Watchlists";
+
+      const heading = document.getElementById("sync-auth-heading");
+      const subtext = document.getElementById("sync-auth-subtext");
+      const currWrap = document.getElementById("sync-curr-pwd-wrap");
+      const confirmWrap = document.getElementById("sync-confirm-pwd-wrap");
+      const pwdLabel = document.getElementById("sync-pwd-label");
+      const submitBtn = document.getElementById("btn-auth-submit");
+      const cancelBtn = document.getElementById("btn-cancel-change-pwd");
+      const errEl = document.getElementById("sync-auth-error");
+
+      if (errEl) errEl.textContent = "";
+
+      if (!hasAdminPasswordSet()) {
+        authMode = "setup";
+        heading.textContent = "Set a Password to Protect Streaming Sync";
+        subtext.textContent = "Create an admin password so only you can sync, add, or remove streaming service watchlists on this page.";
+        currWrap.style.display = "none";
+        confirmWrap.style.display = "block";
+        pwdLabel.textContent = "Create Admin Password";
+        submitBtn.textContent = "🔒 Save Password & Unlock";
+        cancelBtn.style.display = "none";
+      } else if (authMode === "change") {
+        heading.textContent = "Change Sync Admin Password";
+        subtext.textContent = "Enter your current password and choose a new password.";
+        currWrap.style.display = "block";
+        confirmWrap.style.display = "block";
+        pwdLabel.textContent = "New Password";
+        submitBtn.textContent = "🔑 Update Password";
+        cancelBtn.style.display = "inline-flex";
+      } else {
+        authMode = "unlock";
+        heading.textContent = "Admin Password Required";
+        subtext.textContent = "Enter your password to sync, add, or remove streaming service watchlists.";
+        currWrap.style.display = "none";
+        confirmWrap.style.display = "none";
+        pwdLabel.textContent = "Password";
+        submitBtn.textContent = "🔓 Unlock Streaming Sync";
+        cancelBtn.style.display = "none";
+      }
+    }
+
+    async function handleSyncAuthSubmit(event) {
+      event.preventDefault();
+      const currInput = document.getElementById("sync-curr-pwd");
+      const pwdInput = document.getElementById("sync-pwd-input");
+      const confirmInput = document.getElementById("sync-confirm-pwd");
+      const errEl = document.getElementById("sync-auth-error");
+
+      const pwd = pwdInput.value;
+      const confirmPwd = confirmInput.value;
+      const currPwd = currInput.value;
+
+      if (!pwd || pwd.length < 3) {
+        errEl.textContent = "Please enter a password (at least 3 characters).";
+        return;
+      }
+
+      if (authMode === "setup") {
+        if (pwd !== confirmPwd) {
+          errEl.textContent = "Passwords do not match.";
+          return;
+        }
+        const h = await hashPassword(pwd);
+        localStorage.setItem(ADMIN_PWD_STORAGE_KEY, h);
+        syncUnlocked = true;
+        authMode = "unlock";
+        pwdInput.value = "";
+        confirmInput.value = "";
+        if (pendingExtensionPayload) applyExtensionPayload(pendingExtensionPayload);
+        updateSyncAuthUI();
+        renderServiceTabs();
+      } else if (authMode === "unlock") {
+        const storedHash = localStorage.getItem(ADMIN_PWD_STORAGE_KEY);
+        const h = await hashPassword(pwd);
+        if (h !== storedHash) {
+          errEl.textContent = "Incorrect password. Please try again.";
+          pwdInput.select();
+          return;
+        }
+        syncUnlocked = true;
+        pwdInput.value = "";
+        if (pendingExtensionPayload) applyExtensionPayload(pendingExtensionPayload);
+        updateSyncAuthUI();
+        renderServiceTabs();
+      } else if (authMode === "change") {
+        const storedHash = localStorage.getItem(ADMIN_PWD_STORAGE_KEY);
+        const currHash = await hashPassword(currPwd);
+        if (currHash !== storedHash) {
+          errEl.textContent = "Current password is incorrect.";
+          return;
+        }
+        if (pwd !== confirmPwd) {
+          errEl.textContent = "New passwords do not match.";
+          return;
+        }
+        const newHash = await hashPassword(pwd);
+        localStorage.setItem(ADMIN_PWD_STORAGE_KEY, newHash);
+        currInput.value = "";
+        pwdInput.value = "";
+        confirmInput.value = "";
+        authMode = "unlock";
+        syncUnlocked = true;
+        updateSyncAuthUI();
+      }
+    }
+
+    function lockSyncSession() {
+      syncUnlocked = false;
+      authMode = "unlock";
+      updateSyncAuthUI();
+      renderServiceTabs();
+    }
+
+    function showChangePasswordForm() {
+      authMode = "change";
+      updateSyncAuthUI();
+    }
+
+    function cancelChangePassword() {
+      authMode = "unlock";
+      updateSyncAuthUI();
+    }
+
     function openSyncModal(defaultSvc) {
       checkExtensionConnection();
       if (defaultSvc && SERVICES[defaultSvc] && defaultSvc !== "ALL") {
         const sel = document.getElementById("quick-add-service");
         if (sel) sel.value = defaultSvc;
       }
-      renderSyncModalServices();
+      updateSyncAuthUI();
       const modal = document.getElementById("sync-modal");
       modal.classList.add("open");
       document.body.classList.add("modal-open");
+      if (!syncUnlocked) {
+        setTimeout(() => document.getElementById("sync-pwd-input")?.focus(), 80);
+      }
     }
 
     function closeSyncModal() {
@@ -5564,6 +5853,10 @@
     }
 
     function clearServiceWatchlist(svcId) {
+      if (!syncUnlocked) {
+        updateSyncAuthUI();
+        return;
+      }
       delete syncedWatchlists[svcId];
       localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
       window.postMessage({ source: "KANOPY_HUB_PAGE", type: "CLEAR_SERVICE_ITEMS", serviceId: svcId }, "*");
@@ -5750,6 +6043,10 @@
     }
 
     async function handleQuickEnrich() {
+      if (!syncUnlocked) {
+        updateSyncAuthUI();
+        return;
+      }
       const inputEl = document.getElementById("quick-add-input");
       const statusEl = document.getElementById("quick-add-status");
       const btn = document.getElementById("btn-quick-enrich");
@@ -5812,6 +6109,115 @@
       activeService = serviceId;
       renderSyncModalServices();
       render();
+    }
+
+    async function buildBakedHtmlSource() {
+      let rawHtml = "";
+      try {
+        const res = await fetch(window.location.href, { cache: "no-store" });
+        if (res.ok) rawHtml = await res.text();
+      } catch (e) {}
+
+      if (!rawHtml || !rawHtml.includes("/*__BAKED_DATA_START__*/")) {
+        // Clone current documentElement and reset dynamic containers so we get a clean template
+        const clone = document.documentElement.cloneNode(true);
+        ["main-content", "service-tabs", "genre-pills", "stats-bar", "info-modal-body", "modal-video-container", "sync-services-grid"].forEach(id => {
+          const el = clone.querySelector(`#${id}`);
+          if (el) el.innerHTML = "";
+        });
+        clone.querySelectorAll(".modal-backdrop").forEach(m => m.classList.remove("open"));
+        const bodyEl = clone.querySelector("body");
+        if (bodyEl) bodyEl.classList.remove("modal-open");
+        rawHtml = "<!DOCTYPE html>\n" + clone.outerHTML;
+      }
+
+      const pwdHash = localStorage.getItem(ADMIN_PWD_STORAGE_KEY) || "";
+      const bakedBlock = [
+        "/*__BAKED_DATA_START__*/",
+        `    const BAKED_SYNCED_WATCHLISTS = ${JSON.stringify(syncedWatchlists, null, 6)};`,
+        `    const BAKED_ADMIN_PWD_HASH = ${JSON.stringify(pwdHash)};`,
+        "    /*__BAKED_DATA_END__*/"
+      ].join("\n");
+
+      return rawHtml.replace(
+        /\/\*__BAKED_DATA_START__\*\/[\s\S]*?\/\*__BAKED_DATA_END__\*\//,
+        bakedBlock
+      );
+    }
+
+    async function downloadBakedHtml() {
+      if (!syncUnlocked) return;
+      const updatedHtml = await buildBakedHtmlSource();
+      const blob = new Blob([updatedHtml], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "index.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      const st = document.getElementById("gh-push-status");
+      if (st) st.textContent = "✅ Downloaded updated index.html with all synced watchlists baked in! Commit it to duncanhugh.github.io.";
+    }
+
+    async function publishBakedHtmlToGitHub() {
+      if (!syncUnlocked) return;
+      const repo = document.getElementById("gh-repo-input").value.trim();
+      const token = document.getElementById("gh-token-input").value.trim();
+      const statusEl = document.getElementById("gh-push-status");
+      const btn = document.getElementById("btn-gh-push");
+
+      if (!repo || !token) {
+        statusEl.textContent = "Please enter your GitHub repository (duncanhugh/duncanhugh.github.io) and Personal Access Token.";
+        return;
+      }
+
+      btn.disabled = true;
+      statusEl.textContent = "Preparing updated index.html and fetching current file SHA from GitHub...";
+
+      try {
+        const apiUrl = `https://api.github.com/repos/${repo}/contents/index.html`;
+        const headers = {
+          "Accept": "application/vnd.github+json",
+          "Authorization": `Bearer ${token}`
+        };
+
+        let currentSha = undefined;
+        const getRes = await fetch(apiUrl, { headers });
+        if (getRes.ok) {
+          const getData = await getRes.json();
+          currentSha = getData.sha;
+        }
+
+        const updatedHtml = await buildBakedHtmlSource();
+        const base64Content = btoa(unescape(encodeURIComponent(updatedHtml)));
+
+        statusEl.textContent = "Pushing updated index.html to GitHub Pages...";
+        const putRes = await fetch(apiUrl, {
+          method: "PUT",
+          headers: {
+            ...headers,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: "Sync streaming watchlists data",
+            content: base64Content,
+            sha: currentSha
+          })
+        });
+
+        if (!putRes.ok) {
+          const errData = await putRes.json().catch(() => ({}));
+          throw new Error(errData.message || `HTTP ${putRes.status}`);
+        }
+
+        statusEl.textContent = "✅ Published live to GitHub! https://duncanhugh.github.io/ will update in ~30 seconds.";
+      } catch (err) {
+        statusEl.textContent = `❌ GitHub push failed: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+      }
     }
 
     // Fetch official poster thumbnails from Wikipedia REST API in the browser
