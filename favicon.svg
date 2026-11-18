@@ -1,10 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <linearGradient id="kg" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="swBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e2235"/>
+      <stop offset="100%" stop-color="#0f111a"/>
+    </linearGradient>
+    <linearGradient id="swAccent" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#ff5522"/>
-      <stop offset="100%" stop-color="#e5a93c"/>
+      <stop offset="50%" stop-color="#e5a93c"/>
+      <stop offset="100%" stop-color="#00a8e1"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="15" fill="url(#kg)"/>
-  <path d="M18 15h8v15l13-15h10L34 31l16 18H39L26 33v16h-8V15z" fill="#ffffff"/>
+  <rect width="64" height="64" rx="16" fill="url(#swBg)" stroke="url(#swAccent)" stroke-width="3.5"/>
+  <!-- Stacked watchlist cards + play triangle -->
+  <rect x="14" y="13" width="30" height="4" rx="2" fill="#e5a93c" opacity="0.65"/>
+  <rect x="11" y="19" width="36" height="4" rx="2" fill="#ff5522" opacity="0.85"/>
+  <path d="M23 28.5c0-1.7 1.85-2.75 3.3-1.88l17.5 10.5c1.42.85 1.42 2.91 0 3.76l-17.5 10.5c-1.45.87-3.3-.18-3.3-1.88v-21z" fill="url(#swAccent)"/>
 </svg>
