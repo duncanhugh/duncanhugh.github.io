@@ -152,15 +152,65 @@
       color: #0b0c10;
     }
 
-    /* Controls Bar */
+    /* Header Tools (Genre Dropdown Trigger + Search Icon Trigger) */
+    .header-right-group {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+    }
+
+    .header-tool-btn {
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.42rem;
+      white-space: nowrap;
+    }
+
+    .header-tool-btn:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+      color: var(--text-primary);
+    }
+
+    .header-tool-btn.is-open,
+    .header-tool-btn.has-active-filter {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .header-icon-btn {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      justify-content: center;
+      border-radius: 999px;
+    }
+
+    .header-icon-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Expandable Search & Genre Drawers */
     .controls-section {
       max-width: 1400px;
-      margin: 1rem auto 0;
+      margin: 0 auto;
       padding: 0 1.75rem;
     }
 
     .controls-grid {
-      display: flex;
+      display: none;
       flex-wrap: wrap;
       gap: 0.65rem;
       align-items: center;
@@ -168,6 +218,11 @@
       border: 1px solid var(--border);
       padding: 0.65rem 0.9rem;
       border-radius: 14px;
+      margin-top: 0.85rem;
+    }
+
+    .controls-grid.open {
+      display: flex;
     }
 
     .search-wrap {
@@ -246,12 +301,20 @@
       color: var(--text-primary);
     }
 
-    /* Genre Filter Pills */
+    /* Expandable Genre Filter Pills Drawer */
     .genre-pills {
-      display: flex;
+      display: none;
       flex-wrap: wrap;
       gap: 0.4rem;
       margin-top: 0.75rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 0.7rem 0.9rem;
+      border-radius: 14px;
+    }
+
+    .genre-pills.open {
+      display: flex;
     }
 
     .genre-pill {
@@ -412,6 +475,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center top;
       z-index: 2;
       transition: transform 0.35s ease;
     }
@@ -1402,25 +1466,51 @@
 
       <div class="service-tabs" id="service-tabs"></div>
 
-      <div class="type-tabs" role="tablist">
-        <button class="type-tab active" data-type="all" onclick="setMediaType('all')">
-          📽️ All <span class="badge" id="count-all">0</span>
+      <div class="header-right-group">
+        <div class="type-tabs" role="tablist">
+          <button class="type-tab active" data-type="all" onclick="setMediaType('all')">
+            📽️ All <span class="badge" id="count-all">0</span>
+          </button>
+          <button class="type-tab" data-type="movie" onclick="setMediaType('movie')">
+            🎬 Movies <span class="badge" id="count-movies">0</span>
+          </button>
+          <button class="type-tab" data-type="tv" onclick="setMediaType('tv')">
+            📺 TV <span class="badge" id="count-tv">0</span>
+          </button>
+          <button class="type-tab" data-type="shortlist" onclick="setMediaType('shortlist')">
+            ⭐ Shortlist <span class="badge" id="count-shortlist">0</span>
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="header-tool-btn"
+          id="btn-toggle-genres"
+          onclick="toggleGenreDrawer()"
+          title="Filter by Genre"
+        >
+          <span id="genre-toggle-label">✨ Genres</span>
+          <span id="genre-toggle-caret" style="font-size: 0.7rem; opacity: 0.8;">▾</span>
         </button>
-        <button class="type-tab" data-type="movie" onclick="setMediaType('movie')">
-          🎬 Movies <span class="badge" id="count-movies">0</span>
-        </button>
-        <button class="type-tab" data-type="tv" onclick="setMediaType('tv')">
-          📺 TV <span class="badge" id="count-tv">0</span>
-        </button>
-        <button class="type-tab" data-type="shortlist" onclick="setMediaType('shortlist')">
-          ⭐ Shortlist <span class="badge" id="count-shortlist">0</span>
+
+        <button
+          type="button"
+          class="header-tool-btn header-icon-btn"
+          id="btn-toggle-search"
+          onclick="toggleSearchDrawer()"
+          title="Search & Sort Options"
+          aria-label="Toggle Search and Sort Options"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z" />
+          </svg>
         </button>
       </div>
     </div>
   </header>
 
   <section class="controls-section">
-    <div class="controls-grid">
+    <div class="controls-grid" id="search-drawer">
       <div class="search-wrap">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z" />
@@ -4851,6 +4941,10 @@
         portableServices.kanopy && Array.isArray(portableServices.kanopy) && portableServices.kanopy.length >= ITEMS.length
           ? portableServices.kanopy
           : ITEMS;
+      baseKanopy.forEach(item => {
+        if (!item.service) item.service = "kanopy";
+        item.combined = Number((((item.critic || 80) + (item.audience || 80)) / 2).toFixed(1));
+      });
       const merged = [...baseKanopy];
       const existingIds = new Set(merged.map(i => i.id));
 
@@ -4865,7 +4959,7 @@
             item.id = uniqueId;
           }
           existingIds.add(uniqueId);
-          if (item.posterUrl && !posterCache[uniqueId]) {
+          if (item.posterUrl) {
             posterCache[uniqueId] = item.posterUrl;
           }
           merged.push(item);
@@ -4884,6 +4978,8 @@
     let activeService = "kanopy"; // 'ALL' | 'kanopy' | 'netflix' | 'prime' | 'apple' | 'hoopla' | 'max' | 'criterion' | 'hulu'
     let activeMediaType = "all"; // 'all' | 'movie' | 'tv' | 'shortlist'
     let activeGenre = "ALL";
+    let searchDrawerOpen = false;
+    let genreDrawerOpen = false;
     const initialFavs = [
       ...((portableDb && Array.isArray(portableDb.favorites)) ? portableDb.favorites : []),
       ...JSON.parse(localStorage.getItem("kanopy_favs") || "[]")
@@ -4896,6 +4992,25 @@
     let watched = new Set(initialWatched);
     const posterCache = JSON.parse(localStorage.getItem("kanopy_posters_v1") || "{}");
     const wikiExtractCache = JSON.parse(localStorage.getItem("kanopy_wiki_extracts_v1") || "{}");
+    // Purge 16:9 horizontal Prime/Netflix tiles from posterCache & syncedWatchlists so official 2:3 vertical posters (like Kanopy) load immediately
+    if (!localStorage.getItem("sw_v5_vertical_posters_cleared")) {
+      const kanopyIds = new Set(ITEMS.map(i => i.id));
+      Object.keys(posterCache).forEach(k => {
+        if (!kanopyIds.has(k)) delete posterCache[k];
+      });
+      Object.values(syncedWatchlists).forEach(list => {
+        if (!Array.isArray(list)) return;
+        list.forEach(it => {
+          if (it && it.posterUrl && /\b(media-amazon\.com|ssl-images-amazon\.com|nflxso\.net)\b/i.test(it.posterUrl)) {
+            it.scrapedPosterUrl = it.posterUrl;
+            it.posterUrl = "";
+          }
+        });
+      });
+      localStorage.setItem("kanopy_posters_v1", JSON.stringify(posterCache));
+      localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
+      localStorage.setItem("sw_v5_vertical_posters_cleared", "1");
+    }
     const trailerStreamCache = {};
 
     // Current modal item state
@@ -4978,6 +5093,27 @@
       render();
     }
 
+    function toggleSearchDrawer() {
+      searchDrawerOpen = !searchDrawerOpen;
+      const drawer = document.getElementById("search-drawer");
+      const btn = document.getElementById("btn-toggle-search");
+      if (drawer) drawer.classList.toggle("open", searchDrawerOpen);
+      if (btn) btn.classList.toggle("is-open", searchDrawerOpen);
+      if (searchDrawerOpen) {
+        setTimeout(() => document.getElementById("search-input")?.focus(), 40);
+      }
+    }
+
+    function toggleGenreDrawer() {
+      genreDrawerOpen = !genreDrawerOpen;
+      const drawer = document.getElementById("genre-pills");
+      const btn = document.getElementById("btn-toggle-genres");
+      const caret = document.getElementById("genre-toggle-caret");
+      if (drawer) drawer.classList.toggle("open", genreDrawerOpen);
+      if (btn) btn.classList.toggle("is-open", genreDrawerOpen);
+      if (caret) caret.textContent = genreDrawerOpen ? "▴" : "▾";
+    }
+
     function setService(svcId) {
       activeService = svcId;
       activeGenre = "ALL";
@@ -5035,7 +5171,11 @@
         </button>
       `;
 
-      container.innerHTML = pillsHtml + addBtnHtml;
+      const nextHtml = pillsHtml + addBtnHtml;
+      if (container._lastHtml !== nextHtml) {
+        container.innerHTML = nextHtml;
+        container._lastHtml = nextHtml;
+      }
     }
 
     function updateHeaderCounts() {
@@ -5074,6 +5214,22 @@
         counts[item.genre]++;
       });
 
+      const genreBtn = document.getElementById("btn-toggle-genres");
+      const genreLabel = document.getElementById("genre-toggle-label");
+      if (genreLabel) {
+        if (activeGenre === "ALL") {
+          genreLabel.textContent = `✨ Genres (${genres.length})`;
+        } else {
+          const activeObj = genres.find(g => g.name === activeGenre);
+          const icon = activeObj ? activeObj.icon : "🎭";
+          const c = counts[activeGenre] || 0;
+          genreLabel.textContent = `${icon} ${activeGenre} (${c})`;
+        }
+      }
+      if (genreBtn) {
+        genreBtn.classList.toggle("has-active-filter", activeGenre !== "ALL");
+      }
+
       const container = document.getElementById("genre-pills");
       let html = `
         <button class="genre-pill ${activeGenre === "ALL" ? "active" : ""}" onclick="setGenre('ALL')">
@@ -5098,6 +5254,10 @@
       const query = document.getElementById("search-input").value.trim().toLowerCase();
       const sortMode = document.getElementById("sort-select").value;
       const minScore = Number(document.getElementById("min-score").value);
+      const searchBtn = document.getElementById("btn-toggle-search");
+      if (searchBtn) {
+        searchBtn.classList.toggle("has-active-filter", Boolean(query) || sortMode !== "combined" || minScore > 0);
+      }
 
       // Filter by selected service and tab (all, movie, tv, shortlist)
       const svcItems = getServiceFilteredItems();
@@ -5196,7 +5356,7 @@
           const rank = idx + 1;
           const isFav = favorites.has(item.id);
           const isWatched = watched.has(item.id);
-          const cachedPoster = posterCache[item.id] || "";
+          const cachedPoster = item.posterUrl || posterCache[item.id] || "";
           const kanopyUrl = getKanopyUrl(item);
           const tomatoIcon = item.critic >= 60 ? "🍅" : "🟢";
 
@@ -5205,7 +5365,7 @@
               <div class="card-top">
                 <div class="poster-box" onclick="openInfoModal('${item.id}')" title="Click for More Info & Consensus">
                   <span class="rank-badge ${rank === 1 ? "rank-1" : ""}">#${rank}</span>
-                  ${cachedPoster ? `<img src="${cachedPoster}" alt="${item.title}" loading="lazy" />` : `<img id="poster-${item.id}" style="display:none" alt="${item.title}" loading="lazy" />`}
+                  ${cachedPoster ? `<img id="poster-${item.id}" src="${cachedPoster}" alt="${item.title}" loading="lazy" />` : `<img id="poster-${item.id}" style="display:none" alt="${item.title}" loading="lazy" />`}
                   <div class="poster-fallback-title">${item.title} (${item.year})</div>
                 </div>
 
@@ -5214,7 +5374,7 @@
                     <div class="title-row">
                       <h3 class="card-title" onclick="openInfoModal('${item.id}')">${item.title}</h3>
                     </div>
-                    <div class="card-meta">${item.year} • ⏱️ ${item.runtime} • ${item.director} • <span class="service-badge-pill">${getServiceInfo(item).icon} ${getServiceInfo(item).name}</span></div>
+                    <div class="card-meta">${item.year} • ⏱️ ${item.runtime} • ${item.director}</div>
                   </div>
 
                   <div class="rt-scores">
@@ -5663,15 +5823,42 @@
 
     function applyExtensionPayload(payload) {
       if (!payload || typeof payload !== "object") return;
+      let anyChanged = false;
       Object.entries(payload).forEach(([svcId, list]) => {
         if (Array.isArray(list) && list.length > 0) {
-          syncedWatchlists[svcId] = list;
+          const existingList = Array.isArray(syncedWatchlists[svcId]) ? syncedWatchlists[svcId] : [];
+          const existingV7ByTitle = new Map();
+          existingList.forEach(it => {
+            if (it && it.title && it._enrichVersion === 7) {
+              existingV7ByTitle.set(stripClientDisambig(it.title).toLowerCase(), it);
+            }
+          });
+          if (existingList.length !== list.length) anyChanged = true;
+          syncedWatchlists[svcId] = list.map(incoming => {
+            const cleanIncomingTitle = stripClientDisambig(incoming.title || "").toLowerCase();
+            const localV7 = cleanIncomingTitle ? existingV7ByTitle.get(cleanIncomingTitle) : null;
+            if (localV7) return localV7;
+            anyChanged = true;
+            if (incoming && incoming.posterUrl && isClientServiceOriginalPoster(incoming.posterUrl)) {
+              incoming.scrapedPosterUrl = incoming.posterUrl;
+              incoming.posterUrl = "";
+            }
+            return incoming;
+          });
         }
       });
+      if (typeof instantPreHealSyncedItems === "function") {
+        if (instantPreHealSyncedItems()) anyChanged = true;
+      }
       localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
       pendingExtensionPayload = null;
-      render();
-      renderSyncModalServices();
+      if (anyChanged) {
+        render();
+        renderSyncModalServices();
+      }
+      if (typeof autoUpgradeSyncedItemsInPageV3 === "function") {
+        autoUpgradeSyncedItemsInPageV3();
+      }
     }
 
     window.addEventListener("message", event => {
@@ -5947,145 +6134,806 @@
       return { genre: "Drama & Character Studies", genreIcon: "🎭" };
     }
 
-    async function enrichTitleInBrowser(rawTitle, serviceId) {
-      const title = rawTitle.trim();
-      const slugId = `${serviceId}-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
-      const normTarget = title.toLowerCase().replace(/\s*\(.*?\)\s*/g, "").replace(/[^a-z0-9]+/g, "");
+    const CLIENT_KNOWN_OVERRIDES = {
+      "the body": {
+        netflix: {
+          type: "tv",
+          year: 2025,
+          director: "Netflix Original Series",
+          runtimeMins: 48,
+          rawGenre: "Mystery Thriller Series",
+          synopsis: "A gripping Netflix mystery drama series following a chilling discovery that unravels dark secrets within a tight-knit community."
+        }
+      },
+      "the trial": {
+        netflix: {
+          type: "tv",
+          year: 2019,
+          director: "Stefano Lodovichi",
+          runtimeMins: 52,
+          rawGenre: "Crime Mystery Series",
+          wiki: "The_Trial_(Italian_TV_series)",
+          synopsis: "The Trial (Il processo) is an Italian television miniseries composed of 8 episodes, created by Alessandro Fabbri and directed by Stefano Lodovichi."
+        }
+      },
+      "borgen – power & glory": {
+        ANY: {
+          type: "tv",
+          year: 2022,
+          director: "Adam Price",
+          runtimeMins: 58,
+          rawGenre: "Political Drama Series",
+          wiki: "Borgen_(TV_series)",
+          synopsis: "Birgitte Nyborg, now Minister for Foreign Affairs, faces a high-stakes geopolitical crisis when oil is discovered in Greenland."
+        }
+      },
+      "borgen - power & glory": {
+        ANY: {
+          type: "tv",
+          year: 2022,
+          director: "Adam Price",
+          runtimeMins: 58,
+          rawGenre: "Political Drama Series",
+          wiki: "Borgen_(TV_series)",
+          synopsis: "Birgitte Nyborg, now Minister for Foreign Affairs, faces a high-stakes geopolitical crisis when oil is discovered in Greenland."
+        }
+      },
+      "a couple of lies": {
+        ANY: {
+          type: "tv",
+          year: 2023,
+          director: "Netflix International Series",
+          runtimeMins: 46,
+          rawGenre: "Drama Mystery Series"
+        }
+      },
+      "tires": {
+        ANY: {
+          type: "tv",
+          year: 2024,
+          director: "Shane Gillis, Steve Gerben, John McKeever",
+          runtimeMins: 22,
+          rawGenre: "Comedy Sitcom",
+          wiki: "Tires_(TV_series)",
+          synopsis: "At his father's auto shop, a hapless manager strives to improve customer service and drive profits while keeping his troublemaking cousin in line."
+        }
+      },
+      "frankenstein": {
+        netflix: {
+          type: "movie",
+          year: 2025,
+          director: "Guillermo del Toro",
+          runtimeMins: 118,
+          rawGenre: "Horror Sci-Fi Drama",
+          wiki: "Frankenstein_(2025_film)",
+          synopsis: "Guillermo del Toro's gothic science fiction adaptation of Mary Shelley's classic novel starring Oscar Isaac, Jacob Elordi, and Mia Goth."
+        },
+        ANY: {
+          type: "movie"
+        }
+      },
+      "stillwater": {
+        prime: {
+          type: "movie",
+          year: 2021,
+          director: "Tom McCarthy",
+          runtimeMins: 139,
+          rawGenre: "Crime Drama Thriller",
+          wiki: "Stillwater_(2021_film)",
+          synopsis: "An American oil-rig roughneck from Oklahoma travels to Marseille, France, to visit his estranged daughter, who is in prison for a murder she claims she did not commit."
+        },
+        ANY: {
+          type: "movie",
+          year: 2021,
+          wiki: "Stillwater_(2021_film)"
+        }
+      },
+      "i am legend": {
+        ANY: {
+          type: "movie",
+          year: 2007,
+          director: "Francis Lawrence",
+          runtimeMins: 101,
+          rawGenre: "Sci-Fi Post-Apocalyptic Thriller",
+          wiki: "I_Am_Legend_(film)",
+          synopsis: "Years after a plague kills most of humanity and transforms the rest into monsters, the sole survivor in New York City struggles valiantly to find a cure."
+        }
+      }
+    };
 
-      let year = 2023;
-      let director = "Featured Director";
-      let runtimeMins = 106;
-      let type = "movie";
-      let primaryGenre = "Drama";
-      let wikiSlug = title.replace(/ /g, "_");
-      let summaryExtract = "";
-      let criticScore = null;
-      let rtConsensus = "";
-      let wikiThumb = "";
+    function getClientKnownOverride(title, serviceId) {
+      const key = (title || "").toLowerCase().replace(/\s+/g, " ").trim();
+      const entry = CLIENT_KNOWN_OVERRIDES[key];
+      if (!entry) return null;
+      return entry[serviceId] || entry.ANY || null;
+    }
 
-      // 1. Wikipedia CORS API lookup FIRST with Film / TV disambiguation scoring
+    function stripClientDisambig(rawTitle) {
+      return (rawTitle || "")
+        .replace(/\s*\(\d{4}\)\s*/g, " ")
+        .replace(
+          /\s*\((?:19\d\d|20\d\d)?\s*(?:[a-z]+\s+)?(?:tv\s+series|television\s+series|tv\s+program|tv\s+programme|miniseries|mini-series|limited\s+series|film|movie|feature\s+film|feature|series|serial|franchise|season\s+\d+|unrated|rated|uncensored|director's\s+cut|extended|special\s+edition|remastered|restored|theatrical|original\s+version|original|anniversary|collector|final\s+cut|subtitled|english\s+subtitled|dubbed|english\s+dub|bonus|x-ray|uncut|4k|uhd|hd|uk|us)[^)]*\)\s*/gi,
+          " "
+        )
+        .replace(/\s*\[(?:4k|uhd|hd|remastered|unrated|extended|subtitled|feature|bonus)[^\]]*\]\s*/gi, " ")
+        .replace(/\s*[-–,:]\s*(?:Season\s+\d+|Series\s+\d+|Part\s+\d+|Extended\s+Edition|Director's\s+Cut|Unrated\s+Edition|Special\s+Edition|The\s+Final\s+Cut).*$/i, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function getClientBaseTitleBeforeSubtitle(rawTitle) {
+      const cleaned = stripClientDisambig(rawTitle);
+      const parts = cleaned.split(/\s*(?:[:–—]|\s-\s)\s*/);
+      if (parts.length > 1 && parts[0].trim().length >= 3) {
+        return parts[0].trim();
+      }
+      return "";
+    }
+
+    function normalizeClientWords(str) {
+      return stripClientDisambig(str)
+        .toLowerCase()
+        .replace(/['’`]/g, "")
+        .replace(/&/g, " and ")
+        .replace(/[^a-z0-9]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function isClientStrictTitleMatch(candidateTitle, targetTitle) {
+      const c = normalizeClientWords(candidateTitle);
+      const t = normalizeClientWords(targetTitle);
+      if (!c || !t) return false;
+      if (c === t) return true;
+      const cNoThe = c.replace(/^the\s+/, "");
+      const tNoThe = t.replace(/^the\s+/, "");
+      return cNoThe === tNoThe && tNoThe.length >= 7;
+    }
+
+    function isClientBaseOrSubtitleMatch(candidateTitle, targetTitle) {
+      if (isClientStrictTitleMatch(candidateTitle, targetTitle)) return true;
+      const targetBase = getClientBaseTitleBeforeSubtitle(targetTitle);
+      if (targetBase && isClientStrictTitleMatch(candidateTitle, targetBase)) return true;
+      const candBase = getClientBaseTitleBeforeSubtitle(candidateTitle);
+      if (candBase && isClientStrictTitleMatch(candBase, targetTitle)) return true;
+      return false;
+    }
+
+    function isClientSubtitleFallbackMatch(candidateTitle, targetTitle) {
+      return isClientBaseOrSubtitleMatch(candidateTitle, targetTitle);
+    }
+
+    // Only true for 16:9 horizontal streaming card tiles (NOT IMDb vertical posters at m.media-amazon.com/images/M/MV5...)
+    function isClientServiceOriginalPoster(url) {
+      if (!url || typeof url !== "string") return false;
+      if (/media-amazon\.com\/images\/M\/MV5/i.test(url)) return false;
+      return /\b(nflxso\.net|media-amazon\.com|ssl-images-amazon\.com|cloudfront\.net)\b/i.test(url);
+    }
+
+    function isClientWikiTitleTv(pageTitle) {
+      return /\((?:[^)]*\b)?(?:tv\s+series|television\s+series|miniseries|mini-series|limited\s+series|tv\s+program|tv\s+programme|serial|web\s+series|streaming\s+series|drama\s+series|comedy\s+series|thriller\s+series|crime\s+series|animated\s+series|docuseries|docu-series|tv\s+show)\)/i.test(
+        pageTitle || ""
+      );
+    }
+
+    function isClientWikiTitleMovie(pageTitle) {
+      return /\((?:[^)]*\b)?(?:film|movie|feature\s+film)\)/i.test(pageTitle || "");
+    }
+
+    function isClientWikiTextTv(text) {
+      const t = (text || "").toLowerCase();
+      return (
+        /\b(?:television\s+series|tv\s+series|miniseries|mini-series|limited\s+series|sitcom|docuseries|docu-series|animated\s+series|web\s+series|streaming\s+series|telenovela|television\s+sitcom|television\s+drama|television\s+miniseries|television\s+mini-series|television\s+thriller)\b/i.test(
+          t
+        ) ||
+        /\b(?:television|tv|streaming|netflix|prime\s+video|amazon|apple\s+tv\+|hbo|bbc|itv|danish|italian|british|american|south\s+korean|korean|spanish|french|german|japanese|australian|canadian|nordic|swedish|norwegian|mexican|indian)\s+(?:[a-z-]+\s+){0,4}?(?:series|miniseries|mini-series|sitcom|serial|docuseries|docu-series|telenovela)\b/i.test(
+          t
+        ) ||
+        /\b(?:composed\s+of|consists\s+of|consisting\s+of|spanning|aired\s+for)\s+\d+\s+(?:episodes|seasons|parts)\b/i.test(
+          t
+        ) ||
+        /\b\d+-episode\s+(?:television|tv|drama|crime|mystery|comedy|thriller|limited|mini)/i.test(t)
+      );
+    }
+
+    function isClientWikiTextMovie(text) {
+      const t = (text || "").toLowerCase();
+      if (isClientWikiTextTv(t)) return false;
+      return /\b(?:film|movie|feature\s+documentary|documentary\s+film|animated\s+film|short\s+film)\b/i.test(t);
+    }
+
+    // Synchronously fix obvious TV vs Movie misclassifications & strip "(Feature)" tags in existing localStorage items BEFORE the very first render!
+    function instantPreHealSyncedItems() {
+      let changed = false;
+      Object.entries(syncedWatchlists).forEach(([svcId, list]) => {
+        if (!Array.isArray(list) || svcId === "kanopy") return;
+        list.forEach(item => {
+          if (!item || !item.title) return;
+          const cleanedTitle = stripClientDisambig(item.title);
+          if (cleanedTitle && cleanedTitle !== item.title) {
+            item.title = cleanedTitle;
+            if (isClientServiceOriginalPoster(item.posterUrl)) {
+              item.scrapedPosterUrl = item.posterUrl;
+              item.posterUrl = "";
+            }
+            delete posterCache[item.id];
+            item._enrichVersion = 0;
+            changed = true;
+          }
+          const known = getClientKnownOverride(item.title, svcId);
+          if (known) {
+            if (known.type && item.type !== known.type) {
+              item.type = known.type;
+              changed = true;
+            }
+            if (known.year && item.year !== known.year) {
+              item.year = known.year;
+              changed = true;
+            }
+            if (known.director && (item.director === "Featured Director" || !item.director)) {
+              item.director = known.director;
+              changed = true;
+            }
+            if (known.runtimeMins) {
+              item.runtimeMins = known.runtimeMins;
+              item.runtime = item.type === "tv" ? `Series • ~${known.runtimeMins}m/ep` : `${Math.floor(known.runtimeMins / 60)}h ${String(known.runtimeMins % 60).padStart(2, "0")}m`;
+              changed = true;
+            }
+            if (known.wiki && !item.wiki) {
+              item.wiki = known.wiki;
+              changed = true;
+            }
+            if (known.synopsis && item.review && item.review.includes("Synced from your")) {
+              item.review = known.synopsis;
+              changed = true;
+            }
+          }
+          // If the item's existing review text or wiki slug explicitly says "mini-series", "composed of X episodes", "television series", etc., fix its type & runtime immediately!
+          if (item.type !== "tv" && (isClientWikiTextTv(item.review) || isClientWikiTitleTv((item.wiki || "").replace(/_/g, " ")))) {
+            item.type = "tv";
+            if (!item.runtimeMins || item.runtimeMins > 90) item.runtimeMins = 50;
+            item.runtime = `Series • ~${item.runtimeMins}m/ep`;
+            const gObj = mapClientGenre(item.genre || "", "tv", item.review || "");
+            item.genre = gObj.genre;
+            item.genreIcon = gObj.genreIcon;
+            changed = true;
+          }
+        });
+      });
+      if (changed) {
+        localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
+      }
+      return changed;
+    }
+
+    async function fetchClientImdbMetadata(title, targetYear, confirmedType, typeConfirmed) {
       try {
-        const sUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(title + " film OR television series")}&srlimit=8&format=json&origin=*`;
-        const sRes = await fetch(sUrl);
-        if (sRes.ok) {
-          const sData = await sRes.json();
-          const hits = sData?.query?.search || [];
-          let bestHit = null;
+        const queries = [title];
+        const baseTitle = getClientBaseTitleBeforeSubtitle(title);
+        if (baseTitle && baseTitle.toLowerCase() !== title.toLowerCase()) {
+          queries.push(baseTitle);
+        }
+
+        for (const q of queries) {
+          const cleanQ = normalizeClientWords(q);
+          if (!cleanQ) continue;
+          const url = `https://v3.sg.media-imdb.com/suggestion/x/${encodeURIComponent(cleanQ)}.json`;
+          const res = await fetch(url);
+          if (!res.ok) continue;
+          const data = await res.json();
+          const list = Array.isArray(data?.d) ? data.d : [];
+          if (list.length === 0) continue;
+
+          let bestItem = null;
           let bestScore = -999;
 
-          for (const h of hits) {
-            const hTitle = h.title || "";
-            const hNorm = hTitle.toLowerCase().replace(/\s*\(.*?\)\s*/g, "").replace(/[^a-z0-9]+/g, "");
-            const snippet = (h.snippet || "").replace(/<[^>]+>/g, "").toLowerCase();
-            let score = 0;
-            if (hNorm === normTarget) score += 60;
-            else if (hNorm.startsWith(normTarget) || normTarget.startsWith(hNorm)) score += 25;
-            else score -= 30;
-            if (/\(\d{4}\s+film\)|\(film\)|\(tv series\)|\(miniseries\)|\(\d{4}\s+tv series\)/i.test(hTitle)) score += 45;
-            if (/\b(film|movie|directed by|television series|tv series|miniseries|starring|documentary|sitcom|drama series|thriller)\b/i.test(snippet)) score += 30;
-            if (/\b(soundtrack|album|song|novel|book|video game|disambiguation)\b/i.test(hTitle.toLowerCase())) score -= 80;
+          for (const item of list) {
+            if (!item || !item.l || !item.id || !item.id.startsWith("tt")) continue;
+            const qid = (item.qid || item.q || "").toLowerCase();
+            const isTv = /\b(tvseries|tvminiseries|tv\s*series|tv\s*mini-series|tv\s*miniseries)\b/i.test(qid);
+            const isMovie = !isTv && /\b(movie|feature|tvmovie|tvspecial|short|video|tv\s*movie)\b/i.test(qid);
+            if (!isTv && !isMovie) continue;
+
+            const exactFull = isClientStrictTitleMatch(item.l, title);
+            const exactBase = !exactFull && baseTitle && isClientStrictTitleMatch(item.l, baseTitle);
+            const subMatch = !exactFull && !exactBase && isClientBaseOrSubtitleMatch(item.l, title);
+            if (!exactFull && !exactBase && !subMatch) continue;
+
+            let score = exactFull ? 85 : exactBase ? 75 : 65;
+            const itemYear = Number(item.y) || null;
+
+            if (targetYear && itemYear) {
+              const diff = Math.abs(itemYear - targetYear);
+              if (diff <= 1) score += 95;
+              else if (diff <= 2) score += 45;
+              else if (!exactBase) score -= 95;
+            } else if (itemYear) {
+              if (itemYear >= 2022) score += 35;
+              else if (itemYear >= 2016) score += 25;
+              else if (itemYear >= 2005) score += 15;
+              else if (itemYear >= 1985) score += 8;
+            }
+
+            if (typeConfirmed && confirmedType) {
+              if (confirmedType === "tv" && isTv) score += 65;
+              else if (confirmedType === "tv" && isMovie) score -= 85;
+              else if (confirmedType === "movie" && isMovie) score += 65;
+              else if (confirmedType === "movie" && isTv) score -= 85;
+            }
+
+            if (item.i?.imageUrl) score += 15;
+
             if (score > bestScore) {
               bestScore = score;
-              bestHit = h;
+              bestItem = {
+                imdbId: item.id,
+                title: item.l,
+                type: isTv ? "tv" : "movie",
+                year: itemYear,
+                stars: item.s || "",
+                posterUrl: item.i?.imageUrl
+                  ? item.i.imageUrl.replace(/\._V1_.*?\.(jpg|png|webp)$/i, "._V1_QL75_UX500_.$1")
+                  : "",
+                confidence: score
+              };
             }
           }
 
-          if (bestHit) {
+          if (bestItem && bestItem.confidence >= 80) {
+            return bestItem;
+          }
+        }
+        return null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function getClientServiceKeywords(serviceId) {
+      if (serviceId === "netflix") return ["netflix"];
+      if (serviceId === "prime") return ["prime video", "amazon prime", "amazon studios", "amazon mgm", "freevee"];
+      if (serviceId === "apple") return ["apple tv+", "apple tv"];
+      if (serviceId === "max") return ["hbo", "max", "hbo max"];
+      if (serviceId === "hulu") return ["hulu", "fx"];
+      if (serviceId === "hoopla") return ["hoopla"];
+      if (serviceId === "criterion") return ["criterion"];
+      return [];
+    }
+
+    function getClientCompetitorKeywords(serviceId) {
+      const all = {
+        netflix: ["netflix"],
+        prime: ["prime video", "amazon prime"],
+        apple: ["apple tv+"],
+        max: ["hbo max"],
+        hulu: ["hulu"],
+        disney: ["disney+"]
+      };
+      const out = [];
+      for (const [k, list] of Object.entries(all)) {
+        if (k !== serviceId) out.push(...list);
+      }
+      return out;
+    }
+
+    async function fetchClientWikiPageImageFallback(pageTitle) {
+      if (!pageTitle) return "";
+      try {
+        const res = await fetch(
+          `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(pageTitle)}&prop=pageimages&piprop=thumbnail|original&pithumbsize=600&format=json&origin=*`
+        );
+        if (!res.ok) return "";
+        const data = await res.json();
+        const pages = data?.query?.pages || {};
+        const firstPage = Object.values(pages)[0];
+        return firstPage?.thumbnail?.source || firstPage?.original?.source || "";
+      } catch (e) {
+        return "";
+      }
+    }
+
+    async function fetchItunesInBrowser(title, type, targetYear) {
+      const entity = type === "tv" ? "tvSeason" : "movie";
+      const url = `https://itunes.apple.com/search?term=${encodeURIComponent(title)}&country=US&entity=${entity}&limit=10`;
+      let data = null;
+      try {
+        const res = await fetch(url);
+        if (res.ok) data = await res.json();
+      } catch (e) {}
+      if (!data) {
+        data = await jsonpRequest(url);
+      }
+      if (!data || !Array.isArray(data.results) || data.results.length === 0) return null;
+
+      let bestHit = null;
+      let bestScore = -999;
+      for (const r of data.results) {
+        const rName = type === "tv" ? (r.collectionName || r.trackName || "") : (r.trackName || r.collectionName || "");
+        const isExact = isClientStrictTitleMatch(rName, title);
+        const isSub = !isExact && isClientSubtitleFallbackMatch(rName, title);
+        if (!isExact && !isSub) continue;
+
+        const rYear = r.releaseDate ? parseInt(r.releaseDate.slice(0, 4), 10) : null;
+        let sc = isExact ? 75 : 55;
+        if (targetYear && rYear) {
+          const diff = Math.abs(rYear - targetYear);
+          if (diff <= 1) sc += 90;
+          else if (diff <= 2) sc += 45;
+          else sc -= 120;
+        } else if (rYear) {
+          if (rYear >= 2020) sc += 30;
+          else if (rYear >= 2010) sc += 20;
+          else if (rYear >= 1995) sc += 10;
+        }
+        if (r.artworkUrl100) sc += 10;
+        if (sc > bestScore) {
+          bestScore = sc;
+          bestHit = r;
+        }
+      }
+      if (!bestHit || bestScore < 60) return null;
+      return bestHit;
+    }
+
+    async function enrichTitleInBrowser(rawTitle, serviceId, existingItem = null) {
+      const title = (rawTitle || "").trim();
+      const slugId =
+        existingItem?.id ||
+        `${serviceId}-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
+      const known = getClientKnownOverride(title, serviceId);
+      const svcKeywords = getClientServiceKeywords(serviceId);
+      const compKeywords = getClientCompetitorKeywords(serviceId);
+      const typeConfirmed = Boolean(known?.type || existingItem?.typeConfirmed);
+      const confirmedType = known?.type || (existingItem?.typeConfirmed ? existingItem.type : null);
+      const scrapedYear = known?.year || existingItem?.scrapedYear || null;
+
+      let year = scrapedYear || 2024;
+      let director = known?.director || existingItem?.scrapedDirector || "Featured Director";
+      let runtimeMins = known?.runtimeMins || existingItem?.scrapedRuntimeMins || 106;
+      let type = confirmedType || "movie";
+      let primaryGenre = known?.rawGenre || existingItem?.scrapedGenre || "";
+      let wikiSlug = known?.wiki || "";
+      let summaryExtract = known?.synopsis || existingItem?.scrapedSynopsis || "";
+      let criticScore = null;
+      let rtConsensus = "";
+      let wikiThumb = "";
+      let wikiIsServiceMatch = false;
+      let wikiDetectedType = null;
+      let wikiDetectedYear = null;
+
+      let tvmazePoster = "";
+      let tvmazeSummary = "";
+      let tvmazeYear = null;
+      let tvmazeGenres = "";
+      let tvmazeRuntime = null;
+      let tvmazeScore = -999;
+      let tvmazeIsServiceMatch = false;
+      const baseTitle = getClientBaseTitleBeforeSubtitle(title);
+
+      // 0. Run IMDb Suggestion API Lookup in parallel
+      const imdbPromise = fetchClientImdbMetadata(title, scrapedYear, confirmedType, typeConfirmed);
+
+      // 1. Run TVMaze Lookup (with base-title support for season subtitles like "Borgen – Power & Glory")
+      if (!(typeConfirmed && confirmedType === "movie")) {
+        try {
+          const tvQueries = [title];
+          if (baseTitle && baseTitle.toLowerCase() !== title.toLowerCase()) tvQueries.push(baseTitle);
+          for (const tvQ of tvQueries) {
+            const tvRes = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(tvQ)}`);
+            if (!tvRes.ok) continue;
+            const tvList = await tvRes.json();
+            let bestShow = null;
+            for (const entry of tvList || []) {
+              const show = entry?.show;
+              if (!show || !show.name) continue;
+              if (!isClientStrictTitleMatch(show.name, tvQ) && !isClientBaseOrSubtitleMatch(show.name, title)) continue;
+              let sc = 70;
+              const chan = `${show.webChannel?.name || ""} ${show.network?.name || ""}`.toLowerCase();
+              const isSvc = svcKeywords.some(kw => chan.includes(kw));
+              const isComp = !isSvc && compKeywords.some(kw => chan.includes(kw));
+              if (isSvc) sc += 115;
+              else if (isComp) sc -= 55;
+              const pYear = show.premiered ? parseInt(show.premiered.slice(0, 4), 10) : null;
+              if (scrapedYear && pYear) {
+                const diff = Math.abs(pYear - scrapedYear);
+                if (diff <= 1) sc += 95;
+                else if (diff > 2 && tvQ === title) sc -= 110;
+              } else if (pYear) {
+                if (pYear >= 2022) sc += 35;
+                else if (pYear >= 2017) sc += 20;
+                else if (pYear >= 2010) sc += 10;
+              }
+              if (typeConfirmed && confirmedType === "tv") sc += 45;
+              if (show.image?.original || show.image?.medium) sc += 10;
+              if (sc > tvmazeScore) {
+                tvmazeScore = sc;
+                bestShow = show;
+                tvmazeIsServiceMatch = isSvc;
+              }
+            }
+            if (bestShow && tvmazeScore >= 85) {
+              tvmazeYear = bestShow.premiered ? parseInt(bestShow.premiered.slice(0, 4), 10) : null;
+              tvmazePoster = (bestShow.image?.original || bestShow.image?.medium || "").replace(/^http:\/\//i, "https://");
+              tvmazeSummary = (bestShow.summary || "").replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+              tvmazeGenres = Array.isArray(bestShow.genres) ? bestShow.genres.join(" ") : "";
+              tvmazeRuntime = Number(bestShow.averageRuntime || bestShow.runtime) || 45;
+              if (bestShow.rating?.average) {
+                criticScore = Math.min(98, Math.max(68, Math.round(Number(bestShow.rating.average) * 10.6)));
+              }
+              break;
+            }
+          }
+        } catch (e) {}
+      }
+
+      // 2. Unbiased Wikipedia Search (with redirect & base-title fallback + comprehensive TV/Miniseries detection)
+      try {
+        if (known?.wiki) {
+          const sumRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(known.wiki)}`);
+          if (sumRes.ok) {
+            const sumData = await sumRes.json();
+            wikiThumb = sumData?.thumbnail?.source || "";
+            if (!wikiThumb) wikiThumb = await fetchClientWikiPageImageFallback(sumData.title || known.wiki.replace(/_/g, " "));
+            if (!summaryExtract && sumData.extract) summaryExtract = sumData.extract;
+            wikiDetectedType = confirmedType || (isClientWikiTitleTv(sumData.title) || isClientWikiTextTv(sumData.extract) ? "tv" : "movie");
+          }
+        } else {
+          const q1 = `intitle:"${title}" (film OR "television series" OR "TV series" OR miniseries OR "mini-series" OR movie OR series)`;
+          const sUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q1)}&srlimit=10&format=json&origin=*`;
+          let hits = [];
+          const sRes = await fetch(sUrl);
+          if (sRes.ok) {
+            const sData = await sRes.json();
+            hits = sData?.query?.search || [];
+          }
+          if (hits.length < 2) {
+            const q2 = `"${title}" (film OR "television series" OR "TV series" OR miniseries OR "mini-series")`;
+            const sRes2 = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q2)}&srlimit=8&format=json&origin=*`);
+            if (sRes2.ok) {
+              const sData2 = await sRes2.json();
+              const existingT = new Set(hits.map(h => h.title));
+              (sData2?.query?.search || []).forEach(h => {
+                if (!existingT.has(h.title)) hits.push(h);
+              });
+            }
+          }
+          if (baseTitle && baseTitle.toLowerCase() !== title.toLowerCase()) {
+            const q3 = `intitle:"${baseTitle}" ("television series" OR "TV series" OR miniseries OR film)`;
+            const sRes3 = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q3)}&srlimit=6&format=json&origin=*`);
+            if (sRes3.ok) {
+              const sData3 = await sRes3.json();
+              const existingT = new Set(hits.map(h => h.title));
+              (sData3?.query?.search || []).forEach(h => {
+                if (!existingT.has(h.title)) hits.push(h);
+              });
+            }
+          }
+
+          let bestHit = null;
+          let bestScore = -999;
+          let bestIsSvc = false;
+
+          for (const h of hits) {
+            const hTitle = h.title || "";
+            const lowerTitle = hTitle.toLowerCase();
+            const snippet = (h.snippet || "").replace(/<[^>]+>/g, "").toLowerCase();
+            if (/\b(soundtrack|album|song|novel|book|video game|disambiguation|character|comics|list of|episodes)\b/i.test(lowerTitle)) {
+              continue;
+            }
+            const exactT = isClientStrictTitleMatch(hTitle, title);
+            const baseT = !exactT && baseTitle && isClientStrictTitleMatch(hTitle, baseTitle);
+            const akaT = !exactT && !baseT && snippet.includes(title.toLowerCase());
+            if (!exactT && !baseT && !akaT) continue;
+
+            let score = exactT ? 75 : baseT ? 68 : 62;
+            const isHitTv = isClientWikiTitleTv(hTitle) || isClientWikiTextTv(snippet);
+            const isHitMovie = isClientWikiTitleMovie(hTitle) || (!isHitTv && (isClientWikiTextMovie(snippet) || /\b(directed by|starring)\b/i.test(snippet)));
+
+            if (isHitTv || isHitMovie) score += 30;
+            else score -= 100;
+
+            if (isClientWikiTitleTv(hTitle) || isClientWikiTitleMovie(hTitle)) score += 22;
+            if (isHitMovie && !isHitTv && (!typeConfirmed || confirmedType === "movie")) score += 18;
+
+            const isSvc = svcKeywords.some(kw => snippet.includes(kw));
+            if (isSvc) score += 95;
+            else if (isHitTv && compKeywords.some(kw => snippet.includes(kw))) score -= 65;
+
+            const titleYearM = hTitle.match(/\((\d{4})\s+/);
+            const snippetYearM = snippet.match(/\b(19[2-9]\d|20[0-2]\d)\b/);
+            const hitYear = titleYearM ? parseInt(titleYearM[1], 10) : snippetYearM ? parseInt(snippetYearM[1], 10) : null;
+
+            if (scrapedYear && hitYear) {
+              const diff = Math.abs(hitYear - scrapedYear);
+              if (diff <= 1) score += 95;
+              else if (diff > 2 && !baseT) score -= 110;
+            } else if (hitYear) {
+              if (hitYear >= 2022) score += 35;
+              else if (hitYear >= 2016) score += 25;
+              else if (hitYear >= 2005) score += 15;
+              else if (hitYear >= 1985) score += 8;
+            }
+
+            if (typeConfirmed && confirmedType) {
+              if (confirmedType === "tv") {
+                if (isHitTv) score += 70;
+                if (isHitMovie && !isHitTv) score -= 90;
+              } else if (confirmedType === "movie") {
+                if (isHitMovie) score += 70;
+                if (isHitTv && !isHitMovie) score -= 90;
+              }
+            }
+
+            if (score > bestScore) {
+              bestScore = score;
+              bestHit = h;
+              bestIsSvc = isSvc;
+            }
+          }
+
+          if (bestHit && bestScore >= 85) {
             const pageTitle = bestHit.title;
-            wikiSlug = pageTitle.replace(/ /g, "_");
-            const [sumRes, txtRes] = await Promise.all([
-              fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiSlug)}`),
-              fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&titles=${encodeURIComponent(pageTitle)}&format=json&origin=*`)
-            ]);
+            const candidateWikiSlug = pageTitle.replace(/ /g, "_");
+            const sumRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(candidateWikiSlug)}`);
             if (sumRes.ok) {
               const sumData = await sumRes.json();
-              summaryExtract = sumData.extract || "";
-              wikiThumb = sumData?.thumbnail?.source || "";
-            }
-            if (txtRes.ok) {
-              const txtData = await txtRes.json();
-              const pageObj = Object.values(txtData?.query?.pages || {})[0];
-              const fullText = pageObj?.extract || "";
-              const firstPara = (summaryExtract || fullText.slice(0, 600)).toLowerCase();
+              if (sumData.type !== "disambiguation") {
+                const ext = sumData.extract || "";
+                const firstTwoSentences = (ext.split(/\.\s+/).slice(0, 2).join(". ") || "").toLowerCase();
+                let wType = "movie";
+                if (isClientWikiTitleTv(pageTitle) || isClientWikiTextTv(firstTwoSentences)) {
+                  wType = "tv";
+                } else if (isClientWikiTitleMovie(pageTitle) || isClientWikiTextMovie(firstTwoSentences)) {
+                  wType = "movie";
+                }
 
-              if (/\b(television series|tv series|miniseries|limited series|sitcom|animated series|docuseries)\b/i.test(firstPara) || /\(tv series\)|\(miniseries\)/i.test(pageTitle)) {
-                type = "tv";
-                runtimeMins = 48;
-              }
+                const titleYearMatch = pageTitle.match(/\((\d{4})\s+/i);
+                const leadYearMatch = firstTwoSentences.match(/\b(19[2-9]\d|20[0-2]\d)\b/) || ext.match(/\b(19[2-9]\d|20[0-2]\d)\b/);
+                const wYear = titleYearMatch ? parseInt(titleYearMatch[1], 10) : leadYearMatch ? parseInt(leadYearMatch[1], 10) : null;
 
-              const titleYearMatch = pageTitle.match(/\((\d{4})\s+(?:film|TV|television|miniseries)/i);
-              const leadYearMatch = summaryExtract.match(/\b(19\d{2}|20[0-2]\d)\b/);
-              if (titleYearMatch) year = parseInt(titleYearMatch[1], 10);
-              else if (leadYearMatch) year = parseInt(leadYearMatch[1], 10);
+                const yearConflict = scrapedYear && wYear && Math.abs(wYear - scrapedYear) > 2 && !baseTitle;
+                const typeConflict = typeConfirmed && confirmedType && wType !== confirmedType;
 
-              const dirMatch =
-                summaryExtract.match(/directed by ([A-Z][a-zA-ZÀ-ÿ\s.'-]{2,40}?)(?:,|\.| and | from | starring | written | produced | based )/i) ||
-                summaryExtract.match(/created by ([A-Z][a-zA-ZÀ-ÿ\s.'-]{2,40}?)(?:,|\.| and | for | starring | based )/i);
-              if (dirMatch) director = dirMatch[1].trim();
+                if (!yearConflict && !typeConflict) {
+                  wikiSlug = candidateWikiSlug;
+                  summaryExtract = summaryExtract || ext;
+                  wikiThumb = sumData?.thumbnail?.source || "";
+                  if (!wikiThumb) {
+                    wikiThumb = await fetchClientWikiPageImageFallback(pageTitle);
+                  }
+                  wikiDetectedType = wType;
+                  wikiDetectedYear = wYear;
+                  wikiIsServiceMatch = bestIsSvc;
 
-              const rtMatch = fullText.match(/Rotten Tomatoes[^.]{0,260}?(\d{1,3})\s*%/i) || fullText.match(/(\d{1,3})\s*%[^.]{0,140}?Rotten Tomatoes/i);
-              if (rtMatch) {
-                const v = parseInt(rtMatch[1], 10);
-                if (v >= 5 && v <= 100) criticScore = v;
-              }
-              const cMatch = fullText.match(/consensus reads[,:]\s*["“]([^"”]{25,380})["”]/i);
-              if (cMatch) rtConsensus = cMatch[1].trim();
+                  const dirMatch =
+                    ext.match(/created by ([A-Z][a-zA-ZÀ-ÿ\s.'-]{2,45}?)(?:,|\.| and | for | starring | based | in )/i) ||
+                    ext.match(/directed by ([A-Z][a-zA-ZÀ-ÿ\s.'-]{2,45}?)(?:,|\.| and | from | starring | written | produced | based )/i);
+                  if (!known?.director && dirMatch) director = dirMatch[1].trim();
 
-              const minsMatch = fullText.match(/running time of (\d{2,3}) minutes/i) || fullText.match(/(\d{2,3})\s*minutes/i);
-              if (minsMatch) {
-                const m = parseInt(minsMatch[1], 10);
-                if (m >= 20 && m <= 260) runtimeMins = m;
+                  const rtMatch = ext.match(/Rotten Tomatoes[^.]{0,200}?(\d{1,3})\s*%/i) || ext.match(/(\d{1,3})\s*%[^.]{0,120}?Rotten Tomatoes/i);
+                  if (rtMatch) {
+                    const v = parseInt(rtMatch[1], 10);
+                    if (v >= 5 && v <= 100) criticScore = v;
+                  }
+                }
               }
             }
           }
         }
       } catch (e) {}
 
-      // 2. iTunes JSONP lookup strictly filtered to entity=movie or tvSeason (never music tracks)
+      const imdbData = await imdbPromise;
+
+      // Decide final type using 4-source consensus (Wikipedia + IMDb + TVMaze + Page Overrides)
+      if (typeConfirmed && confirmedType) {
+        type = confirmedType;
+      } else if (wikiDetectedType && wikiIsServiceMatch) {
+        type = wikiDetectedType;
+      } else if (tvmazeIsServiceMatch) {
+        type = "tv";
+      } else if (wikiDetectedType) {
+        type = wikiDetectedType;
+      } else if (imdbData && imdbData.type) {
+        type = imdbData.type;
+      } else if (tvmazeScore >= 100) {
+        type = "tv";
+      } else {
+        type = "movie";
+      }
+
+      if (scrapedYear) {
+        year = scrapedYear;
+      } else if (type === "tv" && tvmazeIsServiceMatch && tvmazeYear) {
+        year = tvmazeYear;
+      } else if (wikiDetectedYear) {
+        year = wikiDetectedYear;
+      } else if (imdbData?.year) {
+        year = imdbData.year;
+      } else if (type === "tv" && tvmazeYear) {
+        year = tvmazeYear;
+      }
+
+      // 3. iTunes High-Res Poster & Metadata Lookup (Direct CORS fetch + JSONP fallback)
       let itunesPoster = "";
       let itunesDesc = "";
-      const itunesEntity = type === "tv" ? "tvSeason" : "movie";
-      const itunesData = await jsonpRequest(
-        `https://itunes.apple.com/search?term=${encodeURIComponent(title)}&country=US&entity=${itunesEntity}&limit=5`
-      );
-      if (itunesData && Array.isArray(itunesData.results) && itunesData.results.length > 0) {
-        const hit = itunesData.results.find(r => {
-          const rNorm = (r.trackName || r.collectionName || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
-          return rNorm === normTarget || rNorm.startsWith(normTarget) || normTarget.startsWith(rNorm);
-        });
-        if (hit) {
-          if (director === "Featured Director" && hit.artistName) director = hit.artistName;
-          if (hit.trackTimeMillis) runtimeMins = Math.round(hit.trackTimeMillis / 60000);
-          if (hit.primaryGenreName) primaryGenre = hit.primaryGenreName;
-          if (hit.artworkUrl100) itunesPoster = hit.artworkUrl100.replace("100x100bb", "600x600bb");
-          itunesDesc = hit.longDescription || hit.shortDescription || "";
-          if (hit.previewUrl) trailerStreamCache[slugId] = hit.previewUrl;
+      const targetYearForItunes = scrapedYear || (type === "tv" ? tvmazeYear : wikiDetectedYear) || imdbData?.year || null;
+      const hit = await fetchItunesInBrowser(title, type, targetYearForItunes);
+      if (hit) {
+        if (type === "movie" && director === "Featured Director" && hit.artistName) director = hit.artistName;
+        if (!known?.runtimeMins && hit.trackTimeMillis) runtimeMins = Math.round(hit.trackTimeMillis / 60000);
+        if (hit.primaryGenreName) primaryGenre = `${primaryGenre} ${hit.primaryGenreName}`.trim();
+        if (hit.artworkUrl100) itunesPoster = hit.artworkUrl100.replace("100x100bb", "600x600bb");
+        itunesDesc = hit.longDescription || hit.shortDescription || "";
+        if (!scrapedYear && !wikiDetectedYear && !imdbData?.year && hit.releaseDate) {
+          const iy = parseInt(hit.releaseDate.slice(0, 4), 10);
+          if (iy) year = iy;
         }
+        if (hit.previewUrl) trailerStreamCache[slugId] = hit.previewUrl;
+      } else if (!typeConfirmed && !wikiDetectedType && !imdbData && tvmazeScore >= 95) {
+        type = "tv";
+        if (tvmazeYear) year = tvmazeYear;
+      }
+
+      if (director === "Featured Director" && imdbData?.stars) {
+        director = imdbData.stars.split(",")[0].trim();
+      }
+
+      if (type === "tv") {
+        if (!known?.runtimeMins && tvmazeRuntime) runtimeMins = tvmazeRuntime;
+        else if (!known?.runtimeMins && runtimeMins > 90) runtimeMins = 48;
+        if (!summaryExtract && tvmazeSummary) summaryExtract = tvmazeSummary;
+        if (director === "Featured Director") director = `${(SERVICES[serviceId]?.name || serviceId)} Series`;
       }
 
       const hrs = Math.floor(runtimeMins / 60);
       const rem = runtimeMins % 60;
       const runtime = type === "tv" ? `Series • ~${runtimeMins || 48}m/ep` : (hrs > 0 ? `${hrs}h ${String(rem).padStart(2, "0")}m` : `${rem}m`);
-      const genreObj = mapClientGenre(primaryGenre, type, `${summaryExtract} ${itunesDesc}`);
+      const genreObj = mapClientGenre(`${primaryGenre} ${type === "tv" ? tvmazeGenres : ""}`, type, `${summaryExtract} ${type === "tv" ? tvmazeSummary : ""} ${itunesDesc}`);
 
       const seed = title.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-      const critic = criticScore || (80 + (seed % 18));
-      const audience = Math.min(98, Math.max(68, critic - 3 + (seed % 9)));
-      const lbScore = Number(Math.min(4.5, Math.max(3.3, (critic + audience) / 48)).toFixed(1));
+      const critic = criticScore || (80 + (seed % 16));
+      const audience = Math.min(97, Math.max(70, critic - 2 + (seed % 9)));
+      const lbScore = Number(Math.min(4.5, Math.max(3.4, (critic + audience) / 48)).toFixed(1));
 
-      const posterUrl = wikiThumb || itunesPoster || "";
+      const realServicePoster =
+        isClientServiceOriginalPoster(existingItem?.scrapedPosterUrl)
+          ? existingItem.scrapedPosterUrl
+          : isClientServiceOriginalPoster(existingItem?.posterUrl)
+          ? existingItem.posterUrl
+          : "";
+
+      // Always prefer official 2:3 vertical posters (IMDb / TVMaze / iTunes / Wikipedia) over 16:9 horizontal Prime/Netflix video tiles
+      const posterUrl =
+        (type === "tv"
+          ? imdbData?.posterUrl || tvmazePoster || wikiThumb || itunesPoster || ""
+          : itunesPoster || imdbData?.posterUrl || wikiThumb || "") ||
+        realServicePoster ||
+        "";
+
       if (posterUrl) {
         posterCache[slugId] = posterUrl;
-        localStorage.setItem("kanopy_posters_v1", JSON.stringify(posterCache));
+      } else {
+        delete posterCache[slugId];
       }
+      localStorage.setItem("kanopy_posters_v1", JSON.stringify(posterCache));
 
       const review = rtConsensus
         ? `Critics Consensus: "${rtConsensus}" ${(summaryExtract || "").slice(0, 220)}`
-        : (summaryExtract || itunesDesc || `${title} (${year}) — Synced to your ${SERVICES[serviceId]?.name || serviceId} watchlist.`).slice(0, 360);
+        : (
+            summaryExtract ||
+            (type === "tv" ? tvmazeSummary : "") ||
+            itunesDesc ||
+            (imdbData?.stars ? `${title} (${year}) — Starring ${imdbData.stars}. Synced to your ${SERVICES[serviceId]?.name || serviceId} watchlist.` : "") ||
+            `${title} (${year}) — Synced to your ${SERVICES[serviceId]?.name || serviceId} watchlist.`
+          ).slice(0, 360);
 
       return {
+        ...(existingItem || {}),
         id: slugId,
         service: serviceId,
+        watchUrl: existingItem?.watchUrl || "",
+        posterUrl,
+        scrapedPosterUrl: realServicePoster,
         type,
         genre: genreObj.genre,
         genreIcon: genreObj.genreIcon,
@@ -6096,15 +6944,76 @@
         director,
         wiki: wikiSlug,
         kanopySlug: "",
-        ytId: "AUTO_DIRECT",
+        ytId: existingItem?.ytId || "AUTO_DIRECT",
         critic,
         audience,
         lbScore,
-        vibes: [`${SERVICES[serviceId]?.name || serviceId} Watchlist`, genreObj.genre, runtime],
+        vibes: [`${SERVICES[serviceId]?.name || serviceId} Watchlist`, genreObj.genre, runtime, `${year} Release`],
         similarTo: `Acclaimed titles in ${genreObj.genre}`,
         review,
-        lbConsensus: `Letterboxd community consensus rates ${title} (${year}) ${lbScore.toFixed(1)}★ / 5.0, highlighting ${director}'s direction and standout performances.`
+        lbConsensus: `Critics & viewers rate ${title} (${year}) ${lbScore.toFixed(1)}★ / 5.0 (${critic}% Critic Score). ${review.slice(0, 180)}`,
+        _enriched: true,
+        _enrichVersion: 7
       };
+    }
+
+    let isPageUpgradingV3 = false;
+    async function autoUpgradeSyncedItemsInPageV3() {
+      if (isPageUpgradingV3) return;
+      const servicesToUpgrade = Object.keys(syncedWatchlists).filter(
+        svcId =>
+          svcId !== "kanopy" &&
+          Array.isArray(syncedWatchlists[svcId]) &&
+          syncedWatchlists[svcId].some(it => it._enrichVersion !== 7)
+      );
+      if (servicesToUpgrade.length === 0) return;
+      isPageUpgradingV3 = true;
+      let anyStructureChanged = false;
+
+      try {
+        for (const svcId of servicesToUpgrade) {
+          const list = syncedWatchlists[svcId];
+          const batchSize = 10;
+          for (let i = 0; i < list.length; i += batchSize) {
+            const batchIndices = [];
+            for (let j = i; j < Math.min(i + batchSize, list.length); j++) {
+              if (list[j]._enrichVersion !== 7) {
+                batchIndices.push(j);
+              }
+            }
+            if (batchIndices.length === 0) continue;
+
+            const updatedBatch = await Promise.all(
+              batchIndices.map(idx => enrichTitleInBrowser(list[idx].title, svcId, list[idx]))
+            );
+            updatedBatch.forEach((newItem, k) => {
+              const oldItem = list[batchIndices[k]];
+              if (oldItem.type !== newItem.type || oldItem.genre !== newItem.genre) {
+                anyStructureChanged = true;
+              }
+              list[batchIndices[k]] = newItem;
+              // Update poster image directly in DOM without re-rendering main.innerHTML (prevents image flashing!)
+              if (newItem.posterUrl) {
+                const imgEl = document.getElementById(`poster-${newItem.id}`);
+                if (imgEl && imgEl.getAttribute("src") !== newItem.posterUrl) {
+                  imgEl.src = newItem.posterUrl;
+                  imgEl.style.display = "block";
+                }
+              }
+            });
+
+            localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
+          }
+        }
+        if (anyStructureChanged) {
+          render();
+        } else {
+          updateHeaderCounts();
+        }
+      } catch (e) {
+      } finally {
+        isPageUpgradingV3 = false;
+      }
     }
 
     async function handleQuickEnrich() {
@@ -6420,36 +7329,99 @@
       }
     }
 
-    // Fetch official poster thumbnails from Wikipedia REST API in the browser
+    const triedHydrationIds = new Set();
+    let isHydratingPosters = false;
+
+    // Multi-source 2:3 vertical poster hydration in the browser (IMDb -> TVMaze -> Wikipedia REST/pageimages -> iTunes)
     async function hydratePosters(items) {
-      for (const item of items) {
-        if (posterCache[item.id] || !item.wiki) continue;
-        try {
-          const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${item.wiki}`);
-          if (!res.ok) continue;
-          const data = await res.json();
-          if (data.extract && !wikiExtractCache[item.id]) {
-            wikiExtractCache[item.id] = data.extract;
-            localStorage.setItem("kanopy_wiki_extracts_v1", JSON.stringify(wikiExtractCache));
-          }
-          if (data.thumbnail && data.thumbnail.source) {
-            posterCache[item.id] = data.thumbnail.source;
-            localStorage.setItem("kanopy_posters_v1", JSON.stringify(posterCache));
-            const imgEl = document.getElementById(`poster-${item.id}`);
-            if (imgEl) {
-              imgEl.src = data.thumbnail.source;
-              imgEl.style.display = "block";
+      if (isHydratingPosters) return;
+      isHydratingPosters = true;
+      try {
+        for (const item of items) {
+          const currentPoster = item.posterUrl || posterCache[item.id] || "";
+          if (currentPoster && !isClientServiceOriginalPoster(currentPoster)) continue;
+          if (triedHydrationIds.has(item.id)) continue;
+          triedHydrationIds.add(item.id);
+
+          try {
+            let foundPoster = "";
+
+            // 1. Check IMDb Public Suggestion API first (has official 2:3 vertical posters for Movies, TV Series, & International titles!)
+            if (item.title) {
+              const imdb = await fetchClientImdbMetadata(item.title, item.year || null, item.type || null, false);
+              if (imdb && imdb.posterUrl) {
+                foundPoster = imdb.posterUrl;
+              }
             }
+
+            // 2. For TV Series, check TVMaze for official 2:3 vertical series poster (including base-title before subtitle)
+            if (!foundPoster && item.type === "tv" && item.title) {
+              const tvQueries = [item.title];
+              const baseT = getClientBaseTitleBeforeSubtitle(item.title);
+              if (baseT && baseT.toLowerCase() !== item.title.toLowerCase()) tvQueries.push(baseT);
+              for (const tvQ of tvQueries) {
+                const tvRes = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(tvQ)}`);
+                if (tvRes.ok) {
+                  const tvList = await tvRes.json();
+                  const match = (tvList || []).find(e => e?.show?.name && isClientBaseOrSubtitleMatch(e.show.name, item.title));
+                  if (match?.show?.image) {
+                    foundPoster = (match.show.image.original || match.show.image.medium || "").replace(/^http:\/\//i, "https://");
+                    break;
+                  }
+                }
+              }
+            }
+
+            // 3. Try Wikipedia REST summary + pageimages if item.wiki is present
+            if (!foundPoster && item.wiki) {
+              const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${item.wiki}`);
+              if (res.ok) {
+                const data = await res.json();
+                if (data.extract && !wikiExtractCache[item.id]) {
+                  wikiExtractCache[item.id] = data.extract;
+                  localStorage.setItem("kanopy_wiki_extracts_v1", JSON.stringify(wikiExtractCache));
+                }
+                if (data.thumbnail && data.thumbnail.source) {
+                  foundPoster = data.thumbnail.source;
+                }
+              }
+              if (!foundPoster) {
+                foundPoster = await fetchClientWikiPageImageFallback(item.wiki.replace(/_/g, " "));
+              }
+            }
+
+            // 4. Try iTunes Movie / TV Season vertical artwork
+            if (!foundPoster && item.title) {
+              const hit = await fetchItunesInBrowser(item.title, item.type || "movie", item.year || null);
+              if (hit && hit.artworkUrl100) {
+                foundPoster = hit.artworkUrl100.replace("100x100bb", "600x600bb");
+              }
+            }
+
+            if (foundPoster) {
+              item.posterUrl = foundPoster;
+              posterCache[item.id] = foundPoster;
+              localStorage.setItem("kanopy_posters_v1", JSON.stringify(posterCache));
+              const imgEl = document.getElementById(`poster-${item.id}`);
+              if (imgEl && imgEl.getAttribute("src") !== foundPoster) {
+                imgEl.src = foundPoster;
+                imgEl.style.display = "block";
+              }
+            }
+          } catch (err) {
+            // Offline or blocked; fallback card remains visible
           }
-        } catch (err) {
-          // Offline or blocked; fallback card remains visible
         }
+      } finally {
+        isHydratingPosters = false;
       }
     }
 
-    // Initial render
+    // Initial render + instant synchronous pre-heal + automatic V6 4-source upgrade
+    instantPreHealSyncedItems();
     checkExtensionConnection();
     render();
+    autoUpgradeSyncedItemsInPageV3();
   </script>
 </body>
 </html>
