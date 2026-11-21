@@ -6151,7 +6151,8 @@
           const rank = idx + 1;
           const isFav = favorites.has(item.id);
           const isWatched = watched.has(item.id);
-          const cachedPoster = item.posterUrl || posterCache[item.id] || "";
+          const rawCachedPoster = item.posterUrl || posterCache[item.id] || "";
+          const cachedPoster = typeof sanitizePosterUrl === "function" ? sanitizePosterUrl(rawCachedPoster) : rawCachedPoster;
           const kanopyUrl = getKanopyUrl(item);
           const rtUrl = getRottenTomatoesUrl(item);
           const lbUrl = getLetterboxdUrl(item);
@@ -6162,7 +6163,7 @@
               <div class="card-top">
                 <div class="poster-box" onclick="openInfoModal('${item.id}')" title="Click for More Info & Consensus">
                   <span class="rank-badge ${rank === 1 ? "rank-1" : ""}">#${rank}</span>
-                  ${cachedPoster ? `<img id="poster-${item.id}" src="${cachedPoster}" alt="${item.title}" loading="lazy" />` : `<img id="poster-${item.id}" style="display:none" alt="${item.title}" loading="lazy" />`}
+                  ${cachedPoster ? `<img id="poster-${item.id}" src="${cachedPoster}" alt="${item.title}" loading="lazy" onerror="handleBrokenPoster(this, '${item.id}')" />` : `<img id="poster-${item.id}" style="display:none" alt="${item.title}" loading="lazy" onerror="handleBrokenPoster(this, '${item.id}')" />`}
                   <div class="poster-fallback-title">${item.title} (${item.year})</div>
                 </div>
 
@@ -8394,91 +8395,130 @@
     }
 
     const triedHydrationIds = new Set();
-    let isHydratingPosters = false;
+    let hydrationRunId = 0;
 
-    // Multi-source 2:3 vertical poster hydration in the browser (IMDb -> TVMaze -> Wikipedia REST/pageimages -> iTunes)
-    async function hydratePosters(items) {
-      if (isHydratingPosters) return;
-      isHydratingPosters = true;
+    function sanitizePosterUrl(url) {
+      if (!url || typeof url !== "string") return "";
+      let u = url.trim();
+      if (!u.startsWith("http://") && !u.startsWith("https://")) return "";
+      // Fix Apple TV+ mzstatic.com template placeholders like {w}x{h}.{f}
+      u = u.replace(/\{w\}x\{h\}/gi, "600x900").replace(/\{w\}/gi, "600").replace(/\{h\}/gi, "900").replace(/\{f\}/gi, "jpg");
+      u = u.replace(/^http:\/\//i, "https://");
+      return u;
+    }
+
+    function handleBrokenPoster(imgEl, itemId) {
+      if (!imgEl || imgEl.dataset.fallbackTried === "1") {
+        if (imgEl) imgEl.style.display = "none";
+        return;
+      }
+      imgEl.dataset.fallbackTried = "1";
+      imgEl.style.display = "none";
+      const item = findItemAnywhere(itemId);
+      if (item) {
+        item.posterUrl = "";
+        delete posterCache[itemId];
+        triedHydrationIds.delete(itemId);
+        hydrateSinglePoster(item);
+      }
+    }
+
+    async function hydrateSinglePoster(item) {
+      if (!item || !item.id) return;
+      const currentPoster = sanitizePosterUrl(item.posterUrl || posterCache[item.id] || "");
+      if (currentPoster) {
+        const imgEl = document.getElementById(`poster-${item.id}`);
+        if (imgEl && imgEl.getAttribute("src") !== currentPoster) {
+          imgEl.src = currentPoster;
+          imgEl.style.display = "block";
+        }
+        return;
+      }
+      if (triedHydrationIds.has(item.id)) return;
+      triedHydrationIds.add(item.id);
+
       try {
-        for (const item of items) {
-          const currentPoster = item.posterUrl || posterCache[item.id] || "";
-          // Force ONLY ONE image per tile: once a tile has ANY poster, never swap it!
-          if (currentPoster) continue;
-          if (triedHydrationIds.has(item.id)) continue;
-          triedHydrationIds.add(item.id);
+        let foundPoster = "";
 
-          try {
-            let foundPoster = "";
-
-            // 1. Check IMDb Public Suggestion API first (has official 2:3 vertical posters for Movies, TV Series, & International titles!)
-            if (item.title) {
-              const imdb = await fetchClientImdbMetadata(item.title, item.year || null, item.type || null, false, item.service || "");
-              if (imdb && imdb.posterUrl) {
-                foundPoster = imdb.posterUrl;
+        // 1. For TV Series (like Apple TV+ shows), TVMaze is 100% CORS-safe on GitHub Pages with official 2:3 vertical posters!
+        if (!foundPoster && item.type === "tv" && item.title) {
+          const tvQueries = [item.title];
+          const baseT = getClientBaseTitleBeforeSubtitle(item.title);
+          if (baseT && baseT.toLowerCase() !== item.title.toLowerCase()) tvQueries.push(baseT);
+          for (const tvQ of tvQueries) {
+            const tvRes = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(tvQ)}`);
+            if (tvRes.ok) {
+              const tvList = await tvRes.json();
+              const match = (tvList || []).find(e => e?.show?.name && isClientBaseOrSubtitleMatch(e.show.name, item.title));
+              if (match?.show?.image) {
+                foundPoster = sanitizePosterUrl(match.show.image.original || match.show.image.medium || "");
+                break;
               }
             }
-
-            // 2. For TV Series, check TVMaze for official 2:3 vertical series poster (including base-title before subtitle)
-            if (!foundPoster && item.type === "tv" && item.title) {
-              const tvQueries = [item.title];
-              const baseT = getClientBaseTitleBeforeSubtitle(item.title);
-              if (baseT && baseT.toLowerCase() !== item.title.toLowerCase()) tvQueries.push(baseT);
-              for (const tvQ of tvQueries) {
-                const tvRes = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(tvQ)}`);
-                if (tvRes.ok) {
-                  const tvList = await tvRes.json();
-                  const match = (tvList || []).find(e => e?.show?.name && isClientBaseOrSubtitleMatch(e.show.name, item.title));
-                  if (match?.show?.image) {
-                    foundPoster = (match.show.image.original || match.show.image.medium || "").replace(/^http:\/\//i, "https://");
-                    break;
-                  }
-                }
-              }
-            }
-
-            // 3. Try Wikipedia REST summary + pageimages if item.wiki is present
-            if (!foundPoster && item.wiki) {
-              const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${item.wiki}`);
-              if (res.ok) {
-                const data = await res.json();
-                if (data.extract && !wikiExtractCache[item.id]) {
-                  wikiExtractCache[item.id] = data.extract;
-                  localStorage.setItem("kanopy_wiki_extracts_v1", JSON.stringify(wikiExtractCache));
-                }
-                if (data.thumbnail && data.thumbnail.source) {
-                  foundPoster = data.thumbnail.source;
-                }
-              }
-              if (!foundPoster) {
-                foundPoster = await fetchClientWikiPageImageFallback(item.wiki.replace(/_/g, " "));
-              }
-            }
-
-            // 4. Try iTunes Movie / TV Season vertical artwork
-            if (!foundPoster && item.title) {
-              const hit = await fetchItunesInBrowser(item.title, item.type || "movie", item.year || null);
-              if (hit && hit.artworkUrl100) {
-                foundPoster = hit.artworkUrl100.replace("100x100bb", "600x600bb");
-              }
-            }
-
-            if (foundPoster) {
-              item.posterUrl = foundPoster;
-              posterCache[item.id] = foundPoster;
-              localStorage.setItem("kanopy_posters_v1", JSON.stringify(posterCache));
-              const imgEl = document.getElementById(`poster-${item.id}`);
-              if (imgEl && imgEl.getAttribute("src") !== foundPoster) {
-                imgEl.src = foundPoster;
-                imgEl.style.display = "block";
-              }
-            }
-          } catch (err) {
-            // Offline or blocked; fallback card remains visible
           }
         }
-      } finally {
-        isHydratingPosters = false;
+
+        // 2. iTunes Search API (JSONP/CORS-safe — Apple's own official poster database for Apple TV+ & movies!)
+        if (!foundPoster && item.title) {
+          const hit = await fetchItunesInBrowser(item.title, item.type || "movie", item.year || null);
+          if (hit && hit.artworkUrl100) {
+            foundPoster = sanitizePosterUrl(hit.artworkUrl100.replace("100x100bb", "600x600bb"));
+          }
+        }
+
+        // 3. Wikipedia REST summary + pageimages (100% CORS-safe on GitHub Pages!)
+        if (!foundPoster && item.wiki) {
+          const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${item.wiki}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.extract && !wikiExtractCache[item.id]) {
+              wikiExtractCache[item.id] = data.extract;
+              localStorage.setItem("kanopy_wiki_extracts_v1", JSON.stringify(wikiExtractCache));
+            }
+            if (data.thumbnail && data.thumbnail.source) {
+              foundPoster = sanitizePosterUrl(data.thumbnail.source);
+            }
+          }
+          if (!foundPoster) {
+            foundPoster = sanitizePosterUrl(await fetchClientWikiPageImageFallback(item.wiki.replace(/_/g, " ")));
+          }
+        }
+
+        // 4. IMDb Public Suggestion API fallback (when allowed)
+        if (!foundPoster && item.title) {
+          const imdb = await fetchClientImdbMetadata(item.title, item.year || null, item.type || null, false, item.service || "");
+          if (imdb && imdb.posterUrl) {
+            foundPoster = sanitizePosterUrl(imdb.posterUrl);
+          }
+        }
+
+        if (foundPoster) {
+          item.posterUrl = foundPoster;
+          posterCache[item.id] = foundPoster;
+          localStorage.setItem("kanopy_posters_v1", JSON.stringify(posterCache));
+          const imgEl = document.getElementById(`poster-${item.id}`);
+          if (imgEl && imgEl.getAttribute("src") !== foundPoster) {
+            imgEl.src = foundPoster;
+            imgEl.style.display = "block";
+          }
+        }
+      } catch (err) {
+        // Offline or blocked; fallback card remains visible
+      }
+    }
+
+    // Cancellable, batched multi-source poster hydration so switching to Apple TV+ or a Friend's list hydrates immediately!
+    async function hydratePosters(items) {
+      const myRun = ++hydrationRunId;
+      const needed = (items || []).filter(item => {
+        const currentPoster = sanitizePosterUrl(item.posterUrl || posterCache[item.id] || "");
+        return !currentPoster && !triedHydrationIds.has(item.id);
+      });
+      const batchSize = 4;
+      for (let i = 0; i < needed.length; i += batchSize) {
+        if (myRun !== hydrationRunId) return; // User switched tabs/friends — stop old run immediately!
+        const batch = needed.slice(i, i + batchSize);
+        await Promise.all(batch.map(item => hydrateSinglePoster(item)));
       }
     }
 
