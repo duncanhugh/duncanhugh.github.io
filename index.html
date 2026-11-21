@@ -7569,7 +7569,8 @@
       let bestHit = null;
       let bestScore = -999;
       for (const r of data.results) {
-        const rName = type === "tv" ? (r.collectionName || r.trackName || "") : (r.trackName || r.collectionName || "");
+        const rawRName = type === "tv" ? (r.collectionName || r.trackName || "") : (r.trackName || r.collectionName || "");
+        const rName = rawRName.replace(/[\s,–—-]+(?:Season|Series|Part|Volume)\s+\d+.*$/i, "").replace(/\s*\((?:Season|Series)\s*\d+.*?\)/i, "").trim();
         const isExact = isClientStrictTitleMatch(rName, title);
         const isSub = !isExact && isClientSubtitleFallbackMatch(rName, title);
         if (!isExact && !isSub) continue;
@@ -8440,8 +8441,9 @@
       try {
         let foundPoster = "";
 
-        // 1. For TV Series (like Apple TV+ shows), TVMaze is 100% CORS-safe on GitHub Pages with official 2:3 vertical posters!
-        if (!foundPoster && item.type === "tv" && item.title) {
+        // Helper: TVMaze lookup (100% CORS-safe on GitHub Pages)
+        async function tryTvMazePoster() {
+          if (!item.title) return "";
           const tvQueries = [item.title];
           const baseT = getClientBaseTitleBeforeSubtitle(item.title);
           if (baseT && baseT.toLowerCase() !== item.title.toLowerCase()) tvQueries.push(baseT);
@@ -8451,11 +8453,16 @@
               const tvList = await tvRes.json();
               const match = (tvList || []).find(e => e?.show?.name && isClientBaseOrSubtitleMatch(e.show.name, item.title));
               if (match?.show?.image) {
-                foundPoster = sanitizePosterUrl(match.show.image.original || match.show.image.medium || "");
-                break;
+                return sanitizePosterUrl(match.show.image.original || match.show.image.medium || "");
               }
             }
           }
+          return "";
+        }
+
+        // 1. For TV Series (like Apple TV+ shows), TVMaze is 100% CORS-safe on GitHub Pages with official 2:3 vertical posters!
+        if (!foundPoster && item.type === "tv") {
+          foundPoster = await tryTvMazePoster();
         }
 
         // 2. iTunes Search API (JSONP/CORS-safe — Apple's own official poster database for Apple TV+ & movies!)
@@ -8466,30 +8473,46 @@
           }
         }
 
-        // 3. Wikipedia REST summary + pageimages (100% CORS-safe on GitHub Pages!)
-        if (!foundPoster && item.wiki) {
-          const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${item.wiki}`);
-          if (res.ok) {
-            const data = await res.json();
-            if (data.extract && !wikiExtractCache[item.id]) {
-              wikiExtractCache[item.id] = data.extract;
-              localStorage.setItem("kanopy_wiki_extracts_v1", JSON.stringify(wikiExtractCache));
-            }
-            if (data.thumbnail && data.thumbnail.source) {
-              foundPoster = sanitizePosterUrl(data.thumbnail.source);
-            }
+        // 2b. If a movie lookup missed on iTunes (common for Apple TV+ series misclassified as movie), try TVMaze too!
+        if (!foundPoster && item.type !== "tv") {
+          foundPoster = await tryTvMazePoster();
+        }
+
+        // 3. Wikipedia REST summary + pageimages (100% CORS-safe on GitHub Pages! Searches Wikipedia even if item.wiki is empty)
+        if (!foundPoster && (item.wiki || item.title)) {
+          let wikiPageTitle = item.wiki || "";
+          if (!wikiPageTitle && item.title) {
+            try {
+              const q = `${item.title} ${item.year || ""} ${item.type === "tv" ? "TV series" : "film"}`.trim();
+              const sRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q)}&srlimit=3&format=json&origin=*`);
+              if (sRes.ok) {
+                const sData = await sRes.json();
+                const hit = (sData?.query?.search || []).find(h => isClientBaseOrSubtitleMatch((h.title || "").replace(/\s*\([^)]*\)\s*$/, ""), item.title));
+                if (hit?.title) wikiPageTitle = hit.title.replace(/ /g, "_");
+              }
+            } catch (e) {}
           }
-          if (!foundPoster) {
-            foundPoster = sanitizePosterUrl(await fetchClientWikiPageImageFallback(item.wiki.replace(/_/g, " ")));
+          if (wikiPageTitle) {
+            const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiPageTitle)}`);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.extract && !wikiExtractCache[item.id]) {
+                wikiExtractCache[item.id] = data.extract;
+                localStorage.setItem("kanopy_wiki_extracts_v1", JSON.stringify(wikiExtractCache));
+              }
+              if (data.thumbnail && data.thumbnail.source) {
+                foundPoster = sanitizePosterUrl(data.thumbnail.source);
+              }
+            }
+            if (!foundPoster) {
+              foundPoster = sanitizePosterUrl(await fetchClientWikiPageImageFallback(wikiPageTitle.replace(/_/g, " ")));
+            }
           }
         }
 
-        // 4. IMDb Public Suggestion API fallback (when allowed)
-        if (!foundPoster && item.title) {
-          const imdb = await fetchClientImdbMetadata(item.title, item.year || null, item.type || null, false, item.service || "");
-          if (imdb && imdb.posterUrl) {
-            foundPoster = sanitizePosterUrl(imdb.posterUrl);
-          }
+        // 4. Final fallback: sanitized scrapedPosterUrl if present (e.g., Apple TV+ mzstatic artwork)
+        if (!foundPoster && item.scrapedPosterUrl) {
+          foundPoster = sanitizePosterUrl(item.scrapedPosterUrl);
         }
 
         if (foundPoster) {
