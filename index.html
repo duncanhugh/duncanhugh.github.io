@@ -416,12 +416,11 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, filter 0.25s ease, opacity 0.25s ease;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, filter 0.25s ease, opacity 0.25s ease;
       position: relative;
     }
 
     .media-card:hover {
-      transform: translateY(-4px);
       border-color: var(--border-hover);
       box-shadow: var(--shadow);
       background: var(--bg-card-hover);
@@ -477,11 +476,6 @@
       object-fit: cover;
       object-position: center top;
       z-index: 2;
-      transition: transform 0.35s ease;
-    }
-
-    .media-card:hover .poster-box img {
-      transform: scale(1.05);
     }
 
     .poster-fallback-title {
@@ -4894,6 +4888,8 @@
     /*__BAKED_DATA_START__*/
     const BAKED_SYNCED_WATCHLISTS = {};
     const BAKED_ADMIN_PWD_HASH = "";
+    const BAKED_WATCHED = [];
+    const BAKED_FAVORITES = [];
     /*__BAKED_DATA_END__*/
 
     // Load synced multi-service watchlists from Portable Local DB (watchlists-db.js) + Baked Data + localStorage
@@ -4903,18 +4899,19 @@
 
     let syncedWatchlists = {};
     Object.keys(SERVICES).forEach(svcId => {
-      if (svcId === "ALL" || svcId === "kanopy") return;
+      if (svcId === "ALL") return;
       const fromDb = Array.isArray(portableServices[svcId]) ? portableServices[svcId] : [];
       const fromBaked = Array.isArray(BAKED_SYNCED_WATCHLISTS[svcId]) ? BAKED_SYNCED_WATCHLISTS[svcId] : [];
       const fromLocal = Array.isArray(localStoredLists[svcId]) ? localStoredLists[svcId] : [];
-      // Pick whichever source has the fullest/latest list, merging unique items so nothing is lost
       const bestBase = fromLocal.length >= fromDb.length && fromLocal.length >= fromBaked.length
         ? fromLocal
         : fromDb.length >= fromBaked.length
         ? fromDb
         : fromBaked;
-      if (bestBase.length > 0) {
+      if (bestBase.length > 0 && svcId !== "kanopy") {
         syncedWatchlists[svcId] = bestBase;
+      } else if (svcId === "kanopy" && fromLocal.length > 0) {
+        syncedWatchlists.kanopy = fromLocal;
       }
     });
 
@@ -4927,26 +4924,173 @@
       localStorage.setItem("sw_admin_pwd_hash_v1", initialPwdHash);
     }
 
-    if (!localStorage.getItem("streaming_watchlists_v3_netflix_reset")) {
-      delete syncedWatchlists.netflix;
-      localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
-      localStorage.setItem("streaming_watchlists_v3_netflix_reset", "1");
-      window.postMessage({ source: "KANOPY_HUB_PAGE", type: "CLEAR_SERVICE_ITEMS", serviceId: "netflix" }, "*");
-    }
     let extensionConnected = document.documentElement.getAttribute("data-watchlist-extension") === "connected";
     let dbFileHandle = null;
 
+    // ==================== PERMANENT 3-LAYER PERSISTENCE (IndexedDB + localStorage + Extension Storage) ====================
+    const IDB_NAME = "StreamingWatchlistsPermanentDB";
+    const IDB_STORE = "kv";
+
+    function openWatchlistsIdb() {
+      return new Promise(resolve => {
+        try {
+          if (!window.indexedDB) return resolve(null);
+          const req = indexedDB.open(IDB_NAME, 1);
+          req.onupgradeneeded = e => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(IDB_STORE)) {
+              db.createObjectStore(IDB_STORE);
+            }
+          };
+          req.onsuccess = e => resolve(e.target.result);
+          req.onerror = () => resolve(null);
+        } catch (e) {
+          resolve(null);
+        }
+      });
+    }
+
+    async function saveWatchlistsToIdb(dataObj) {
+      const db = await openWatchlistsIdb();
+      if (!db) return;
+      try {
+        const tx = db.transaction(IDB_STORE, "readwrite");
+        tx.objectStore(IDB_STORE).put(dataObj, "syncedWatchlists");
+      } catch (e) {}
+    }
+
+    async function loadWatchlistsFromIdb() {
+      const db = await openWatchlistsIdb();
+      if (!db) return null;
+      return new Promise(resolve => {
+        try {
+          const tx = db.transaction(IDB_STORE, "readonly");
+          const req = tx.objectStore(IDB_STORE).get("syncedWatchlists");
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => resolve(null);
+        } catch (e) {
+          resolve(null);
+        }
+      });
+    }
+
+    function persistWatchlists(syncToExtension = true) {
+      try {
+        localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
+      } catch (e) {
+        // If localStorage is near its 5MB quota, IndexedDB + chrome.storage.local still persist everything safely
+      }
+      saveWatchlistsToIdb(syncedWatchlists);
+      if (syncToExtension) {
+        window.postMessage(
+          { source: "KANOPY_HUB_PAGE", type: "SAVE_WATCHLISTS_FROM_PAGE", payload: syncedWatchlists },
+          "*"
+        );
+      }
+    }
+
+    async function saveUserStateToIdb(watchedArr, favsArr) {
+      const db = await openWatchlistsIdb();
+      if (!db) return;
+      try {
+        const tx = db.transaction(IDB_STORE, "readwrite");
+        tx.objectStore(IDB_STORE).put({ watched: watchedArr, favorites: favsArr, updatedAt: Date.now() }, "userState");
+      } catch (e) {}
+    }
+
+    async function loadUserStateFromIdb() {
+      const db = await openWatchlistsIdb();
+      if (!db) return null;
+      return new Promise(resolve => {
+        try {
+          const tx = db.transaction(IDB_STORE, "readonly");
+          const req = tx.objectStore(IDB_STORE).get("userState");
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => resolve(null);
+        } catch (e) {
+          resolve(null);
+        }
+      });
+    }
+
+    async function restoreWatchlistsFromIdb() {
+      const [idbData, idbUserState] = await Promise.all([loadWatchlistsFromIdb(), loadUserStateFromIdb()]);
+      let restored = false;
+      if (idbData && typeof idbData === "object") {
+        Object.entries(idbData).forEach(([svcId, list]) => {
+          if (!Array.isArray(list) || list.length === 0) return;
+          const curr = Array.isArray(syncedWatchlists[svcId]) ? syncedWatchlists[svcId] : [];
+          if (list.length > curr.length) {
+            syncedWatchlists[svcId] = list;
+            restored = true;
+          }
+        });
+      }
+      if (idbUserState) {
+        if (Array.isArray(idbUserState.watched)) {
+          idbUserState.watched.forEach(id => {
+            if (!watched.has(id)) {
+              watched.add(id);
+              restored = true;
+            }
+          });
+        }
+        if (Array.isArray(idbUserState.favorites)) {
+          idbUserState.favorites.forEach(id => {
+            if (!favorites.has(id)) {
+              favorites.add(id);
+              restored = true;
+            }
+          });
+        }
+      }
+      if (restored) {
+        persistWatchlists(false);
+        render();
+        renderSyncModalServices();
+      }
+    }
+
     function getAllItems() {
-      const baseKanopy =
+      const baseKanopySource =
         portableServices.kanopy && Array.isArray(portableServices.kanopy) && portableServices.kanopy.length >= ITEMS.length
           ? portableServices.kanopy
           : ITEMS;
-      baseKanopy.forEach(item => {
+
+      const curatedKanopyByTitle = new Map();
+      baseKanopySource.forEach(item => {
         if (!item.service) item.service = "kanopy";
         item.combined = Number((((item.critic || 80) + (item.audience || 80)) / 2).toFixed(1));
+        curatedKanopyByTitle.set((item.title || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(), item);
       });
-      const merged = [...baseKanopy];
+
+      const merged = [...baseKanopySource];
       const existingIds = new Set(merged.map(i => i.id));
+
+      // Merge any newly synced Kanopy items from the browser extension without losing curated Kanopy metadata
+      if (Array.isArray(syncedWatchlists.kanopy) && syncedWatchlists.kanopy.length > 0) {
+        syncedWatchlists.kanopy.forEach((item, idx) => {
+          const normKey = (item.title || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+          const curatedMatch = curatedKanopyByTitle.get(normKey);
+          if (curatedMatch) {
+            // Update watchUrl if extension captured a direct Kanopy product URL
+            if (item.watchUrl && item.watchUrl.startsWith("http") && !curatedMatch.watchUrl) {
+              curatedMatch.watchUrl = item.watchUrl;
+            }
+            return;
+          }
+          item.service = "kanopy";
+          item.combined = Number((((item.critic || 80) + (item.audience || 80)) / 2).toFixed(1));
+          let uniqueId = item.id || `kanopy-sync-${idx + 1}`;
+          if (existingIds.has(uniqueId)) {
+            uniqueId = `${uniqueId}-${idx + 1}`;
+            item.id = uniqueId;
+          }
+          existingIds.add(uniqueId);
+          if (item.posterUrl) posterCache[uniqueId] = item.posterUrl;
+          merged.push(item);
+        });
+      }
 
       Object.entries(syncedWatchlists).forEach(([svcId, list]) => {
         if (!Array.isArray(list) || svcId === "kanopy") return;
@@ -4982,10 +5126,12 @@
     let genreDrawerOpen = false;
     const initialFavs = [
       ...((portableDb && Array.isArray(portableDb.favorites)) ? portableDb.favorites : []),
+      ...(Array.isArray(BAKED_FAVORITES) ? BAKED_FAVORITES : []),
       ...JSON.parse(localStorage.getItem("kanopy_favs") || "[]")
     ];
     const initialWatched = [
       ...((portableDb && Array.isArray(portableDb.watched)) ? portableDb.watched : []),
+      ...(Array.isArray(BAKED_WATCHED) ? BAKED_WATCHED : []),
       ...JSON.parse(localStorage.getItem("kanopy_watched") || "[]")
     ];
     let favorites = new Set(initialFavs);
@@ -5059,9 +5205,28 @@
       return `https://www.rottentomatoes.com/search?search=${encodeURIComponent(item.title.replace(/\s*\(.*?\)\s*/g, ""))}`;
     }
 
+    async function autoFlushDbFileIfLinked() {
+      if (!dbFileHandle) return;
+      try {
+        const writable = await dbFileHandle.createWritable();
+        await writable.write(buildLocalDbJsContent());
+        await writable.close();
+      } catch (e) {}
+    }
+
     function saveState() {
-      localStorage.setItem("kanopy_favs", JSON.stringify([...favorites]));
-      localStorage.setItem("kanopy_watched", JSON.stringify([...watched]));
+      const favArr = [...favorites];
+      const watchedArr = [...watched];
+      try {
+        localStorage.setItem("kanopy_favs", JSON.stringify(favArr));
+        localStorage.setItem("kanopy_watched", JSON.stringify(watchedArr));
+      } catch (e) {}
+      saveUserStateToIdb(watchedArr, favArr);
+      window.postMessage(
+        { source: "KANOPY_HUB_PAGE", type: "SAVE_USER_STATE_FROM_PAGE", watched: watchedArr, favorites: favArr },
+        "*"
+      );
+      autoFlushDbFileIfLinked();
       updateHeaderCounts();
     }
 
@@ -5073,10 +5238,19 @@
     }
 
     function toggleWatched(id) {
-      if (watched.has(id)) watched.delete(id);
-      else watched.add(id);
+      const nowWatched = !watched.has(id);
+      if (nowWatched) watched.add(id);
+      else watched.delete(id);
       saveState();
-      render();
+      // Update card class directly in place without wiping/re-rendering the grid!
+      const cardEl = document.getElementById(`card-${id}`);
+      if (cardEl) {
+        cardEl.classList.toggle("watched", nowWatched);
+        const lbl = cardEl.querySelector(".watched-checkbox-label");
+        if (lbl) lbl.classList.toggle("is-checked", nowWatched);
+      } else {
+        render();
+      }
     }
 
     function setMediaType(type) {
@@ -5675,6 +5849,56 @@
       return null;
     }
 
+    const ytTrailerCache = JSON.parse(localStorage.getItem("sw_yt_trailers_v1") || "{}");
+    const pendingYtResolvers = new Map();
+    let ytResolveSeq = 0;
+
+    function resolveYoutubeTrailerId(item) {
+      if (item.ytId && /^[a-zA-Z0-9_-]{11}$/.test(item.ytId)) {
+        return Promise.resolve(item.ytId);
+      }
+      if (ytTrailerCache[item.id] && /^[a-zA-Z0-9_-]{11}$/.test(ytTrailerCache[item.id])) {
+        item.ytId = ytTrailerCache[item.id];
+        return Promise.resolve(item.ytId);
+      }
+      return new Promise(resolve => {
+        const reqId = `yt_${++ytResolveSeq}_${Date.now()}`;
+        const timer = setTimeout(() => {
+          pendingYtResolvers.delete(reqId);
+          resolve(null);
+        }, 3800);
+        pendingYtResolvers.set(reqId, ytId => {
+          clearTimeout(timer);
+          pendingYtResolvers.delete(reqId);
+          if (ytId && /^[a-zA-Z0-9_-]{11}$/.test(ytId)) {
+            item.ytId = ytId;
+            ytTrailerCache[item.id] = ytId;
+            try {
+              localStorage.setItem("sw_yt_trailers_v1", JSON.stringify(ytTrailerCache));
+            } catch (e) {}
+            persistWatchlists(false);
+            resolve(ytId);
+          } else {
+            resolve(null);
+          }
+        });
+        window.postMessage(
+          {
+            source: "KANOPY_HUB_PAGE",
+            type: "RESOLVE_YOUTUBE_TRAILER",
+            requestId: reqId,
+            itemId: item.id,
+            serviceId: item.service || "kanopy",
+            title: item.title,
+            year: item.year || "",
+            mediaType: item.type || "movie",
+            director: item.director || ""
+          },
+          "*"
+        );
+      });
+    }
+
     function openTrailerModal(itemId) {
       const item = getAllItems().find(i => i.id === itemId);
       if (!item) return;
@@ -5684,16 +5908,18 @@
       document.getElementById("modal-title").textContent = `${item.title} (${item.year})`;
       document.getElementById("modal-subtitle").textContent = `${item.genre} • ⏱️ ${item.runtime} • Directed by ${item.director} • 🍅 ${item.critic}% | 🍿 ${item.audience}% | 🟢 ${item.lbScore.toFixed(1)}★`;
 
-      const hasSpecificYtId = item.ytId && item.ytId !== "AUTO_DIRECT";
+      const hasSpecificYtId = item.ytId && /^[a-zA-Z0-9_-]{11}$/.test(item.ytId);
+      const cleanDir = item.director && !/^(featured director|series creator|netflix|prime|kanopy|apple|hulu|max|disney|hoopla|criterion)/i.test(item.director) && !/\bseries\b/i.test(item.director) ? item.director.split(",")[0].trim() : "";
       const directWatchUrl = hasSpecificYtId
         ? `https://www.youtube.com/watch?v=${item.ytId}`
-        : `https://www.youtube.com/results?search_query=${encodeURIComponent(item.title + " " + item.year + " official trailer")}`;
+        : `https://www.youtube.com/results?search_query=${encodeURIComponent(`${item.title} ${item.year} ${cleanDir} official trailer`.replace(/\s+/g, " ").trim())}`;
       document.getElementById("modal-yt-fallback").href = directWatchUrl;
 
       modal.classList.add("open");
       document.body.classList.add("modal-open");
 
-      switchTrailerSource(hasSpecificYtId ? "youtube" : "direct");
+      // Always use Kanopy's YouTube trailer overlay style for ALL services!
+      switchTrailerSource("youtube");
     }
 
     async function switchTrailerSource(source) {
@@ -5708,22 +5934,54 @@
       const footerNote = document.getElementById("modal-footer-note");
 
       if (source === "youtube") {
-        footerNote.textContent = "Playing official trailer in overlay";
-        const isFileProtocol = window.location.protocol === "file:";
-        const ytEmbedUrl = `https://www.youtube.com/embed/${item.ytId}?autoplay=1&rel=0`;
-        const watchUrl = `https://www.youtube.com/watch?v=${item.ytId}`;
-        const iframeSrc = isFileProtocol
-          ? `https://cdn.embedly.com/widgets/media.html?src=${encodeURIComponent(ytEmbedUrl)}&url=${encodeURIComponent(watchUrl)}&type=text%2Fhtml&schema=youtube`
-          : ytEmbedUrl;
+        let ytId =
+          item.ytId && /^[a-zA-Z0-9_-]{11}$/.test(item.ytId)
+            ? item.ytId
+            : ytTrailerCache[item.id] && /^[a-zA-Z0-9_-]{11}$/.test(ytTrailerCache[item.id])
+            ? ytTrailerCache[item.id]
+            : null;
 
-        container.innerHTML = `
-          <iframe
-            src="${iframeSrc}"
-            title="${item.title} (${item.year}) Trailer"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-            allowfullscreen
-          ></iframe>
-        `;
+        if (!ytId) {
+          footerNote.textContent = "Finding official YouTube trailer...";
+          container.innerHTML = `<div class="modal-status">Finding official YouTube trailer for <strong>${item.title} (${item.year})</strong>...</div>`;
+          ytId = await resolveYoutubeTrailerId(item);
+          if (currentModalItem !== item || currentTrailerSource !== "youtube") return;
+        }
+
+        const isFileProtocol = window.location.protocol === "file:";
+        if (ytId) {
+          footerNote.textContent = "Playing official trailer in overlay";
+          const ytEmbedUrl = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`;
+          const watchUrl = `https://www.youtube.com/watch?v=${ytId}`;
+          document.getElementById("modal-yt-fallback").href = watchUrl;
+          const iframeSrc = isFileProtocol
+            ? `https://cdn.embedly.com/widgets/media.html?src=${encodeURIComponent(ytEmbedUrl)}&url=${encodeURIComponent(watchUrl)}&type=text%2Fhtml&schema=youtube`
+            : ytEmbedUrl;
+
+          container.innerHTML = `
+            <iframe
+              src="${iframeSrc}"
+              title="${item.title} (${item.year}) Trailer"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+              allowfullscreen
+            ></iframe>
+          `;
+        } else {
+          // Fallback if extension is not connected (e.g. mobile / GitHub Pages): embed YouTube search playlist or try Apple TV direct stream
+          const searchQ = `${item.title} ${item.year || ""} ${item.type === "tv" ? "series" : ""} official trailer`.trim();
+          const watchSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQ)}`;
+          document.getElementById("modal-yt-fallback").href = watchSearchUrl;
+          const searchEmbedUrl = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(searchQ)}&autoplay=1`;
+          footerNote.textContent = "Playing YouTube trailer search in overlay";
+          container.innerHTML = `
+            <iframe
+              src="${searchEmbedUrl}"
+              title="${item.title} (${item.year}) Trailer"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+              allowfullscreen
+            ></iframe>
+          `;
+        }
       } else {
         container.innerHTML = `<div class="modal-status">Searching Apple TV / iTunes for direct HD video stream...</div>`;
         const directUrl = await fetchDirectTrailerUrl(item);
@@ -5762,9 +6020,12 @@
       const h = 560;
       const left = Math.max(0, Math.round((window.screen.width - w) / 2));
       const top = Math.max(0, Math.round((window.screen.height - h) / 2));
-      const hasSpecificYtId = currentModalItem.ytId && currentModalItem.ytId !== "AUTO_DIRECT";
-      const url = hasSpecificYtId
-        ? `https://www.youtube.com/watch?v=${currentModalItem.ytId}`
+      const resolvedId =
+        (currentModalItem.ytId && /^[a-zA-Z0-9_-]{11}$/.test(currentModalItem.ytId) && currentModalItem.ytId) ||
+        ytTrailerCache[currentModalItem.id] ||
+        null;
+      const url = resolvedId
+        ? `https://www.youtube.com/watch?v=${resolvedId}`
         : `https://www.youtube.com/results?search_query=${encodeURIComponent(currentModalItem.title + " " + currentModalItem.year + " official trailer")}`;
       window.open(
         url,
@@ -5821,24 +6082,53 @@
       return Boolean(localStorage.getItem(ADMIN_PWD_STORAGE_KEY));
     }
 
-    function applyExtensionPayload(payload) {
+    let hasRunInitialUpgrade = false;
+
+    function applyExtensionPayload(payload, userWatched = null, userFavorites = null) {
       if (!payload || typeof payload !== "object") return;
-      let anyChanged = false;
+      let structureChanged = false;
+
+      if (Array.isArray(userWatched)) {
+        userWatched.forEach(id => watched.add(id));
+      }
+      if (Array.isArray(userFavorites)) {
+        userFavorites.forEach(id => favorites.add(id));
+      }
+
       Object.entries(payload).forEach(([svcId, list]) => {
         if (Array.isArray(list) && list.length > 0) {
           const existingList = Array.isArray(syncedWatchlists[svcId]) ? syncedWatchlists[svcId] : [];
-          const existingV7ByTitle = new Map();
+          const existingByTitle = new Map();
           existingList.forEach(it => {
-            if (it && it.title && it._enrichVersion === 7) {
-              existingV7ByTitle.set(stripClientDisambig(it.title).toLowerCase(), it);
+            if (it && it.title) {
+              existingByTitle.set(stripClientDisambig(it.title).toLowerCase(), it);
             }
           });
-          if (existingList.length !== list.length) anyChanged = true;
+          if (existingList.length !== list.length) structureChanged = true;
+
           syncedWatchlists[svcId] = list.map(incoming => {
             const cleanIncomingTitle = stripClientDisambig(incoming.title || "").toLowerCase();
-            const localV7 = cleanIncomingTitle ? existingV7ByTitle.get(cleanIncomingTitle) : null;
-            if (localV7) return localV7;
-            anyChanged = true;
+            const localItem = cleanIncomingTitle ? existingByTitle.get(cleanIncomingTitle) : null;
+            if (localItem) {
+              // Force ONLY ONE image per tile: never overwrite an already-set local poster!
+              if (!localItem.posterUrl && incoming.posterUrl && !isClientServiceOriginalPoster(incoming.posterUrl)) {
+                localItem.posterUrl = incoming.posterUrl;
+                posterCache[localItem.id] = incoming.posterUrl;
+                const imgEl = document.getElementById(`poster-${localItem.id}`);
+                if (imgEl && !imgEl.getAttribute("src")) {
+                  imgEl.src = incoming.posterUrl;
+                  imgEl.style.display = "block";
+                }
+              }
+              const incomingYearMatches = !incoming.year || !localItem.year || Math.abs(incoming.year - localItem.year) <= 2;
+              if (incomingYearMatches && incoming.ytId && /^[a-zA-Z0-9_-]{11}$/.test(incoming.ytId) && (!localItem.ytId || localItem.ytId === "AUTO_DIRECT")) {
+                localItem.ytId = incoming.ytId;
+              }
+              if ((localItem._enrichVersion || 0) >= 11) {
+                return localItem;
+              }
+            }
+            structureChanged = true;
             if (incoming && incoming.posterUrl && isClientServiceOriginalPoster(incoming.posterUrl)) {
               incoming.scrapedPosterUrl = incoming.posterUrl;
               incoming.posterUrl = "";
@@ -5847,16 +6137,18 @@
           });
         }
       });
+
       if (typeof instantPreHealSyncedItems === "function") {
-        if (instantPreHealSyncedItems()) anyChanged = true;
+        if (instantPreHealSyncedItems()) structureChanged = true;
       }
-      localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
+      persistWatchlists(false);
       pendingExtensionPayload = null;
-      if (anyChanged) {
+      if (structureChanged) {
         render();
         renderSyncModalServices();
       }
-      if (typeof autoUpgradeSyncedItemsInPageV3 === "function") {
+      if (!hasRunInitialUpgrade && typeof autoUpgradeSyncedItemsInPageV3 === "function") {
+        hasRunInitialUpgrade = true;
         autoUpgradeSyncedItemsInPageV3();
       }
     }
@@ -5865,8 +6157,10 @@
       if (!event.data || event.data.source !== "KANOPY_HUB_EXTENSION") return;
       extensionConnected = true;
       if (event.data.type === "SYNCED_DATA_UPDATE" && event.data.payload) {
-        // Always accept updates from the user's installed browser extension bridge immediately
-        applyExtensionPayload(event.data.payload);
+        applyExtensionPayload(event.data.payload, event.data.userWatched, event.data.userFavorites);
+      } else if (event.data.type === "YOUTUBE_TRAILER_RESOLVED" && event.data.requestId) {
+        const resolver = pendingYtResolvers.get(event.data.requestId);
+        if (resolver) resolver(event.data.ytId);
       }
     });
 
@@ -6135,6 +6429,39 @@
     }
 
     const CLIENT_KNOWN_OVERRIDES = {
+      "mother": {
+        kanopy: {
+          type: "movie",
+          year: 2009,
+          director: "Bong Joon-ho",
+          runtimeMins: 129,
+          rawGenre: "Crime Mystery Thriller",
+          wiki: "Mother_(2009_film)",
+          synopsis: "Bong Joon-ho's acclaimed South Korean murder mystery thriller about a fiercely devoted mother who investigates a young girl's murder to prove her intellectually disabled son's innocence."
+        }
+      },
+      "witness for the prosecution": {
+        ANY: {
+          type: "movie",
+          year: 1957,
+          director: "Billy Wilder",
+          runtimeMins: 116,
+          rawGenre: "Film Noir Mystery Courtroom Thriller",
+          wiki: "Witness_for_the_Prosecution_(1957_film)",
+          synopsis: "Billy Wilder's acclaimed 1957 courtroom mystery classic starring Tyrone Power, Marlene Dietrich, and Charles Laughton, adapted from Agatha Christie's play."
+        }
+      },
+      "lured": {
+        ANY: {
+          type: "movie",
+          year: 1947,
+          director: "Douglas Sirk",
+          runtimeMins: 102,
+          rawGenre: "Film Noir Mystery Thriller",
+          wiki: "Lured",
+          synopsis: "Lured is a 1947 American film noir directed by Douglas Sirk and starring George Sanders, Lucille Ball, Charles Coburn, Sir Cedric Hardwicke, and Boris Karloff."
+        }
+      },
       "the body": {
         netflix: {
           type: "tv",
@@ -6346,7 +6673,7 @@
     function instantPreHealSyncedItems() {
       let changed = false;
       Object.entries(syncedWatchlists).forEach(([svcId, list]) => {
-        if (!Array.isArray(list) || svcId === "kanopy") return;
+        if (!Array.isArray(list)) return;
         list.forEach(item => {
           if (!item || !item.title) return;
           const cleanedTitle = stripClientDisambig(item.title);
@@ -6362,15 +6689,18 @@
           }
           const known = getClientKnownOverride(item.title, svcId);
           if (known) {
+            let identityChanged = false;
             if (known.type && item.type !== known.type) {
               item.type = known.type;
+              identityChanged = true;
               changed = true;
             }
             if (known.year && item.year !== known.year) {
               item.year = known.year;
+              identityChanged = true;
               changed = true;
             }
-            if (known.director && (item.director === "Featured Director" || !item.director)) {
+            if (known.director && (identityChanged || item.director === "Featured Director" || !item.director || item.director !== known.director)) {
               item.director = known.director;
               changed = true;
             }
@@ -6379,12 +6709,27 @@
               item.runtime = item.type === "tv" ? `Series • ~${known.runtimeMins}m/ep` : `${Math.floor(known.runtimeMins / 60)}h ${String(known.runtimeMins % 60).padStart(2, "0")}m`;
               changed = true;
             }
-            if (known.wiki && !item.wiki) {
+            if (known.wiki && (identityChanged || !item.wiki)) {
               item.wiki = known.wiki;
               changed = true;
             }
-            if (known.synopsis && item.review && item.review.includes("Synced from your")) {
+            if (known.synopsis && (identityChanged || !item.review || item.review.includes("Synced from your"))) {
               item.review = known.synopsis;
+              changed = true;
+            }
+            if (identityChanged || (item._enrichVersion || 0) < 11) {
+              if (identityChanged) {
+                item.posterUrl = "";
+                delete posterCache[item.id];
+              }
+              item.ytId = "AUTO_DIRECT";
+              if (typeof ytTrailerCache !== "undefined" && ytTrailerCache[item.id]) {
+                delete ytTrailerCache[item.id];
+                try {
+                  localStorage.setItem("sw_yt_trailers_v1", JSON.stringify(ytTrailerCache));
+                } catch (e) {}
+              }
+              item._enrichVersion = 0;
               changed = true;
             }
           }
@@ -6406,13 +6751,19 @@
       return changed;
     }
 
-    async function fetchClientImdbMetadata(title, targetYear, confirmedType, typeConfirmed) {
+    async function fetchClientImdbMetadata(title, targetYear, confirmedType, typeConfirmed, serviceId = "") {
       try {
-        const queries = [title];
+        const queries = [];
+        if (targetYear) {
+          queries.push(`${title} ${targetYear}`);
+        }
+        queries.push(title);
         const baseTitle = getClientBaseTitleBeforeSubtitle(title);
         if (baseTitle && baseTitle.toLowerCase() !== title.toLowerCase()) {
           queries.push(baseTitle);
         }
+
+        const isClassicArthouseService = serviceId === "kanopy" || serviceId === "criterion";
 
         for (const q of queries) {
           const cleanQ = normalizeClientWords(q);
@@ -6427,7 +6778,8 @@
           let bestItem = null;
           let bestScore = -999;
 
-          for (const item of list) {
+          for (let idx = 0; idx < list.length; idx++) {
+            const item = list[idx];
             if (!item || !item.l || !item.id || !item.id.startsWith("tt")) continue;
             const qid = (item.qid || item.q || "").toLowerCase();
             const isTv = /\b(tvseries|tvminiseries|tv\s*series|tv\s*mini-series|tv\s*miniseries)\b/i.test(qid);
@@ -6444,21 +6796,24 @@
 
             if (targetYear && itemYear) {
               const diff = Math.abs(itemYear - targetYear);
-              if (diff <= 1) score += 95;
-              else if (diff <= 2) score += 45;
-              else if (!exactBase) score -= 95;
+              if (diff <= 1) score += 110;
+              else if (diff <= 2) score += 50;
+              else if (!exactBase) score -= 140;
             } else if (itemYear) {
-              if (itemYear >= 2022) score += 35;
-              else if (itemYear >= 2016) score += 25;
-              else if (itemYear >= 2005) score += 15;
-              else if (itemYear >= 1985) score += 8;
+              if (isClassicArthouseService) {
+                score += Math.max(0, 14 - idx * 3);
+              } else {
+                if (itemYear >= 2022) score += 20;
+                else if (itemYear >= 2016) score += 14;
+                else if (itemYear >= 2005) score += 8;
+              }
             }
 
             if (typeConfirmed && confirmedType) {
               if (confirmedType === "tv" && isTv) score += 65;
-              else if (confirmedType === "tv" && isMovie) score -= 85;
+              else if (confirmedType === "tv" && isMovie) score -= 95;
               else if (confirmedType === "movie" && isMovie) score += 65;
-              else if (confirmedType === "movie" && isTv) score -= 85;
+              else if (confirmedType === "movie" && isTv) score -= 95;
             }
 
             if (item.i?.imageUrl) score += 15;
@@ -6611,7 +6966,7 @@
       const baseTitle = getClientBaseTitleBeforeSubtitle(title);
 
       // 0. Run IMDb Suggestion API Lookup in parallel
-      const imdbPromise = fetchClientImdbMetadata(title, scrapedYear, confirmedType, typeConfirmed);
+      const imdbPromise = fetchClientImdbMetadata(title, scrapedYear, confirmedType, typeConfirmed, serviceId);
 
       // 1. Run TVMaze Lookup (with base-title support for season subtitles like "Borgen – Power & Glory")
       if (!(typeConfirmed && confirmedType === "movie")) {
@@ -6822,7 +7177,7 @@
         }
       } catch (e) {}
 
-      const imdbData = await imdbPromise;
+      let imdbData = await imdbPromise;
 
       // Decide final type using 4-source consensus (Wikipedia + IMDb + TVMaze + Page Overrides)
       if (typeConfirmed && confirmedType) {
@@ -6853,8 +7208,14 @@
         year = tvmazeYear;
       }
 
+      // Year-Locked Poster Verification: if IMDb returned a different year/type (e.g. 2024 "Lured" vs 1947 "Lured"), re-query IMDb with "<title> <year>"!
+      if (year && imdbData && ((imdbData.year && Math.abs(imdbData.year - year) > 2) || imdbData.type !== type)) {
+        imdbData = await fetchClientImdbMetadata(title, year, type, true, serviceId);
+      }
+
       // 3. iTunes High-Res Poster & Metadata Lookup (Direct CORS fetch + JSONP fallback)
       let itunesPoster = "";
+      let itunesYear = null;
       let itunesDesc = "";
       const targetYearForItunes = scrapedYear || (type === "tv" ? tvmazeYear : wikiDetectedYear) || imdbData?.year || null;
       const hit = await fetchItunesInBrowser(title, type, targetYearForItunes);
@@ -6864,18 +7225,17 @@
         if (hit.primaryGenreName) primaryGenre = `${primaryGenre} ${hit.primaryGenreName}`.trim();
         if (hit.artworkUrl100) itunesPoster = hit.artworkUrl100.replace("100x100bb", "600x600bb");
         itunesDesc = hit.longDescription || hit.shortDescription || "";
-        if (!scrapedYear && !wikiDetectedYear && !imdbData?.year && hit.releaseDate) {
+        if (hit.releaseDate) {
           const iy = parseInt(hit.releaseDate.slice(0, 4), 10);
-          if (iy) year = iy;
+          if (iy) {
+            itunesYear = iy;
+            if (!scrapedYear && !wikiDetectedYear && !imdbData?.year) year = iy;
+          }
         }
         if (hit.previewUrl) trailerStreamCache[slugId] = hit.previewUrl;
       } else if (!typeConfirmed && !wikiDetectedType && !imdbData && tvmazeScore >= 95) {
         type = "tv";
         if (tvmazeYear) year = tvmazeYear;
-      }
-
-      if (director === "Featured Director" && imdbData?.stars) {
-        director = imdbData.stars.split(",")[0].trim();
       }
 
       if (type === "tv") {
@@ -6902,11 +7262,38 @@
           ? existingItem.posterUrl
           : "";
 
-      // Always prefer official 2:3 vertical posters (IMDb / TVMaze / iTunes / Wikipedia) over 16:9 horizontal Prime/Netflix video tiles
+      // Strict Year + Type Confirmed Poster Selection (NEVER attach a 2024 poster to a 1947 film!)
+      const imdbPosterConfirmed =
+        imdbData?.posterUrl &&
+        imdbData.type === type &&
+        (!imdbData.year || Math.abs(imdbData.year - year) <= 2)
+          ? imdbData.posterUrl
+          : "";
+
+      const itunesPosterConfirmed =
+        itunesPoster &&
+        (!itunesYear || Math.abs(itunesYear - year) <= 2)
+          ? itunesPoster
+          : "";
+
+      const tvmazePosterConfirmed =
+        type === "tv" &&
+        tvmazePoster &&
+        (!tvmazeYear || Math.abs(tvmazeYear - year) <= 2)
+          ? tvmazePoster
+          : "";
+
+      const wikiPosterConfirmed =
+        wikiThumb &&
+        (!wikiDetectedType || wikiDetectedType === type) &&
+        (!wikiDetectedYear || Math.abs(wikiDetectedYear - year) <= 2)
+          ? wikiThumb
+          : "";
+
       const posterUrl =
         (type === "tv"
-          ? imdbData?.posterUrl || tvmazePoster || wikiThumb || itunesPoster || ""
-          : itunesPoster || imdbData?.posterUrl || wikiThumb || "") ||
+          ? imdbPosterConfirmed || tvmazePosterConfirmed || wikiPosterConfirmed || itunesPosterConfirmed || ""
+          : itunesPosterConfirmed || imdbPosterConfirmed || wikiPosterConfirmed || "") ||
         realServicePoster ||
         "";
 
@@ -6927,6 +7314,14 @@
             `${title} (${year}) — Synced to your ${SERVICES[serviceId]?.name || serviceId} watchlist.`
           ).slice(0, 360);
 
+      const yearChanged = Boolean(existingItem?.year && year && Math.abs(existingItem.year - year) > 2);
+      if (yearChanged && typeof ytTrailerCache !== "undefined" && ytTrailerCache[slugId]) {
+        delete ytTrailerCache[slugId];
+        try {
+          localStorage.setItem("sw_yt_trailers_v1", JSON.stringify(ytTrailerCache));
+        } catch (e) {}
+      }
+
       return {
         ...(existingItem || {}),
         id: slugId,
@@ -6944,7 +7339,7 @@
         director,
         wiki: wikiSlug,
         kanopySlug: "",
-        ytId: existingItem?.ytId || "AUTO_DIRECT",
+        ytId: yearChanged ? "AUTO_DIRECT" : (existingItem?.ytId || "AUTO_DIRECT"),
         critic,
         audience,
         lbScore,
@@ -6953,7 +7348,7 @@
         review,
         lbConsensus: `Critics & viewers rate ${title} (${year}) ${lbScore.toFixed(1)}★ / 5.0 (${critic}% Critic Score). ${review.slice(0, 180)}`,
         _enriched: true,
-        _enrichVersion: 7
+        _enrichVersion: 11
       };
     }
 
@@ -6962,9 +7357,8 @@
       if (isPageUpgradingV3) return;
       const servicesToUpgrade = Object.keys(syncedWatchlists).filter(
         svcId =>
-          svcId !== "kanopy" &&
           Array.isArray(syncedWatchlists[svcId]) &&
-          syncedWatchlists[svcId].some(it => it._enrichVersion !== 7)
+          syncedWatchlists[svcId].some(it => (it._enrichVersion || 0) < 11)
       );
       if (servicesToUpgrade.length === 0) return;
       isPageUpgradingV3 = true;
@@ -6977,7 +7371,7 @@
           for (let i = 0; i < list.length; i += batchSize) {
             const batchIndices = [];
             for (let j = i; j < Math.min(i + batchSize, list.length); j++) {
-              if (list[j]._enrichVersion !== 7) {
+              if ((list[j]._enrichVersion || 0) < 11) {
                 batchIndices.push(j);
               }
             }
@@ -7002,7 +7396,7 @@
               }
             });
 
-            localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
+            persistWatchlists(true);
           }
         }
         if (anyStructureChanged) {
@@ -7043,7 +7437,7 @@
               if (Array.isArray(v)) syncedWatchlists[k] = v;
             });
           }
-          localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
+          persistWatchlists(true);
           inputEl.value = "";
           statusEl.textContent = "✅ Imported Sync Bundle!";
           renderSyncModalServices();
@@ -7076,7 +7470,7 @@
       enriched.forEach(it => byId.set(it.id, it));
       syncedWatchlists[serviceId] = Array.from(byId.values());
 
-      localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
+      persistWatchlists(true);
       btn.disabled = false;
       inputEl.value = "";
       statusEl.textContent = `✅ Added ${enriched.length} enriched title(s) to ${SERVICES[serviceId].name}!`;
@@ -7183,7 +7577,7 @@
             if (parsed.adminPasswordHash && !localStorage.getItem(ADMIN_PWD_STORAGE_KEY)) {
               localStorage.setItem(ADMIN_PWD_STORAGE_KEY, parsed.adminPasswordHash);
             }
-            localStorage.setItem("kanopy_multi_service_items_v1", JSON.stringify(syncedWatchlists));
+            persistWatchlists(true);
             saveState();
             renderSyncModalServices();
             render();
@@ -7223,6 +7617,8 @@
         "/*__BAKED_DATA_START__*/",
         `    const BAKED_SYNCED_WATCHLISTS = ${JSON.stringify(syncedWatchlists, null, 6)};`,
         `    const BAKED_ADMIN_PWD_HASH = ${JSON.stringify(pwdHash)};`,
+        `    const BAKED_WATCHED = ${JSON.stringify([...watched])};`,
+        `    const BAKED_FAVORITES = ${JSON.stringify([...favorites])};`,
         "    /*__BAKED_DATA_END__*/"
       ].join("\n");
 
@@ -7339,7 +7735,8 @@
       try {
         for (const item of items) {
           const currentPoster = item.posterUrl || posterCache[item.id] || "";
-          if (currentPoster && !isClientServiceOriginalPoster(currentPoster)) continue;
+          // Force ONLY ONE image per tile: once a tile has ANY poster, never swap it!
+          if (currentPoster) continue;
           if (triedHydrationIds.has(item.id)) continue;
           triedHydrationIds.add(item.id);
 
@@ -7348,7 +7745,7 @@
 
             // 1. Check IMDb Public Suggestion API first (has official 2:3 vertical posters for Movies, TV Series, & International titles!)
             if (item.title) {
-              const imdb = await fetchClientImdbMetadata(item.title, item.year || null, item.type || null, false);
+              const imdb = await fetchClientImdbMetadata(item.title, item.year || null, item.type || null, false, item.service || "");
               if (imdb && imdb.posterUrl) {
                 foundPoster = imdb.posterUrl;
               }
@@ -7417,10 +7814,11 @@
       }
     }
 
-    // Initial render + instant synchronous pre-heal + automatic V6 4-source upgrade
+    // Initial render + instant synchronous pre-heal + permanent IndexedDB restore + automatic upgrade
     instantPreHealSyncedItems();
     checkExtensionConnection();
     render();
+    restoreWatchlistsFromIdb();
     autoUpgradeSyncedItemsInPageV3();
   </script>
 </body>
